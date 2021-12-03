@@ -12,7 +12,7 @@
   <link type="text/css" rel="stylesheet" href="./js/codemirror/theme/dracula.css">
 </head>
 
-<body>
+<body onload="loadPage()">
   <!-- **NAV**  -->
   <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -56,12 +56,11 @@
     <ul class="nav nav-tabs" id="myTab" role="tablist">
       <li class="nav-item" role="presentation">
         <button class="nav-link active" id="Blank-tab" data-bs-toggle="tab" data-bs-target="#Blank" type="button"
-          role="tab" aria-controls="Blank" aria-selected="true" onClick="changeTabs('Blank')">Blank</button>
+          role="tab" aria-controls="Blank" aria-selected="true" onclick="changeTabs('Blank')">Blank</button>
       </li>
     </ul>
     <div class="tab-content" id="myTabContent">
-      <div class="tab-pane fade show active" id="Blank" role="tabpanel"
-        aria-labelledby="Blank-tab">
+      <div class="tab-pane fade show active" id="Blank" role="tabpanel" aria-labelledby="Blank-tab">
         <!-- **CONSOLES** -->
         <div class="container">
           <div class="row">
@@ -73,8 +72,7 @@
                     <label for="textInput-Blank" class="form-label">Input:</label>
                     <textarea class="form-control" id="textInput-Blank" rows="10"></textarea>
                     <!-- **OUTPUT CONSOLE** -->
-                    <label for="textOutput-Blank" class="form-label"
-                      style="margin-top: 10px;">Output:</label>
+                    <label for="textOutput-Blank" class="form-label" style="margin-top: 10px;">Output:</label>
                     <textarea class="form-control" id="textOutput-Blank" rows="5"></textarea>
                   </div>
                 </div>
@@ -89,28 +87,21 @@
                       <thead>
                         <tr>
                           <th scope="col">#</th>
-                          <th scope="col">First</th>
-                          <th scope="col">Last</th>
-                          <th scope="col">Handle</th>
+                          <th scope="col">Type</th>
+                          <th scope="col">Row</th>
+                          <th scope="col">Column</th>
+                          <th scope="col">Description</th>
+                          <th scope="col">scope</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
                           <th scope="row">1</th>
-                          <td>Mark</td>
-                          <td>Otto</td>
-                          <td>@mdo</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">2</th>
-                          <td>Jacob</td>
-                          <td>Thornton</td>
-                          <td>@fat</td>
-                        </tr>
-                        <tr>
-                          <th scope="row">3</th>
-                          <td colspan="2">Larry the Bird</td>
-                          <td>@twitter</td>
+                          <td>bla</td>
+                          <td>bla</td>
+                          <td>bla</td>
+                          <td>bla</td>
+                          <td>bla</td>
                         </tr>
                       </tbody>
                     </table>
@@ -147,14 +138,30 @@
                   </div>
                   <div class="card-footer">
                     <div class="btn-group" role="group" aria-label="Basic example">
-                      <button type="button" class="btn btn-primary">AST</button>
-                      <button type="button" class="btn btn-primary">CST</button>
+                      <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#astModal" onclick="showModal()">AST</button>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- **MODAL** -->
+  <div class="modal fade" id="astModal" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="astModalLabel">ARBOL AST</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <center>
+            <h6></h6>
+            <div id="arbol_ast"></div>
+        </center>
         </div>
       </div>
     </div>
