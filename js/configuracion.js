@@ -1,0 +1,239 @@
+var TabId = 0;
+// ------------------- open document ---------------------------------
+function openDoc(e){
+    let file = document.getElementById("fileDoc");
+    if (file) file.click();
+}
+
+function handleFileDoc(){
+    let file = document.getElementById("fileDoc").files[0];
+    let fullPath = document.getElementById("fileDoc").value;
+    var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
+    var filename = fullPath.substring(startIndex);
+    if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
+        filename = filename.substring(1);
+    }
+    filename = filename.substring(0,filename.indexOf('\.'));
+    let fileReader = new FileReader();
+    fileReader.onload = function (fileLoadedEvent) {
+        let text = fileLoadedEvent.target.result;
+        addTab(filename);
+        addContentTab(text,filename);
+    };
+    fileReader.readAsText(file, "UTF-8");
+}
+
+function addTab(filename){
+    let tab = document.getElementById('myTab').innerHTML;
+    if(tab.length > 9){
+        document.getElementById('myTab').innerHTML= tab +
+        `<li class="nav-item" role="presentation">
+        <button class="nav-link" id="${filename}-${TabId}-tab" data-bs-toggle="tab" data-bs-target="#${filename}-${TabId}" type="button" role="tab" aria-controls="${filename}-${TabId}" aria-selected="false">${filename}-${TabId}</button>
+        </li>`
+    }else{
+        document.getElementById('myTab').innerHTML= tab +
+        `<li class="nav-item" role="presentation">
+        <button class="nav-link active" id="${filename}-${TabId}-tab" data-bs-toggle="tab" data-bs-target="#${filename}-${TabId}" type="button" role="tab" aria-controls="${filename}-${TabId}" aria-selected="true">${filename}-${TabId}</button>
+        </li>`
+    }
+
+}
+
+function addContentTab(text,filename){
+    let tab = document.getElementById('myTabContent').innerHTML;
+    if(tab.length > 9){
+        document.getElementById('myTabContent').innerHTML= tab +
+        `<div class="tab-pane fade" id="${filename}-${TabId}" role="tabpanel" aria-labelledby="${filename}-${TabId}-tab">
+        <!-- **CONSOLES** -->
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div style="margin-top: 20px; margin-left: 0px; margin-right: 0px;">
+                        <div class="card">
+                            <div class="card-body text-dark bg-light">
+                                <!--  **INPUT CONSOLE**  -->
+                                <label for="textInput" class="form-label">Input:</label>
+                                <textarea class="form-control" id="textInput-${filename}-${TabId}" rows="10">${text}</textarea>
+                                <!-- **OUTPUT CONSOLE** -->
+                                <label for="textOutput-${filename}-${TabId}" class="form-label" style="margin-top: 10px;">Output:</label>
+                                <textarea class="form-control" id="textOutput" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div style="margin-top: 20px; margin-left: 0px; margin-right: 0px;">
+                        <div class="card">
+                            <div class="card-body text-dark bg-light">
+                                <label for="textInput" class="form-label">Errors:</label>
+                                <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">First</th>
+                                        <th scope="col">Last</th>
+                                        <th scope="col">Handle</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <th scope="row">1</th>
+                                        <td>Mark</td>
+                                        <td>Otto</td>
+                                        <td>@mdo</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">2</th>
+                                        <td>Jacob</td>
+                                        <td>Thornton</td>
+                                        <td>@fat</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">3</th>
+                                        <td colspan="2">Larry the Bird</td>
+                                        <td>@twitter</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                                <label for="textInput" class="form-label">Symbols:</label>
+                                <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">First</th>
+                                        <th scope="col">Last</th>
+                                        <th scope="col">Handle</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <th scope="row">1</th>
+                                        <td>Mark</td>
+                                        <td>Otto</td>
+                                        <td>@mdo</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">2</th>
+                                        <td>Jacob</td>
+                                        <td>Thornton</td>
+                                        <td>@fat</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">3</th>
+                                        <td colspan="2">Larry the Bird</td>
+                                        <td>@twitter</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer">
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-primary">AST</button>
+                                    <button type="button" class="btn btn-primary">CST</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+        </div>`
+    }else{
+        document.getElementById('myTabContent').innerHTML= tab +
+        `<div class="tab-pane fade show active" id="${filename}-${TabId}" role="tabpanel" aria-labelledby="${filename}-${TabId}-tab">
+        <!-- **CONSOLES** -->
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <div style="margin-top: 20px; margin-left: 0px; margin-right: 0px;">
+                        <div class="card">
+                            <div class="card-body text-dark bg-light">
+                                <!--  **INPUT CONSOLE**  -->
+                                <label for="textInput" class="form-label">Input:</label>
+                                <textarea class="form-control" id="textInput-${filename}-${TabId}" rows="10">${text}</textarea>
+                                <!-- **OUTPUT CONSOLE** -->
+                                <label for="textOutput-${filename}-${TabId}" class="form-label" style="margin-top: 10px;">Output:</label>
+                                <textarea class="form-control" id="textOutput" rows="5"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div style="margin-top: 20px; margin-left: 0px; margin-right: 0px;">
+                        <div class="card">
+                            <div class="card-body text-dark bg-light">
+                                <label for="textInput" class="form-label">Errors:</label>
+                                <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">First</th>
+                                        <th scope="col">Last</th>
+                                        <th scope="col">Handle</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <th scope="row">1</th>
+                                        <td>Mark</td>
+                                        <td>Otto</td>
+                                        <td>@mdo</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">2</th>
+                                        <td>Jacob</td>
+                                        <td>Thornton</td>
+                                        <td>@fat</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">3</th>
+                                        <td colspan="2">Larry the Bird</td>
+                                        <td>@twitter</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                                <label for="textInput" class="form-label">Symbols:</label>
+                                <table class="table">
+                                    <thead>
+                                      <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">First</th>
+                                        <th scope="col">Last</th>
+                                        <th scope="col">Handle</th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr>
+                                        <th scope="row">1</th>
+                                        <td>Mark</td>
+                                        <td>Otto</td>
+                                        <td>@mdo</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">2</th>
+                                        <td>Jacob</td>
+                                        <td>Thornton</td>
+                                        <td>@fat</td>
+                                      </tr>
+                                      <tr>
+                                        <th scope="row">3</th>
+                                        <td colspan="2">Larry the Bird</td>
+                                        <td>@twitter</td>
+                                      </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="card-footer">
+                                <div class="btn-group" role="group" aria-label="Basic example">
+                                    <button type="button" class="btn btn-primary">AST</button>
+                                    <button type="button" class="btn btn-primary">CST</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+        </div>`
+    }
+}
