@@ -1,5 +1,6 @@
 var TabId = 0;
-var TabActual="";
+var ListaTab= [];
+var TabActual = null;
 // ------------------- open document ---------------------------------
 function openDoc(e){
     let file = document.getElementById("fileDoc");
@@ -7,7 +8,10 @@ function openDoc(e){
 }
 
 function changeTabs(info){
-  TabActual=info;
+  TabActual = ListaTab.find(function (element) {
+      return element.tab === info;
+  });
+  TabActual.editor.refresh;
 }
 
 function handleFileDoc(){
@@ -58,11 +62,11 @@ function addContentTab(text,filename){
                         <div class="card">
                             <div class="card-body text-dark bg-light">
                                 <!--  **INPUT CONSOLE**  -->
-                                <label for="textInput" class="form-label">Input:</label>
-                                <textarea class="form-control" id="textInput-${filename}-${TabId}" rows="10">${text}</textarea>
+                                <label for="textInput-${filename}-${TabId}" class="form-label">Input:</label>
+                                <textarea class="form-control" id="textInput-${filename}-${TabId}" rows="10"></textarea>
                                 <!-- **OUTPUT CONSOLE** -->
                                 <label for="textOutput-${filename}-${TabId}" class="form-label" style="margin-top: 10px;">Output:</label>
-                                <textarea class="form-control" id="textOutput" rows="5"></textarea>
+                                <textarea class="form-control" id="textOutput-${filename}-${TabId}" rows="5"></textarea>
                             </div>
                         </div>
                     </div>
@@ -155,11 +159,11 @@ function addContentTab(text,filename){
                         <div class="card">
                             <div class="card-body text-dark bg-light">
                                 <!--  **INPUT CONSOLE**  -->
-                                <label for="textInput" class="form-label">Input:</label>
-                                <textarea class="form-control" id="textInput-${filename}-${TabId}" rows="10">${text}</textarea>
+                                <label for="textInput-${filename}-${TabId}" class="form-label">Input:</label>
+                                <textarea class="form-control" id="textInput-${filename}-${TabId}" rows="10"></textarea>
                                 <!-- **OUTPUT CONSOLE** -->
                                 <label for="textOutput-${filename}-${TabId}" class="form-label" style="margin-top: 10px;">Output:</label>
-                                <textarea class="form-control" id="textOutput" rows="5"></textarea>
+                                <textarea class="form-control" id="textOutput-${filename}-${TabId}" rows="5"></textarea>
                             </div>
                         </div>
                     </div>
@@ -248,6 +252,14 @@ function addContentTab(text,filename){
       theme: "dracula",
       lineWrapping: false
     });
-    TabActual = `${filename}-${TabId}`;
+    cm.getDoc().setValue(text);
+    cm.refresh;
+    let tab_completo = { editor: cm, tab:`${filename}-${TabId}`, pos:TabId };
+    ListaTab.push(tab_completo);
+    TabActual=tab_completo;
+}
 
+//--------------------------------------- Analizar -------------------------------------------
+function analizar(){
+  document.getElementById(`textOutput-${TabActual.tab}`).value = ejemplo.parse(TabActual.editor.getValue());
 }
