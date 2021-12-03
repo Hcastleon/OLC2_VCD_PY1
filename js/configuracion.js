@@ -1,8 +1,13 @@
 var TabId = 0;
+var TabActual="";
 // ------------------- open document ---------------------------------
 function openDoc(e){
     let file = document.getElementById("fileDoc");
     if (file) file.click();
+}
+
+function changeTabs(info){
+  TabActual=info;
 }
 
 function handleFileDoc(){
@@ -19,6 +24,7 @@ function handleFileDoc(){
         let text = fileLoadedEvent.target.result;
         addTab(filename);
         addContentTab(text,filename);
+        TabId++;
     };
     fileReader.readAsText(file, "UTF-8");
 }
@@ -28,12 +34,12 @@ function addTab(filename){
     if(tab.length > 9){
         document.getElementById('myTab').innerHTML= tab +
         `<li class="nav-item" role="presentation">
-        <button class="nav-link" id="${filename}-${TabId}-tab" data-bs-toggle="tab" data-bs-target="#${filename}-${TabId}" type="button" role="tab" aria-controls="${filename}-${TabId}" aria-selected="false">${filename}-${TabId}</button>
+        <button class="nav-link" id="${filename}-${TabId}-tab" data-bs-toggle="tab" data-bs-target="#${filename}-${TabId}" type="button" role="tab" aria-controls="${filename}-${TabId}" aria-selected="false" onClick="changeTabs('${filename}-${TabId}')">${filename}-${TabId}</button>
         </li>`
     }else{
         document.getElementById('myTab').innerHTML= tab +
         `<li class="nav-item" role="presentation">
-        <button class="nav-link active" id="${filename}-${TabId}-tab" data-bs-toggle="tab" data-bs-target="#${filename}-${TabId}" type="button" role="tab" aria-controls="${filename}-${TabId}" aria-selected="true">${filename}-${TabId}</button>
+        <button class="nav-link active" id="${filename}-${TabId}-tab" data-bs-toggle="tab" data-bs-target="#${filename}-${TabId}" type="button" role="tab" aria-controls="${filename}-${TabId}" aria-selected="true" onClick="changeTabs('${filename}-${TabId}')">${filename}-${TabId}</button>
         </li>`
     }
 
@@ -236,4 +242,12 @@ function addContentTab(text,filename){
         </div>
         </div>`
     }
+    let cm = new CodeMirror.fromTextArea(document.getElementById(`textInput-${filename}-${TabId}`), {
+      lineNumbers: true,
+      mode: "javascript",
+      theme: "dracula",
+      lineWrapping: false
+    });
+    TabActual = `${filename}-${TabId}`;
+
 }
