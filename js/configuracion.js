@@ -1,3 +1,4 @@
+// ------------------- global ---------------------------------------
 var TabId = 0;
 var ListaTab= [];
 var TabActual = null;
@@ -258,7 +259,6 @@ function addContentTab(text,filename){
     ListaTab.push(tab_completo);
     TabActual=tab_completo;
 }
-
 //--------------------------------------- Analizar -------------------------------------------
 function analizar(){
   document.getElementById(`textOutput-${TabActual.tab}`).value = ejemplo.parse(TabActual.editor.getValue());
