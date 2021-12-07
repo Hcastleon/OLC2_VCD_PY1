@@ -82,7 +82,7 @@ export class Aritmetica extends Operacion implements Expresion {
   }
 
   recorrer(): Nodo {
-    let padre = new Nodo("Exp", "");
+    let padre = new Nodo("Aritmetica", "");
 
     if (this.expreU) {
       padre.addHijo(new Nodo(this.op_string, ""));
