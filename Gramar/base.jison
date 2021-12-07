@@ -1,6 +1,5 @@
 /** ANALISIS LEXICO*/
 %lex
-%options case-insensitive
 %%
 
 [ \r\t\n]+                                      {} // ESPACIOS

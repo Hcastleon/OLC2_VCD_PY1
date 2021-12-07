@@ -13,7 +13,7 @@
 "++"                                            return 'incremento'
 "--"                                            return 'decremento'
 "&"                                             return 'concat'
-"^"                                             return 'repit'
+"^"                                            return 'repit'
 
 "+"                                             return 'mas'           //ARITEMETICO
 "-"                                             return 'menos'
@@ -106,8 +106,8 @@
 "toString"                                      return 'tostring'
 
 [A-Za-z_\ñ\Ñ][A-Za-z_0-9\ñ\Ñ]*                  return 'id'
-<<EOF>>                                         {}
-.                                               { parser.arbol.errores.push({tipo : 'Lexico', mensaje: yytext , linea: yylloc.first_line , columna: yylloc.first_column}); }//ERRORES LEXICOS
+<<EOF>>                                         return 'EOF'
+.                                               { console.log("error lexico"); }//ERRORES LEXICOS
 /lex
 
 %right                              igual
@@ -136,9 +136,7 @@
 %right                              cordec
 %left                               punto
 
-%start inicio
-
-%start inicio
+%start INICIO
 
 %%
 
@@ -146,7 +144,7 @@
     SINTACTICO
 */
 
-INICIO : MAIN CONTENIDO EOF         { $$ = $1.concat($2); return $$; }
+INICIO : CONTENIDO EOF         { $$ = $1; return $$; }
        ;
 /*  ------------------------------  CUERPO DE TRABAJO --------------------------------- */
 
@@ -154,10 +152,9 @@ CONTENIDO : CONTENIDO FUNCION_BLOQUE      { $$ = $1; $$ = $$.concat($2); }
           | FUNCION_BLOQUE                { $$ = $1; }
           ;
 
-MAIN : main parizq pardec llaveizq INSTRUCCIONES llavedec ptcoma    { $$ = $5; }
-
 FUNCION_BLOQUE : void id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$ = $5; }
                | TIPO id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$ = $5; }
+               | void main parizq pardec llaveizq INSTRUCCIONES llavedec        { $$ = $5; }
                ;
 
 PARAMETROS_SENTENCIA: parizq LISTPARAMETROS pardec                                { $$ = $2; }
@@ -194,15 +191,15 @@ INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
        SENTENCIAS EN BLOQUE
 */
 
-PRINT_BLOQUE : PRINT PARIZQ EXPRESION PARDER                     { $$ = []; console.log("Imprime"); }
-             | PRINTLN PARIZQ EXPRESION PARDER                   { $$ = []; console.log("Imprime"); }
+PRINT_BLOQUE : print parizq EXPRESION pardec                     { $$ = []; console.log("Imprime"); }
+             | println parizq EXPRESION pardec                   { $$ = []; console.log("Imprime"); }
              ;
 
 EXPRESION : ARITMETICA                                          { $$ = $1; }
           | RELACIONAL                                          { $$ = $1; }
           | LOGICA                                              { $$ = $1; }
           | TERNARIO                                            { $$ = $1; }
-          | arreglo_statement                                   { $$ = $1; }
+          //| arreglo_statement                                   { $$ = $1; }
           | TOINT_STATEMENT                                     { $$ = $1; }
           | UNARIA                                              { $$ = $1; }
           | parizq EXPRESION pardec                             { $$ = $2; }
@@ -257,27 +254,31 @@ UNARIA : incremento EXPRESION                                   { $$ = $1; conso
 TERNARIO : parizq EXPRESION pardec ternario EXPRESION dspuntos EXPRESION  { $$ = $1; console.log("ternario"); }
          ;
 
-TOINT_STATEMENT : toint parizq EXPRESION pardec                                         { $$ = new toInt($3,true,@1.first_line,@1.first_column); }
-                | todouble parizq EXPRESION pardec                                      { $$ = new toInt($3,false,@1.first_line,@1.first_column); }
+TOINT_STATEMENT : toint parizq EXPRESION pardec                                         { $$ = $1; console.log("toInt"); }
+                | todouble parizq EXPRESION pardec                                      { $$ = $1; console.log("toDouble"); }
                 ;
 
-PRIMITIVO : entero                  {$$ = new Primitivo(Tipo.INT,$1,@1.first_line,@1.first_column);}
-          | decimal                 {$$ = new Primitivo(Tipo.DOUBLE,$1,@1.first_line,@1.first_column);}
-          | caracter                {$$ = new Primitivo(Tipo.CHAR,$1,@1.first_line,@1.first_column);}
-          | cadena                  {$$ = new Primitivo(Tipo.STRING,$1,@1.first_line,@1.first_column);}
-          | id                      {$$ = new Primitivo(Tipo.ID,$1,@1.first_line,@1.first_column);}
-          | true                    {$$ = new Primitivo(Tipo.BOOLEAN,"1",@1.first_line,@1.first_column)}
-          | false                   {$$ = new Primitivo(Tipo.BOOLEAN,"0",@1.first_line,@1.first_column)}
-          | null                    {$$ = new Primitivo(Tipo.NULL,"",@1.first_line,@1.first_column); }
-          ; 
+PRIMITIVO : entero                  {$$ = $1; console.log("entero");}
+          | decimal                 {$$ = $1; console.log("decimal");}
+          | caracter                {$$ = $1; console.log("caracter");}
+          | cadena                  {$$ = $1; console.log("cadena");}
+          | id                      {$$ = $1; console.log("id");}
+          | true                    {$$ = $1; console.log("true");}
+          | false                   {$$ = $1; console.log("false");}
+          | null                    {$$ = $1; console.log("null"); }
+          ;
 
-DECLARACIONVARIABLE : TIPO id                                              { $$ = []; $$.push(new Declaracion($2,null,$1.tipo,$1.valor,@1.first_line,@1.first_column)); }
-                    | TIPO id igual EXPRESION                              { $$ = []; $$.push(new Declaracion($2,null,$1.tipo,$1.valor,@1.first_line,@1.first_column)); $$.push(new Asignacion($2,$4,@1.first_line,@1.first_column,0)); }
-                    | TIPO id listaArreglo                                 { $$ = []; $$.push(new Declaracion($2,null,Tipo.ARREGLO,new Arreglo($1.tipo,$1.valor),@1.first_line,@1.first_column,$3)); }
-                    | TIPO id listaArreglo igual EXPRESION                 { $$ = []; $$.push(new Declaracion($2,null,Tipo.ARREGLO,new Arreglo($1.tipo,$1.valor),@1.first_line,@1.first_column,$3)); $$.push(new Asignacion($2,$5,@1.first_line,@1.first_column,0)); }
-                    | id id igual EXPRESION                                { $$ = []; $$.push(new Declaracion($2,null,Tipo.ID,$1,@1.first_line,@1.first_column,$2)); $$.push(new Asignacion($2,$4,@1.first_line,@1.first_column,0)); }
-                    | id id                                                { $$ = []; $$.push(new Declaracion($2,null,Tipo.ID,$1,@1.first_line,@1.first_column)); }
-                    | id id listaArreglo                                   { $$ = []; $$.push(new Declaracion($2,null,Tipo.ARREGLO,new Arreglo(Tipo.ID,$1),@1.first_line,@1.first_column,$3)); }
-                    | id id listaArreglo igual EXPRESION                   { $$ = []; $$.push(new Declaracion($2,null,Tipo.ARREGLO,new Arreglo(Tipo.ID,$1),@1.first_line,@1.first_column,$3)); $$.push(new Asignacion($2,$5,@1.first_line,@1.first_column,0)); }
-
+DECLARACIONVARIABLE : TIPO LISTAIDS                                        { $$ = []; console.log("lista ids") }
+                    | TIPO id igual EXPRESION                              { $$ = []; console.log("declaracion con valor"); }
+                    | id id igual EXPRESION                                { $$ = []; console.log("declaracion con valor de una instancia"); }
+                    | id LISTAIDS                                          { $$ = []; console.log("lista ids de una instancia"); }
                     ;
+
+LISTAIDS : LISTAIDS coma id { $$ =$1; }
+         | id               { $$ = $1; }
+         ;
+
+ASIGNACION_BLOQUE : id igual EXPRESION                                     {$$ = []; console.log("asignacion valor") }
+                  | EXPRESION punto id igual EXPRESION                     {$$ = []; console.log("asignacion valor de instancia"); }
+                  ;
+%%
