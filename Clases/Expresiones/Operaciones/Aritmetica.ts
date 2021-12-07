@@ -21,18 +21,24 @@ export class Aritmetica extends Operacion implements Expresion {
   getTipo(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     let valor = this.getValor(controlador, ts, ts_u);
 
-    if (typeof valor === "number") {
-      return tipo.DOUBLE;
-    } else if (typeof valor === "string") {
-      return tipo.CADENA;
-    } else if (typeof valor === "boolean") {
-      return tipo.BOOLEAN;
+    if(typeof valor == 'number'){
+      if(this.isInt(Number(valor))){
+          return tipo.ENTERO;
+        }
+        return tipo.DOUBLE
+    }else if (typeof valor =='string'){
+        return tipo.CADENA
+    }else if (typeof valor =='boolean'){
+        return tipo.BOOLEAN
+    }else if (valor === null){
+        return tipo.NULO
     }
   }
   getValor(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     let valor_expre1;
     let valor_expre2;
     let valor_U;
+    
     if (this.expreU === false) {
       valor_expre1 = this.expre1.getValor(controlador, ts, ts_u);
       valor_expre2 = this.expre2.getValor(controlador, ts, ts_u);
@@ -94,5 +100,9 @@ export class Aritmetica extends Operacion implements Expresion {
     }
 
     return padre;
+  }
+
+  isInt(n: number) {
+    return Number(n) === n && n % 1 === 0;
   }
 }

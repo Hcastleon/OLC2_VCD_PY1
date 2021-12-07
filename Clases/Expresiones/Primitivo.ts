@@ -23,11 +23,16 @@ export class Primitivo implements Expresion{
         let valor = this.getValor(controlador, ts,ts_u);
 
         if(typeof valor == 'number'){
+            if(this.isInt(Number(valor))){
+                return tipo.ENTERO;
+            }
             return tipo.DOUBLE
         }else if (typeof valor =='string'){
             return tipo.CADENA
         }else if (typeof valor =='boolean'){
             return tipo.BOOLEAN
+        }else if (valor === null){
+            return tipo.NULO
         }
 
     }
@@ -38,6 +43,10 @@ export class Primitivo implements Expresion{
         let padre = new Nodo("Primitivo","");
         padre.addHijo(new Nodo(this.primitvo.toString(),""));
         return padre
+    }
+
+    isInt(n: number) {
+        return Number(n) === n && n % 1 === 0;
     }
 
 }

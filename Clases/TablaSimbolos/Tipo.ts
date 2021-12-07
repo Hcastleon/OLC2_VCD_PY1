@@ -4,6 +4,7 @@ export enum tipo{
     BOOLEAN,
     CARACTER,
     CADENA,
+    NULO,
     VOID
 }
 

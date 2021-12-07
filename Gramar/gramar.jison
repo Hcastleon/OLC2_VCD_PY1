@@ -110,6 +110,14 @@
 .                                               { console.log("error lexico"); }//ERRORES LEXICOS
 /lex
 
+//SECCION DE IMPORTS
+%{
+    const {Primitivo} = require("../Clases/Expresiones/Primitivo");
+    const {Print} = require("../Clases/Instrucciones/Print");
+    const {Aritmetica} = require("../Clases/Expresiones/Operaciones/Aritmetica");
+%}
+
+
 %right                              igual
 %right                              ternario,dspuntos
 
@@ -191,7 +199,7 @@ INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
        SENTENCIAS EN BLOQUE
 */
 
-PRINT_BLOQUE : print parizq EXPRESION pardec                     { $$ = []; console.log("Imprime"); }
+PRINT_BLOQUE : print parizq EXPRESION pardec                     { $$ = new Print($3, @1.first_line, @1.first_column ); }
              | println parizq EXPRESION pardec                   { $$ = []; console.log("Imprime"); }
              ;
 
@@ -223,12 +231,12 @@ LISTEXPRESIONES: LISTEXPRESIONES coma EXPRESION                 { $$ = $1; $$.pu
                 | EXPRESION                                     { $$ = []; $$.push($1); }
                 ;
 
-ARITMETICA : EXPRESION mas EXPRESION                            { $$ = $1; console.log("suma"); }
-           | EXPRESION menos EXPRESION                          { $$ = $1; console.log("resta"); }
-           | EXPRESION multiplicacion EXPRESION                 { $$ = $1; console.log("multiplicacion");}
-           | EXPRESION division XPRESION                        { $$ = $1; console.log("division");}
-           | EXPRESION modulo EXPRESION                         { $$ = $1; console.log("modulo");}
-           | pow parizq EXPRESION coma EXPRESION pardec         { $$ = $1; console.log("potencia");}
+ARITMETICA : EXPRESION mas EXPRESION                            { $$ = new Aritmetica($1, $3, false ,'+', @1.first_line,@1.last_column);}
+           | EXPRESION menos EXPRESION                          { $$ = new Aritmetica($1, $3, false ,'-', @1.first_line,@1.last_column); }
+           | EXPRESION multiplicacion EXPRESION                 { $$ = new Aritmetica($1, $3, false ,'*', @1.first_line,@1.last_column);}
+           | EXPRESION division XPRESION                        { $$ = new Aritmetica($1, $3, false ,'/', @1.first_line,@1.last_column);}
+           | EXPRESION modulo EXPRESION                         { $$ = new Aritmetica($1, $3, false ,'%', @1.first_line,@1.last_column);}
+           //| pow parizq EXPRESION coma EXPRESION pardec         { $$ = $1; console.log("potencia");}
            ;
 
 RELACIONAL : EXPRESION menor EXPRESION                          { $$ = $1; console.log("menor"); }
@@ -258,14 +266,14 @@ TOINT_STATEMENT : toint parizq EXPRESION pardec                                 
                 | todouble parizq EXPRESION pardec                                      { $$ = $1; console.log("toDouble"); }
                 ;
 
-PRIMITIVO : entero                  {$$ = $1; console.log("entero");}
-          | decimal                 {$$ = $1; console.log("decimal");}
-          | caracter                {$$ = $1; console.log("caracter");}
-          | cadena                  {$$ = $1; console.log("cadena");}
+PRIMITIVO : entero                  {$$ = new Primitivo(Number($1), @1.first_line, @1.first_column);}
+          | decimal                 {$$ = new Primitivo(Number($1), @1.first_line, @1.first_column);}
+          | caracter                {$$ = new Primitivo($1, @1.first_line, @1.first_column);}
+          | cadena                  {$$ = new Primitivo($1, @1.first_line, @1.first_column);}
           | id                      {$$ = $1; console.log("id");}
-          | true                    {$$ = $1; console.log("true");}
-          | false                   {$$ = $1; console.log("false");}
-          | null                    {$$ = $1; console.log("null"); }
+          | true                    {$$ = new Primitivo(true, @1.first_line, @1.first_column);}
+          | false                   {$$ = new Primitivo(false, @1.first_line, @1.first_column);}
+          | null                    {$$ = new Primitivo(null, @1.first_line, @1.first_column); }
           ;
 
 DECLARACIONVARIABLE : TIPO LISTAIDS                                        { $$ = []; console.log("lista ids") }
