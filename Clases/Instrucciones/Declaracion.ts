@@ -5,6 +5,7 @@ import { Instruccion } from "../Interfaces/Instruccion";
 import { Simbolos } from "../TablaSimbolos/Simbolos";
 import { TablaSim } from "../TablaSimbolos/TablaSim";
 import { tipo, Tipo } from "../TablaSimbolos/Tipo";
+import { Primitivo } from "../Expresiones/Primitivo";
 
 export class Declaracion implements Instruccion {
 
@@ -61,7 +62,22 @@ export class Declaracion implements Instruccion {
 
     }
     recorrer(): Nodo {
-        return null;
-    }
+        let padre = new Nodo("Declaracion", "")
+        let hijo_sim = new Nodo("Simbolos", "")
+        padre.addHijo(new Nodo(this.tipo.stype, ""))
+        for (let simb of this.lista_simbolos) {
+            let varia = simb as Simbolos
+            if (varia.valor != null) {
+                hijo_sim.addHijo(new Nodo(simb.identificador, ""))
+                hijo_sim.addHijo(new Nodo("=", ""))
+                let aux = simb.valor as Primitivo
+                hijo_sim.addHijo(aux.recorrer())
+            } else {
+                hijo_sim.addHijo(new Nodo(";", ""))
+            }
 
+        }
+        padre.addHijo(hijo_sim);
+        return padre
+    }
 }

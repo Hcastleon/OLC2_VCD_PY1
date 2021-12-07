@@ -171,7 +171,7 @@ function addContentTab(text,filename){
 }
 //--------------------------------------- Analizar -------------------------------------------
 function analizar(){
-  document.getElementById(`textOutput-${TabActual.tab}`).value = gramar.parse(TabActual.editor.getValue());
+  document.getElementById(`textOutput-${TabActual.tab}`).value = Ejecucion.ejecutarCodigo(TabActual.editor.getValue());
 }
 // -------------------------------------- reporteria -----------------------------------------
 function showModal(){
