@@ -20,6 +20,13 @@ var Operador;
     Operador[Operador["MENORIGUAL"] = 13] = "MENORIGUAL";
     Operador[Operador["IGUALIGUAL"] = 14] = "IGUALIGUAL";
     Operador[Operador["DIFERENCIACION"] = 15] = "DIFERENCIACION";
+    Operador[Operador["COSENO"] = 16] = "COSENO";
+    Operador[Operador["SENO"] = 17] = "SENO";
+    Operador[Operador["TANGENTE"] = 18] = "TANGENTE";
+    Operador[Operador["LOGARITMO"] = 19] = "LOGARITMO";
+    Operador[Operador["RAIZ"] = 20] = "RAIZ";
+    Operador[Operador["CONCATENAR"] = 21] = "CONCATENAR";
+    Operador[Operador["REPETIR"] = 22] = "REPETIR";
 })(Operador = exports.Operador || (exports.Operador = {}));
 class Operacion {
     constructor(expre1, expre2, expreU, operador, linea, column) {
@@ -53,7 +60,7 @@ class Operacion {
         else if (op == '||') {
             return Operador.OR;
         }
-        else if (op == '^') {
+        else if (op == 'pow') {
             return Operador.POTENCIA;
         }
         else if (op == 'UNARIO') {
@@ -79,6 +86,27 @@ class Operacion {
         }
         else if (op == '!=') {
             return Operador.DIFERENCIACION;
+        }
+        else if (op == '&') {
+            return Operador.CONCATENAR;
+        }
+        else if (op == '^') {
+            return Operador.REPETIR;
+        }
+        else if (op == 'sin') {
+            return Operador.SENO;
+        }
+        else if (op == 'cos') {
+            return Operador.COSENO;
+        }
+        else if (op == 'tan') {
+            return Operador.TANGENTE;
+        }
+        else if (op == 'sqrt') {
+            return Operador.RAIZ;
+        }
+        else if (op == 'log') {
+            return Operador.LOGARITMO;
         }
         return Operador.SUMA;
     }

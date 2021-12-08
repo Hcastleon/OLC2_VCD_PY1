@@ -18,7 +18,7 @@
 "++"                                            return 'incremento'
 "--"                                            return 'decremento'
 "&"                                             return 'concat'
-"^"                                            return 'repit'
+"^"                                             return 'repit'
 
 "+"                                             return 'mas'           //ARITEMETICO
 "-"                                             return 'menos'
@@ -120,11 +120,14 @@
     const {Print} = require("../Instrucciones/Print");
     const {Println} = require("../Instrucciones/Println");
     const {Aritmetica} = require("../Expresiones/Operaciones/Aritmetica");
+    const {Nativa} = require("../Expresiones/Operaciones/Nativa");
     const {Relacionales} = require("../Expresiones/Operaciones/Relacionales");
     const {Logicas} = require("../Expresiones/Operaciones/Logicas");
-    const {Declaracion} = require("../Instruccion/Declaracion");
-    const {Asignacion} = require("../Instruccion/Asignacion");
+    const {Declaracion} = require("../Instrucciones/Declaracion");
+    const {Asignacion} = require("../Instrucciones/Asignacion");
     const {Simbolos} = require("../TablaSimbolos/Simbolos");
+    const {Tipo} = require("../TablaSimbolos/Tipo");
+    const {Identificador} = require("../Expresiones/Identificador");
 %}
 
 
@@ -189,11 +192,11 @@ PARAMETRO: TIPO id                                      { $$ = $1; console.log("
          | id corizq cordec id                          { $$ = $1; console.log("Parametro"); }
          ;
 
-TIPO : string                                       { $$ = $1; console.log("Tipo"); }
-     | int                                          { $$ = $1; console.log("Tipo"); }
-     | double                                       { $$ = $1; console.log("Tipo"); }
-     | char                                         { $$ = $1; console.log("Tipo"); }
-     | boolean                                      { $$ = $1; console.log("Tipo"); }
+TIPO : string                                       { $$ = new Tipo('STRING'); }
+     | int                                          { $$ = new Tipo('ENTERO'); }
+     | double                                       { $$ = new Tipo('DECIMAL');}
+     | char                                         { $$ = new Tipo('CHAR'); }
+     | boolean                                      { $$ = new Tipo('BOOLEAN'); }
      ;
 
 INSTRUCCIONES : INSTRUCCIONES INSTRUCCION           { $1.push($2); $$ = $1;  } 
@@ -214,9 +217,11 @@ PRINT_BLOQUE : print parizq EXPRESION pardec                     { $$ = new Prin
              ;
 
 EXPRESION : ARITMETICA                                          { $$ = $1; }
+          | CADENAS                                             { $$ = $1; }
           | RELACIONAL                                          { $$ = $1; }
           | LOGICA                                              { $$ = $1; }
           | TERNARIO                                            { $$ = $1; }
+          | NATIVAS                                             { $$ = $1; }
           //| arreglo_statement                                   { $$ = $1; }
           | TOINT_STATEMENT                                     { $$ = $1; }
           | UNARIA                                              { $$ = $1; }
@@ -244,15 +249,26 @@ LISTEXPRESIONES: LISTEXPRESIONES coma EXPRESION                 { $$ = $1; $$.pu
 ARITMETICA : EXPRESION mas EXPRESION                            { $$ = new Aritmetica($1, $3, false ,'+', @1.first_line,@1.last_column);}
            | EXPRESION menos EXPRESION                          { $$ = new Aritmetica($1, $3, false ,'-', @1.first_line,@1.last_column); }
            | EXPRESION multiplicacion EXPRESION                 { $$ = new Aritmetica($1, $3, false ,'*', @1.first_line,@1.last_column);}
-           | EXPRESION division EXPRESION                        { $$ = new Aritmetica($1, $3, false ,'/', @1.first_line,@1.last_column);}
+           | EXPRESION division EXPRESION                       { $$ = new Aritmetica($1, $3, false ,'/', @1.first_line,@1.last_column);}
            | EXPRESION modulo EXPRESION                         { $$ = new Aritmetica($1, $3, false ,'%', @1.first_line,@1.last_column);}
-           //| pow parizq EXPRESION coma EXPRESION pardec         { $$ = $1; console.log("potencia");}
            ;
 
+CADENAS : EXPRESION concat EXPRESION                         { $$ = new Aritmetica($1, $3, false ,'&', @1.first_line,@1.last_column);}
+        | EXPRESION repit EXPRESION                          { $$ = new Aritmetica($1, $3, false ,'^', @1.first_line,@1.last_column);}
+        ;
+
+NATIVAS : pow parizq EXPRESION coma EXPRESION pardec         { $$ = new Nativa($3, $5, false ,'pow', @1.first_line,@1.last_column);}
+        | sin parizq EXPRESION pardec                        { $$ = new Nativa($3, null, true , 'sin',@1.first_line, @1.last_column); }
+        | cos parizq EXPRESION pardec                        { $$ = new Nativa($3, null, true , 'cos',@1.first_line, @1.last_column); }
+        | tan parizq EXPRESION pardec                        { $$ = new Nativa($3, null, true , 'tan',@1.first_line, @1.last_column); }
+        | sqrt parizq EXPRESION pardec                       { $$ = new Nativa($3, null, true , 'sqrt',@1.first_line, @1.last_column); }
+        | log parizq EXPRESION pardec                        { $$ = new Nativa($3, null, true , 'log',@1.first_line, @1.last_column); }
+        ;
+
 RELACIONAL : EXPRESION menor EXPRESION                          { $$ = new Relacionales($1, $3, false ,'<', @1.first_line,@1.last_column); }
-           | EXPRESION mayor EXPRESION                          {$$ = new Relacionales($1, $3, false ,'>', @1.first_line,@1.last_column); }
+           | EXPRESION mayor EXPRESION                          { $$ = new Relacionales($1, $3, false ,'>', @1.first_line,@1.last_column); }
            | EXPRESION menorigual EXPRESION                     { $$ = new Relacionales($1, $3, false ,'<=', @1.first_line,@1.last_column); }
-           | EXPRESION mayorigual EXPRESION                     {$$ = new Relacionales($1, $3, false ,'>=', @1.first_line,@1.last_column); }
+           | EXPRESION mayorigual EXPRESION                     { $$ = new Relacionales($1, $3, false ,'>=', @1.first_line,@1.last_column); }
            | EXPRESION igualigual EXPRESION                     { $$ = new Relacionales($1, $3, false ,'==', @1.first_line,@1.last_column); }
            | EXPRESION diferente EXPRESION                      { $$ = new Relacionales($1, $3, false ,'!=', @1.first_line,@1.last_column); }
            ;
@@ -280,23 +296,41 @@ PRIMITIVO : entero                  {$$ = new Primitivo(Number($1), @1.first_lin
           | decimal                 {$$ = new Primitivo(Number($1), @1.first_line, @1.first_column);}
           | caracter                {$$ = new Primitivo($1, @1.first_line, @1.first_column);}
           | cadena                  {$$ = new Primitivo($1, @1.first_line, @1.first_column);}
-          | id                      {$$ = $1; console.log("id");}
+          | id                      {$$ = new Identificador($1, @1.first_line, @1.last_column);}
           | true                    {$$ = new Primitivo(true, @1.first_line, @1.first_column);}
           | false                   {$$ = new Primitivo(false, @1.first_line, @1.first_column);}
           | null                    {$$ = new Primitivo(null, @1.first_line, @1.first_column); }
           ;
 
-DECLARACIONVARIABLE : TIPO LISTAIDS                                        { $$ = []; console.log("lista ids") }
-                    | TIPO id igual EXPRESION                              { $$ = []; console.log("declaracion con valor"); }
-                    | id id igual EXPRESION                                { $$ = []; console.log("declaracion con valor de una instancia"); }
-                    | id LISTAIDS                                          { $$ = []; console.log("lista ids de una instancia"); }
+DECLARACIONVARIABLE : TIPO LISTAIDS                                        { $$ = new Declaracion($1, $2, @1.first_line, @1.last_column);  }
+                    | TIPO id igual EXPRESION                              { $$ = new Declaracion($1, [new Simbolos(1,null, $2, $4)], @1.first_line, @1.last_column); }
                     ;
 
-LISTAIDS : LISTAIDS coma id { $$ =$1; }
-         | id               { $$ = $1; }
+LISTAIDS : LISTAIDS coma id                               {$1.push(new Simbolos(1,null, $3, null)); $$ = $1; }
+         | id                                             { $$ = [new Simbolos(1,null, $1, null)]; }
          ;
 
-ASIGNACION_BLOQUE : id igual EXPRESION                                     {$$ = []; console.log("asignacion valor") }
+ASIGNACION_BLOQUE : id igual EXPRESION                                     {$$ = new Asignacion($1, $3, @1.first_line, @1.last_column);  }
                   | EXPRESION punto id igual EXPRESION                     {$$ = []; console.log("asignacion valor de instancia"); }
                   ;
+
+IF_SUP : IF_SENTENCE                                           { $$ = []; $$.push($1); $$ = new If_Superior($$); }
+       | IF_SENTENCE ELSEIF_SUP                                { $$ = []; $$.push($1); $$ = $$.concat($2); $$ = new If_Superior($$); }
+       | IF_SENTENCE ELSEIF_SUP ELSE_SENTENCE                  { $$ = []; $$.push($1); $$ = $$.concat($2); $$.push($3); $$ = new If_Superior($$); }
+       | IF_SENTENCE ELSE_SENTENCE                             { $$ = []; $$.push($1); $$.push($2); $$ = new If_Superior($$); }
+       ;
+
+IF_SENTENCE : if EXPRESION llaveizq INSTRUCCIONES llavedec                  { $$ = new If($2,$4,@1.first_line,@1.first_column); }
+            ;
+
+ELSEIF_SUP : ELSEIF_SUP ELSEIF_SENTENCE                             { $$ = $1; $$.push($2); }
+           | ELSEIF_SENTENCE                                        { $$ = []; $$.push($1); }
+           ;
+
+
+ELSEIF_SENTENCE : else if EXPRESION llaveizq INSTRUCCIONES llavedec         { $$ = new If($3,$5,@1.first_line,@1.first_column); }
+                ;
+
+ELSE_SENTENCE : else llaveizq INSTRUCCIONES llavedec                      { $$ = new If(null,$3,@1.first_line,@1.first_column); }
+              ;
 %%

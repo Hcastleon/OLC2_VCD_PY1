@@ -25,12 +25,10 @@ class Declaracion {
             if (variable.valor != null) {
                 let valor = variable.valor.getValor(controlador, ts, ts_u);
                 let tipo_valor = variable.valor.getTipo(controlador, ts, ts_u);
-                console.log(tipo_valor, this.tipo.tipo);
                 if (tipo_valor == this.tipo.tipo || (tipo_valor == Tipo_1.tipo.DOUBLE && this.tipo.tipo == Tipo_1.tipo.ENTERO) || (tipo_valor == Tipo_1.tipo.CADENA && this.tipo.tipo == Tipo_1.tipo.CARACTER)) {
                     let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, this.tipo, variable.identificador, valor);
                     ts.agregar(variable.identificador, nuevo_sim);
                     ts_u.agregar(variable.identificador, nuevo_sim);
-                    //console.log('Son del mismo Tipo');      
                 }
                 else {
                     let error = new Errores_1.Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);

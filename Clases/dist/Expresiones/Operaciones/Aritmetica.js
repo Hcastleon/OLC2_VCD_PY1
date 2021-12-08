@@ -50,7 +50,6 @@ class Aritmetica extends Operaciones_1.Operacion {
                         if (this.isChar(String(valor_expre2))) {
                             return valor_expre1 + valor_expre2.charCodeAt(0);
                         }
-                        return valor_expre1.toString() + valor_expre2;
                     }
                 }
                 else if (typeof valor_expre1 === "string") {
@@ -100,12 +99,46 @@ class Aritmetica extends Operaciones_1.Operacion {
                     if (typeof valor_expre2 === "number") {
                         return valor_expre1 * valor_expre2;
                     }
+                    else if (typeof valor_expre2 === "string") {
+                        if (this.isChar(String(valor_expre2))) {
+                            return valor_expre1 * valor_expre2.charCodeAt(0);
+                        }
+                    }
+                }
+                else if (typeof valor_expre1 === "string") {
+                    if (this.isChar(String(valor_expre1))) {
+                        if (typeof valor_expre2 === "number") {
+                            return valor_expre1.charCodeAt(0) * valor_expre2;
+                        }
+                        else if (typeof valor_expre2 === "string") {
+                            if (this.isChar(String(valor_expre2))) {
+                                return valor_expre1.charCodeAt(0) * valor_expre2.charCodeAt(0);
+                            }
+                        }
+                    }
                 }
                 break;
             case Operaciones_1.Operador.DIV:
                 if (typeof valor_expre1 === "number") {
                     if (typeof valor_expre2 === "number") {
                         return valor_expre1 / valor_expre2;
+                    }
+                    else if (typeof valor_expre2 === "string") {
+                        if (this.isChar(String(valor_expre2))) {
+                            return valor_expre1 / valor_expre2.charCodeAt(0);
+                        }
+                    }
+                }
+                else if (typeof valor_expre1 === "string") {
+                    if (this.isChar(String(valor_expre1))) {
+                        if (typeof valor_expre2 === "number") {
+                            return valor_expre1.charCodeAt(0) / valor_expre2;
+                        }
+                        else if (typeof valor_expre2 === "string") {
+                            if (this.isChar(String(valor_expre2))) {
+                                return valor_expre1.charCodeAt(0) / valor_expre2.charCodeAt(0);
+                            }
+                        }
                     }
                 }
                 break;
@@ -114,11 +147,64 @@ class Aritmetica extends Operaciones_1.Operacion {
                     if (typeof valor_expre2 === "number") {
                         return valor_expre1 % valor_expre2;
                     }
+                    else if (typeof valor_expre2 === "string") {
+                        if (this.isChar(String(valor_expre2))) {
+                            return valor_expre1 % valor_expre2.charCodeAt(0);
+                        }
+                    }
+                }
+                else if (typeof valor_expre1 === "string") {
+                    if (this.isChar(String(valor_expre1))) {
+                        if (typeof valor_expre2 === "number") {
+                            return valor_expre1.charCodeAt(0) % valor_expre2;
+                        }
+                        else if (typeof valor_expre2 === "string") {
+                            if (this.isChar(String(valor_expre2))) {
+                                return valor_expre1.charCodeAt(0) % valor_expre2.charCodeAt(0);
+                            }
+                        }
+                    }
                 }
                 break;
             case Operaciones_1.Operador.UNARIO:
                 if (typeof valor_U === "number") {
                     return -valor_U;
+                }
+                break;
+            case Operaciones_1.Operador.CONCATENAR:
+                if (typeof valor_expre1 === "string") {
+                    if (typeof valor_expre2 === "string") {
+                        return valor_expre1 + valor_expre2;
+                    }
+                    else if (typeof valor_expre2 === "number") {
+                        return valor_expre1 + valor_expre2.toString();
+                    }
+                    else if (typeof valor_expre2 === "boolean") {
+                        return valor_expre1 + valor_expre2.toString();
+                    }
+                }
+                else if (typeof valor_expre1 === "number") {
+                    if (typeof valor_expre2 === "string") {
+                        return valor_expre1.toString() + valor_expre2;
+                    }
+                }
+                else if (typeof valor_expre1 === "boolean") {
+                    if (typeof valor_expre2 === "string") {
+                        return valor_expre1.toString() + valor_expre2;
+                    }
+                }
+                break;
+            case Operaciones_1.Operador.REPETIR:
+                if (typeof valor_expre1 === "string") {
+                    if (typeof valor_expre2 === "number") {
+                        if (this.isInt(Number(valor_expre2))) {
+                            var sum_concat = "";
+                            for (var _i = 0; _i < valor_expre2; _i++) {
+                                sum_concat = sum_concat + valor_expre1;
+                            }
+                            return sum_concat;
+                        }
+                    }
                 }
                 break;
             default:

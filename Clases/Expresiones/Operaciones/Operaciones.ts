@@ -19,7 +19,14 @@ export enum Operador{
     MAYORIGUAL,
     MENORIGUAL,
     IGUALIGUAL,
-    DIFERENCIACION
+    DIFERENCIACION,
+    COSENO,
+    SENO,
+    TANGENTE,
+    LOGARITMO,
+    RAIZ,
+    CONCATENAR,
+    REPETIR
 }
 
 
@@ -59,7 +66,7 @@ export class Operacion implements Expresion{
             return Operador.NOT
         }else if ( op == '||'){
             return Operador.OR
-        }else if ( op == '^'){
+        }else if ( op == 'pow'){
             return Operador.POTENCIA
         }else if ( op == 'UNARIO'){
             return Operador.UNARIO
@@ -77,6 +84,20 @@ export class Operacion implements Expresion{
             return Operador.IGUALIGUAL
         }else if ( op == '!='){
             return Operador.DIFERENCIACION
+        }else if ( op == '&'){
+            return Operador.CONCATENAR
+        }else if ( op == '^'){
+            return Operador.REPETIR
+        }else if ( op == 'sin'){
+            return Operador.SENO
+        }else if ( op == 'cos'){
+            return Operador.COSENO
+        }else if ( op == 'tan'){
+            return Operador.TANGENTE
+        }else if ( op == 'sqrt'){
+            return Operador.RAIZ
+        }else if ( op == 'log'){
+            return Operador.LOGARITMO
         }
         return Operador.SUMA
     }

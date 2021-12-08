@@ -42,3 +42,17 @@ void main (){
         println(edad);
     }
 }
+
+void main (){
+  println("Pruebas de Heidy----------------");
+  println(sin(134));
+  println(log10(100));
+  println(cos(134));
+  println(tan(12));
+  println(sqrt(16));
+  println(pow(3,2));
+
+  int edad = 20;
+    print("Valor edad declarado 20 = ");
+    println(edad);
+}
