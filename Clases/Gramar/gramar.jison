@@ -122,6 +122,9 @@
     const {Aritmetica} = require("../Expresiones/Operaciones/Aritmetica");
     const {Relacionales} = require("../Expresiones/Operaciones/Relacionales");
     const {Logicas} = require("../Expresiones/Operaciones/Logicas");
+    const {Declaracion} = require("../Instruccion/Declaracion");
+    const {Asignacion} = require("../Instruccion/Asignacion");
+    const {Simbolos} = require("../TablaSimbolos/Simbolos");
 %}
 
 
