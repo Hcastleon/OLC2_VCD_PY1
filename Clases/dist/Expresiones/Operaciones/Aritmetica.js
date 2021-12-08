@@ -10,16 +10,19 @@ class Aritmetica extends Operaciones_1.Operacion {
     }
     getTipo(controlador, ts, ts_u) {
         let valor = this.getValor(controlador, ts, ts_u);
-        if (typeof valor == 'number') {
+        if (typeof valor == "number") {
             if (this.isInt(Number(valor))) {
                 return Tipo_1.tipo.ENTERO;
             }
             return Tipo_1.tipo.DOUBLE;
         }
-        else if (typeof valor == 'string') {
+        else if (typeof valor == "string") {
+            if (this.isChar(String(valor))) {
+                return Tipo_1.tipo.CARACTER;
+            }
             return Tipo_1.tipo.CADENA;
         }
-        else if (typeof valor == 'boolean') {
+        else if (typeof valor == "boolean") {
             return Tipo_1.tipo.BOOLEAN;
         }
         else if (valor === null) {
@@ -43,12 +46,52 @@ class Aritmetica extends Operaciones_1.Operacion {
                     if (typeof valor_expre2 === "number") {
                         return valor_expre1 + valor_expre2;
                     }
+                    else if (typeof valor_expre2 === "string") {
+                        if (this.isChar(String(valor_expre2))) {
+                            return valor_expre1 + valor_expre2.charCodeAt(0);
+                        }
+                        return valor_expre1.toString() + valor_expre2;
+                    }
                 }
+                else if (typeof valor_expre1 === "string") {
+                    if (this.isChar(String(valor_expre1))) {
+                        if (typeof valor_expre2 === "number") {
+                            return valor_expre1.charCodeAt(0) + valor_expre2;
+                        }
+                        else if (typeof valor_expre2 === "string") {
+                            if (this.isChar(String(valor_expre2))) {
+                                return valor_expre1.charCodeAt(0) + valor_expre2.charCodeAt(0);
+                            }
+                        }
+                    }
+                    else {
+                        if (typeof valor_expre2 === "number") {
+                            return valor_expre1 + valor_expre2.toString();
+                        }
+                    }
+                } // ;D
                 break;
             case Operaciones_1.Operador.RESTA:
                 if (typeof valor_expre1 === "number") {
                     if (typeof valor_expre2 === "number") {
                         return valor_expre1 - valor_expre2;
+                    }
+                    else if (typeof valor_expre2 === "string") {
+                        if (this.isChar(String(valor_expre2))) {
+                            return valor_expre1 - valor_expre2.charCodeAt(0);
+                        }
+                    }
+                }
+                else if (typeof valor_expre1 === "string") {
+                    if (this.isChar(String(valor_expre1))) {
+                        if (typeof valor_expre2 === "number") {
+                            return valor_expre1.charCodeAt(0) - valor_expre2;
+                        }
+                        else if (typeof valor_expre2 === "string") {
+                            if (this.isChar(String(valor_expre2))) {
+                                return valor_expre1.charCodeAt(0) - valor_expre2.charCodeAt(0);
+                            }
+                        }
                     }
                 }
                 break;
@@ -73,6 +116,11 @@ class Aritmetica extends Operaciones_1.Operacion {
                     }
                 }
                 break;
+            case Operaciones_1.Operador.UNARIO:
+                if (typeof valor_U === "number") {
+                    return -valor_U;
+                }
+                break;
             default:
                 break;
         }
@@ -92,6 +140,9 @@ class Aritmetica extends Operaciones_1.Operacion {
     }
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
+    }
+    isChar(n) {
+        return n.length === 1 && n.match(/[a-zA-Z]/i);
     }
 }
 exports.Aritmetica = Aritmetica;

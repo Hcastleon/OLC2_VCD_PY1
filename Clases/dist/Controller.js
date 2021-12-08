@@ -7,7 +7,7 @@ class Controller {
         this.consola = "";
     }
     append(aux) {
-        this.consola += aux + '\n';
+        this.consola += aux;
     }
     graficar_ts(controlador, ts) {
         var cuerpohtml = "<thead><tr><th>Rol</th><th>Nombre</th><th>Tipo</th><th>Ambito</th><th>Valor</th><th>Parametros</th></tr></thead>";

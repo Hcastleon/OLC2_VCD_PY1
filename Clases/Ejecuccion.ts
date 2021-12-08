@@ -3,24 +3,28 @@ import { TablaSim } from "./TablaSimbolos/TablaSim";
 import { Instruccion } from "./Interfaces/Instruccion";
 import { Controller } from "./Controller";
 
-const gramatica = require("../Gramar/gramar");
+const gramatica = require("./Gramar/gramar");
 //import * as gramatica from "../Gramar/gramar";
 
 function ejecutarCodigo(entrada: string) {
-    //traigo todas las raices
-    const instrucciones = gramatica.parse(entrada);
-    let controlador = new Controller();
-    const entornoGlobal: TablaSim = new TablaSim(null);
-    let entornoU = new TablaSim(null);
+  //traigo todas las raices
+  const instrucciones = gramatica.parse(entrada);
+  let controlador = new Controller();
+  const entornoGlobal: TablaSim = new TablaSim(null);
+  let entornoU = new TablaSim(null);
 
-    const ast: AST = new AST(instrucciones);
+  const ast: AST = new AST(instrucciones);
 
-    //recorro todas las raices  RECURSIVA
-
+  //recorro todas las raices  RECURSIVA
+/*
+  for (let element of instrucciones) {
+    element.ejecutar(controlador, entornoGlobal, entornoU);
+  }*/
+  
     instrucciones.forEach((element: Instruccion) => {
         element.ejecutar(controlador, entornoGlobal, entornoU);
 
     });
 
-    return controlador.consola
+  return controlador.consola;
 }

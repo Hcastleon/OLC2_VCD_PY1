@@ -10,6 +10,11 @@
 [0-9]+("."[0-9]+)                               return 'decimal'       // NUMERICO
 [0-9]+                                          return 'entero'
 
+
+"||"                                            return 'or'        //RELACIONAL
+"&&"                                            return 'and'
+
+
 "++"                                            return 'incremento'
 "--"                                            return 'decremento'
 "&"                                             return 'concat'
@@ -29,6 +34,8 @@
 ">"                                             return 'mayor'
 "<"                                             return 'menor'
 
+"!"                                             return 'negacion'
+
 "?"                                             return 'ternario'   //TERNARIO
 ":"                                             return 'dspuntos'
 "."                                             return 'punto'
@@ -44,12 +51,9 @@
 ","                                             return 'coma'
 "="                                             return 'igual'
 
-"||"                                            return 'or'        //RELACIONAL
-"&&"                                            return 'and'
-"!"                                             return 'negacion'
 
-[\'\‘\’].[\'\’\‘]                               return 'caracter'
-[\"\“\”](([^\"\“\”\\])*([\\].)*)*[\"\“\”]       return 'cadena'
+[\'\‘\’].[\'\’\‘]                               { yytext = yytext.substr(1,yyleng-2); return 'caracter'; }
+[\"\“\”](([^\"\“\”\\])*([\\].)*)*[\"\“\”]       { yytext = yytext.substr(1,yyleng-2); return 'cadena'; }
 
 "int"                                           return 'int'      //TIPOS
 "double"                                        return 'double'
@@ -112,9 +116,12 @@
 
 //SECCION DE IMPORTS
 %{
-    const {Primitivo} = require("../Clases/Expresiones/Primitivo");
-    const {Print} = require("../Clases/Instrucciones/Print");
-    const {Aritmetica} = require("../Clases/Expresiones/Operaciones/Aritmetica");
+    const {Primitivo} = require("../Expresiones/Primitivo");
+    const {Print} = require("../Instrucciones/Print");
+    const {Println} = require("../Instrucciones/Println");
+    const {Aritmetica} = require("../Expresiones/Operaciones/Aritmetica");
+    const {Relacionales} = require("../Expresiones/Operaciones/Relacionales");
+    const {Logicas} = require("../Expresiones/Operaciones/Logicas");
 %}
 
 
@@ -156,13 +163,13 @@ INICIO : CONTENIDO EOF         { $$ = $1; return $$; }
        ;
 /*  ------------------------------  CUERPO DE TRABAJO --------------------------------- */
 
-CONTENIDO : CONTENIDO FUNCION_BLOQUE      { $$ = $1; $$ = $$.concat($2); } 
+CONTENIDO : CONTENIDO FUNCION_BLOQUE      { $1.push($2); $$ = $1;  } 
           | FUNCION_BLOQUE                { $$ = $1; }
           ;
 
 FUNCION_BLOQUE : void id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$ = $5; }
                | TIPO id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$ = $5; }
-               | void main parizq pardec llaveizq INSTRUCCIONES llavedec        { $$ = $5; }
+               | void main parizq pardec llaveizq INSTRUCCIONES llavedec        { $$ = $6; }
                ;
 
 PARAMETROS_SENTENCIA: parizq LISTPARAMETROS pardec                                { $$ = $2; }
@@ -186,8 +193,8 @@ TIPO : string                                       { $$ = $1; console.log("Tipo
      | boolean                                      { $$ = $1; console.log("Tipo"); }
      ;
 
-INSTRUCCIONES : INSTRUCCIONES INSTRUCCION           { $$ = $1; $$ = $$.concat($2); } 
-              | INSTRUCCION                         { $$ = $1; }
+INSTRUCCIONES : INSTRUCCIONES INSTRUCCION           { $1.push($2); $$ = $1;  } 
+              | INSTRUCCION                         { $$ = [$1]; }
               ;
 
 INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
@@ -200,7 +207,7 @@ INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
 */
 
 PRINT_BLOQUE : print parizq EXPRESION pardec                     { $$ = new Print($3, @1.first_line, @1.first_column ); }
-             | println parizq EXPRESION pardec                   { $$ = []; console.log("Imprime"); }
+             | println parizq EXPRESION pardec                   { $$ = new Println($3, @1.first_line, @1.first_column ); }
              ;
 
 EXPRESION : ARITMETICA                                          { $$ = $1; }
@@ -234,23 +241,23 @@ LISTEXPRESIONES: LISTEXPRESIONES coma EXPRESION                 { $$ = $1; $$.pu
 ARITMETICA : EXPRESION mas EXPRESION                            { $$ = new Aritmetica($1, $3, false ,'+', @1.first_line,@1.last_column);}
            | EXPRESION menos EXPRESION                          { $$ = new Aritmetica($1, $3, false ,'-', @1.first_line,@1.last_column); }
            | EXPRESION multiplicacion EXPRESION                 { $$ = new Aritmetica($1, $3, false ,'*', @1.first_line,@1.last_column);}
-           | EXPRESION division XPRESION                        { $$ = new Aritmetica($1, $3, false ,'/', @1.first_line,@1.last_column);}
+           | EXPRESION division EXPRESION                        { $$ = new Aritmetica($1, $3, false ,'/', @1.first_line,@1.last_column);}
            | EXPRESION modulo EXPRESION                         { $$ = new Aritmetica($1, $3, false ,'%', @1.first_line,@1.last_column);}
            //| pow parizq EXPRESION coma EXPRESION pardec         { $$ = $1; console.log("potencia");}
            ;
 
-RELACIONAL : EXPRESION menor EXPRESION                          { $$ = $1; console.log("menor"); }
-           | EXPRESION mayor EXPRESION                          { $$ = $1; console.log("mayor"); }
-           | EXPRESION menorigual EXPRESION                     { $$ = $1; console.log("menorigual"); }
-           | EXPRESION mayorigual EXPRESION                     { $$ = $1; console.log("mayorigual"); }
-           | EXPRESION igualigual EXPRESION                     { $$ = $1; console.log("igualigual"); }
-           | EXPRESION diferente EXPRESION                      { $$ = $1; console.log("diferente"); }
+RELACIONAL : EXPRESION menor EXPRESION                          { $$ = new Relacionales($1, $3, false ,'<', @1.first_line,@1.last_column); }
+           | EXPRESION mayor EXPRESION                          {$$ = new Relacionales($1, $3, false ,'>', @1.first_line,@1.last_column); }
+           | EXPRESION menorigual EXPRESION                     { $$ = new Relacionales($1, $3, false ,'<=', @1.first_line,@1.last_column); }
+           | EXPRESION mayorigual EXPRESION                     {$$ = new Relacionales($1, $3, false ,'>=', @1.first_line,@1.last_column); }
+           | EXPRESION igualigual EXPRESION                     { $$ = new Relacionales($1, $3, false ,'==', @1.first_line,@1.last_column); }
+           | EXPRESION diferente EXPRESION                      { $$ = new Relacionales($1, $3, false ,'!=', @1.first_line,@1.last_column); }
            ;
 
-LOGICA : EXPRESION or EXPRESION                                 { $$ = $1; console.log("or"); }
-       | EXPRESION and EXPRESION                                { $$ = $1; console.log("and"); }
-       |           negacion EXPRESION                           { $$ = $1; console.log("negado"); }
-       |           menos EXPRESION %prec UMENOS                 { $$ = $1; console.log("negacion"); }
+LOGICA : EXPRESION or EXPRESION                                 { $$ = new Logicas($1, $3, false ,'||', @1.first_line,@1.last_column); }
+       | EXPRESION and EXPRESION                                { $$ = new Logicas($1, $3, false ,'&&', @1.first_line, @1.last_column);}
+       |           negacion EXPRESION                           { $$ = new Logicas($2, null, true , '!',@1.first_line, @1.last_column); }
+       |           menos EXPRESION %prec UMENOS                 { $$ = new Aritmetica($2, null, true , 'UNARIO',@1.first_line, @1.last_column); }
        ;
 
 UNARIA : incremento EXPRESION                                   { $$ = $1; console.log("unaria"); }

@@ -21,24 +21,28 @@ export class Aritmetica extends Operacion implements Expresion {
   getTipo(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     let valor = this.getValor(controlador, ts, ts_u);
 
-    if(typeof valor == 'number'){
-      if(this.isInt(Number(valor))){
-          return tipo.ENTERO;
-        }
-        return tipo.DOUBLE
-    }else if (typeof valor =='string'){
-        return tipo.CADENA
-    }else if (typeof valor =='boolean'){
-        return tipo.BOOLEAN
-    }else if (valor === null){
-        return tipo.NULO
+    if (typeof valor == "number") {
+      if (this.isInt(Number(valor))) {
+        return tipo.ENTERO;
+      }
+      return tipo.DOUBLE;
+    } else if (typeof valor == "string") {
+      if (this.isChar(String(valor))) {
+        return tipo.CARACTER;
+      }
+      return tipo.CADENA;
+    } else if (typeof valor == "boolean") {
+      return tipo.BOOLEAN;
+    } else if (valor === null) {
+      return tipo.NULO;
     }
   }
+
   getValor(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     let valor_expre1;
     let valor_expre2;
     let valor_U;
-    
+
     if (this.expreU === false) {
       valor_expre1 = this.expre1.getValor(controlador, ts, ts_u);
       valor_expre2 = this.expre2.getValor(controlador, ts, ts_u);
@@ -51,13 +55,46 @@ export class Aritmetica extends Operacion implements Expresion {
         if (typeof valor_expre1 === "number") {
           if (typeof valor_expre2 === "number") {
             return valor_expre1 + valor_expre2;
+          } else if (typeof valor_expre2 === "string") {
+            if (this.isChar(String(valor_expre2))) {
+              return valor_expre1 + valor_expre2.charCodeAt(0);
+            }
+            return valor_expre1.toString() + valor_expre2;
           }
-        }
+        } else if (typeof valor_expre1 === "string") {
+          if (this.isChar(String(valor_expre1))) {
+            if (typeof valor_expre2 === "number") {
+              return valor_expre1.charCodeAt(0) + valor_expre2;
+            } else if (typeof valor_expre2 === "string") {
+              if (this.isChar(String(valor_expre2))) {
+                return valor_expre1.charCodeAt(0) + valor_expre2.charCodeAt(0);
+              }
+            }
+          } else {
+            if (typeof valor_expre2 === "number") {
+              return valor_expre1 + valor_expre2.toString();
+            }
+          }
+        }// ;D
         break;
       case Operador.RESTA:
         if (typeof valor_expre1 === "number") {
           if (typeof valor_expre2 === "number") {
             return valor_expre1 - valor_expre2;
+          }else if (typeof valor_expre2 === "string") {
+            if (this.isChar(String(valor_expre2))) {
+              return valor_expre1 - valor_expre2.charCodeAt(0);
+            }
+          }
+        }else if (typeof valor_expre1 === "string") {
+          if (this.isChar(String(valor_expre1))) {
+            if (typeof valor_expre2 === "number") {
+              return valor_expre1.charCodeAt(0) - valor_expre2;
+            } else if (typeof valor_expre2 === "string") {
+              if (this.isChar(String(valor_expre2))) {
+                return valor_expre1.charCodeAt(0) - valor_expre2.charCodeAt(0);
+              }
+            }
           }
         }
         break;
@@ -82,6 +119,11 @@ export class Aritmetica extends Operacion implements Expresion {
           }
         }
         break;
+      case Operador.UNARIO:
+        if (typeof valor_U === "number") {
+          return -valor_U;
+        }
+        break;
       default:
         break;
     }
@@ -104,5 +146,9 @@ export class Aritmetica extends Operacion implements Expresion {
 
   isInt(n: number) {
     return Number(n) === n && n % 1 === 0;
+  }
+
+  isChar(n: string) {
+    return n.length === 1 && n.match(/[a-zA-Z]/i);
   }
 }

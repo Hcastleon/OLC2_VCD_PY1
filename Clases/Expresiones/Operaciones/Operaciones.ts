@@ -14,6 +14,7 @@ export enum Operador{
     MAYORQUE,
     AND,
     NOT,
+    UNARIO,
     OR,
     MAYORIGUAL,
     MENORIGUAL,
@@ -60,6 +61,8 @@ export class Operacion implements Expresion{
             return Operador.OR
         }else if ( op == '^'){
             return Operador.POTENCIA
+        }else if ( op == 'UNARIO'){
+            return Operador.UNARIO
         }else if ( op == '*'){
             return Operador.MULT
         }else if ( op == '/'){

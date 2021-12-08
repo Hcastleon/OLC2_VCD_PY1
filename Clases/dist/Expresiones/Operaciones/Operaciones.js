@@ -14,11 +14,12 @@ var Operador;
     Operador[Operador["MAYORQUE"] = 7] = "MAYORQUE";
     Operador[Operador["AND"] = 8] = "AND";
     Operador[Operador["NOT"] = 9] = "NOT";
-    Operador[Operador["OR"] = 10] = "OR";
-    Operador[Operador["MAYORIGUAL"] = 11] = "MAYORIGUAL";
-    Operador[Operador["MENORIGUAL"] = 12] = "MENORIGUAL";
-    Operador[Operador["IGUALIGUAL"] = 13] = "IGUALIGUAL";
-    Operador[Operador["DIFERENCIACION"] = 14] = "DIFERENCIACION";
+    Operador[Operador["UNARIO"] = 10] = "UNARIO";
+    Operador[Operador["OR"] = 11] = "OR";
+    Operador[Operador["MAYORIGUAL"] = 12] = "MAYORIGUAL";
+    Operador[Operador["MENORIGUAL"] = 13] = "MENORIGUAL";
+    Operador[Operador["IGUALIGUAL"] = 14] = "IGUALIGUAL";
+    Operador[Operador["DIFERENCIACION"] = 15] = "DIFERENCIACION";
 })(Operador = exports.Operador || (exports.Operador = {}));
 class Operacion {
     constructor(expre1, expre2, expreU, operador, linea, column) {
@@ -54,6 +55,9 @@ class Operacion {
         }
         else if (op == '^') {
             return Operador.POTENCIA;
+        }
+        else if (op == 'UNARIO') {
+            return Operador.UNARIO;
         }
         else if (op == '*') {
             return Operador.MULT;

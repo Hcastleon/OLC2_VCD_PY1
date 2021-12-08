@@ -15,8 +15,10 @@ export class Controller {
     }
 
     public append(aux: string) {
-        this.consola += aux + '\n'
+        this.consola += aux 
     }
+
+    
 
 
     graficar_ts(controlador: Controller, ts: TablaSim) {

@@ -16,6 +16,7 @@ function loadPage(){
   ListaTab.push(tab_completo);
   TabActual=tab_completo;
 }
+document.getElementById("body").onload = function() {loadPage()};
 // ------------------- open document ---------------------------------
 function openDoc(e){
     let file = document.getElementById("fileDoc");
@@ -171,10 +172,42 @@ function addContentTab(text,filename){
 }
 //--------------------------------------- Analizar -------------------------------------------
 function analizar(){
-  document.getElementById(`textOutput-${TabActual.tab}`).value = bundle.ejecutarCodigo(TabActual.editor.getValue());
+  document.getElementById(`textOutput-${TabActual.tab}`).value = ejecutarCodigo(TabActual.editor.getValue());
 }
 // -------------------------------------- reporteria -----------------------------------------
 function showModal(){
 
 }
 
+
+document.getElementById("prueba").onclick = function() {ej()};
+
+
+function ej(){
+  document.getElementById(`textOutput-Blank`).value = ejecutarCodigo(TabActual.editor.getValue());
+}
+
+const Ast_1 = require("./AST/Ast");
+const TablaSim_1 = require("./TablaSimbolos/TablaSim");
+const Controller_1 = require("./Controller");
+const gramatica = require("./Gramar/gramar");
+//import * as gramatica from "../Gramar/gramar";
+function ejecutarCodigo(entrada) {
+    //traigo todas las raices
+    const instrucciones = gramatica.parse(entrada);
+    let controlador = new Controller_1.Controller();
+    const entornoGlobal = new TablaSim_1.TablaSim(null);
+    let entornoU = new TablaSim_1.TablaSim(null);
+    const ast = new Ast_1.AST(instrucciones);
+    //recorro todas las raices  RECURSIVA
+    /*
+      for (let element of instrucciones) {
+        element.ejecutar(controlador, entornoGlobal, entornoU);
+      }*/
+    // console.log(instrucciones);
+      
+    instrucciones.forEach((element) => {
+        element.ejecutar(controlador, entornoGlobal, entornoU);
+    });
+    return controlador.consola;
+}
