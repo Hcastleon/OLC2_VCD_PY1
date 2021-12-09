@@ -31,7 +31,7 @@ export class Declaracion implements Instruccion {
             if (ts.existeEnActual(variable.identificador)) {
                 let error = new Errores('Semantico', `La variable ${variable.identificador}, ya se declaro anteriormente`, this.linea, this.columna);
                 controlador.errores.push(error)
-                controlador.append(`La variable ${variable.identificador},  ya se declaro anteriormente en la linea ${this.linea}, y columna ${this.columna}`)
+                controlador.append(`**Error Sematnico -> La variable ${variable.identificador},  ya se declaro anteriormente en la linea ${this.linea}, y columna ${this.columna} **`)
                 continue;
             }
 
@@ -48,7 +48,7 @@ export class Declaracion implements Instruccion {
                 }else{
                     let error = new Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
                     controlador.errores.push(error)
-                    controlador.append(`Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo, en la linea ${this.linea}, y columna ${this.columna}`)
+                    controlador.append(`**Error Sematnico -> Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo, en la linea ${this.linea}, y columna ${this.columna} **` )
                 }
 
 

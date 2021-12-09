@@ -265,7 +265,6 @@ asignacion_statement : ID IGUAL expresion                                       
                      | expresion PUNTO ID listaDimensiones IGUAL expresion                  { $$ = []; let bb = new accederAtributo($1,$3,@1.first_line,@1.first_column); $$.push(new AsignarArreglo(bb,$4,$6,@1.first_line,@1.first_column)); }
                      | ID listaDimensiones IGUAL expresion                                  { $$ = []; $$.push(new AsignarArreglo(new Primitivo(Tipo.ID,$1,@1.first_line,@1.first_column),$2,$4,@1.first_line,@1.first_column)); }
                      | THIS PUNTO ID listaDimensiones IGUAL expresion                       { $$ = []; $$.push(new AsignarArreglo(new elementThis($3,@1.first_line,@1.first_column),$4,$6,@1.first_line,@1.first_column)); }
-          
                      ;
 
 

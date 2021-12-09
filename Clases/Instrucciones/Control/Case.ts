@@ -37,7 +37,7 @@ export class Case implements Instruccion{
         }
     }
     recorrer(): Nodo {
-        let padre = new Nodo("case","")
+        let padre = new Nodo("CASE","")
         padre.addHijo(new Nodo("case",""))
         padre.addHijo(this.expresion.recorrer())
         padre.addHijo(new Nodo(":",""))

@@ -77,6 +77,7 @@
 "toInt"                                         return 'toint'
 "toDouble"                                      return 'todouble'
 "typeof"                                        return 'typeof'
+"string"                                        return 'typeof'
 
 "if"                                            return 'if'
 "else"                                          return 'else'
@@ -107,7 +108,6 @@
 
 "toUpperCase"                                   return 'touppercase'
 "toLowerCase"                                   return 'tolowercase'
-"toString"                                      return 'tostring'
 
 [A-Za-z_\ñ\Ñ][A-Za-z_0-9\ñ\Ñ]*                  return 'id'
 <<EOF>>                                         return 'EOF'
@@ -121,6 +121,7 @@
     const {Println} = require("../Instrucciones/Println");
     const {Aritmetica} = require("../Expresiones/Operaciones/Aritmetica");
     const {Nativa} = require("../Expresiones/Operaciones/Nativa");
+    const {Cadenas} = require("../Expresiones/Operaciones/Cadenas");
     const {Relacionales} = require("../Expresiones/Operaciones/Relacionales");
     const {Logicas} = require("../Expresiones/Operaciones/Logicas");
     const {Declaracion} = require("../Instrucciones/Declaracion");
@@ -129,6 +130,11 @@
     const {Tipo} = require("../TablaSimbolos/Tipo");
     const {Identificador} = require("../Expresiones/Identificador");
     const {If} = require("../Instrucciones/Control/If");
+    const {Switch} = require("../Instrucciones/Control/Switch");
+    const {Case} = require("../Instrucciones/Control/Case");
+    const {Default} = require("../Instrucciones/Control/Default");
+    const {Break} = require("../Instrucciones/Transferencia/Break");
+    
 %}
 
 
@@ -208,6 +214,8 @@ INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
             | ASIGNACION_BLOQUE ptcoma              { $$ = $1; }
             | PRINT_BLOQUE ptcoma                   { $$ = $1; }
             | SENTENCIA_IF                          { $$ = $1; }
+            | SENTENCIA_SWITCH                      { $$ = $1; }
+            | SENTENCIA_BREAK ptcoma                { $$ = $1; }    
             ;
 
 /*
@@ -224,24 +232,17 @@ EXPRESION : ARITMETICA                                          { $$ = $1; }
           | LOGICA                                              { $$ = $1; }
           | TERNARIO                                            { $$ = $1; }
           | NATIVAS                                             { $$ = $1; }
+          | NAT_CAD                                             { $$ = $1; }
           //| arreglo_statement                                   { $$ = $1; }
           | TOINT_STATEMENT                                     { $$ = $1; }
           | UNARIA                                              { $$ = $1; }
           | parizq EXPRESION pardec                             { $$ = $2; }
-          | EXPRESION punto length parizq pardec                { $$ = $1; }
           | PRIMITIVO                                           { $$ = $1; }
-          | ID PARIZQ pardec                                    { $$ = $1; }
-          | ID PARIZQ LISTEXPRESIONES pardec                    { $$ = $1; }
-          | EXPRESION punto id                                  { $$ = $1; }
-          | EXPRESION punto id parizq pardec                    { $$ = $1; }
-          | EXPRESION punto id parizq LISTEXPRESIONES pardec    { $$ = $1; }
-          | EXPRESION punto touppercase parizq pardec           { $$ = $1; }
-          | EXPRESION punto tolowercase parizq pardec           { $$ = $1; }
-          | EXPRESION punto id corizq EXPRESION cordec          { $$ = $1; }
-          | ID corizq EXPRESION cordec                          { $$ = $1; }
+          | id parizq pardec                                    { $$ = $1; }
+          | id parizq LISTEXPRESIONES pardec                    { $$ = $1; }
+          | id corizq EXPRESION cordec                          { $$ = $1; }
           | punto id                                            { $$ = $1; }
           | punto id corizq EXPRESION cordec                    { $$ = $1; }
-          | EXPRESION punto tostring parizq pardec              { $$ = $1; }
           ;
 
 LISTEXPRESIONES: LISTEXPRESIONES coma EXPRESION                 { $$ = $1; $$.push($3); }
@@ -257,6 +258,13 @@ ARITMETICA : EXPRESION mas EXPRESION                            { $$ = new Aritm
 
 CADENAS : EXPRESION concat EXPRESION                         { $$ = new Aritmetica($1, $3, false ,'&', @1.first_line,@1.last_column);}
         | EXPRESION repit EXPRESION                          { $$ = new Aritmetica($1, $3, false ,'^', @1.first_line,@1.last_column);}
+        ;
+
+NAT_CAD : EXPRESION punto caracterposition parizq EXPRESION pardec                 { $$ = new Cadenas($1, $5, null ,'caracterposition', @1.first_line,@1.last_column);}
+        | EXPRESION punto substring parizq EXPRESION coma EXPRESION pardec         { $$ = new Cadenas($1, $5, $7 ,'substring', @1.first_line,@1.last_column);}
+        | EXPRESION punto length parizq pardec                                     { $$ = new Cadenas($1, null, null ,'length', @1.first_line,@1.last_column);}
+        | EXPRESION punto touppercase parizq pardec                                { $$ = new Cadenas($1, null, null ,'touppercase', @1.first_line,@1.last_column);}
+        | EXPRESION punto tolowercase parizq pardec                                { $$ = new Cadenas($1, null, null ,'tolowercase', @1.first_line,@1.last_column);}
         ;
 
 NATIVAS : pow parizq EXPRESION coma EXPRESION pardec         { $$ = new Nativa($3, $5, false ,'pow', @1.first_line,@1.last_column);}
@@ -320,6 +328,23 @@ SENTENCIA_IF: if parizq EXPRESION pardec llaveizq INSTRUCCIONES llavedec        
         | if parizq EXPRESION pardec llaveizq INSTRUCCIONES llavedec else llaveizq INSTRUCCIONES llavedec      { $$ = new If( $3, $6, $10, @1.first_line, @1.last_column ); }
         | if parizq EXPRESION pardec llaveizq INSTRUCCIONES llavedec else SENTENCIA_IF                      { $$ = new If( $3, $6, [$9], @1.first_line, @1.last_column ); }
         ;
+
+SENTENCIA_SWITCH : switch parizq EXPRESION pardec llaveizq LISTACASE SENTENCIA_DEFAULT llavedec          { $$ = new Switch($3,$6,$7,@1.first_line,@1.last_column);}
+                 | switch parizq EXPRESION pardec llaveizq LISTACASE llavedec                            { $$ = new Switch($3,$6,null,@1.first_line,@1.last_column); }
+                 ;
+
+LISTACASE : LISTACASE SENTENCIA_CASE                                        { $1.push($2); $$ = $1; }
+          | SENTENCIA_CASE                                                  { $$ = [$1]; }
+          ;
+
+SENTENCIA_CASE : case EXPRESION dspuntos INSTRUCCIONES                      {$$ = new Case($2,$4,@1.first_line,@1.last_column); }
+               ;
+
+SENTENCIA_DEFAULT : default dspuntos INSTRUCCIONES                          { $$ =new Default($3,@1.first_line,@1.last_column);}
+                  ;
+
+SENTENCIA_BREAK : break                                             {$$ = new Break(); }
+                ;
 
 
 %%

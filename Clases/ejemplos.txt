@@ -45,14 +45,55 @@ void main (){
 
 void main (){
   println("Pruebas de Heidy----------------");
-  println(sin(134));
-  println(log10(100));
-  println(cos(134));
-  println(tan(12));
-  println(sqrt(16));
-  println(pow(3,2));
+  animal = "Tigre";
+  println(animal.caracterOfPosition(2)); //g
+  println(animal.subString(2,4)); //gre
+  println(animal.length()); //5
+  println(animal.toUppercase()); //TIGRE
+  println(animal.toLowercase()); //tigre
 
-  int edad = 20;
-    print("Valor edad declarado 20 = ");
-    println(edad);
+  int valor1 = 10;
+  int valor2 = 20;
+  char operador = '-';
+
+    switch(operador) {
+        case '+':
+            println(valor1+valor2);
+            break;
+        case '-':
+            println(valor1-valor2);
+            break;
+        case '*':
+            println(valor1*valor2);
+            break;
+        case '/':
+            println(valor1/valor2);
+            break;
+        default:
+            println(0);
+    } 
+
+}
+
+void main(){
+  int valor1 = 10;
+  int valor2 = 20;
+  char operador = '-';
+
+    switch(operador) {
+        case '+':
+            println(valor1+valor2);
+            break;
+        case '-':
+            println(valor1-valor2);
+            break;
+        case '*':
+            println(valor1*valor2);
+            break;
+        case '/':
+            println(valor1/valor2);
+            break;
+        default:
+            println(0);
+    } 
 }

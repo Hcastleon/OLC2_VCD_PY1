@@ -62,7 +62,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             //Segundo BOOLEAN
@@ -73,7 +73,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico -> No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           }
         } else if (typeof valor_exp1 == "string") {
           if (valor_exp1.length == 1) {
@@ -96,7 +96,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               }
             } else if (typeof valor_exp2 == "boolean") {
               // Segundo BOOLEAN
@@ -107,7 +107,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else {
             //Primero String
@@ -126,7 +126,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               } else {
                 // Segundo Numero String
                 let num_ascii2 = this.codigoAscii(valor_exp2);
@@ -141,7 +141,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           }
         } else if (typeof valor_exp1 == "boolean") {
@@ -159,7 +159,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           } else if (typeof valor_exp2 == "string") {
             // Segundo numero String, Char
             if (valor_exp2.length == 1) {
@@ -171,7 +171,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             } else {
               // Segundo Numero String
               let error = new Errores(
@@ -181,7 +181,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             // Segundo BOOLEAN
@@ -213,7 +213,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             //Segundo BOOLEAN
@@ -224,7 +224,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           }
         } else if (typeof valor_exp1 == "string") {
           if (valor_exp1.length == 1) {
@@ -247,7 +247,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               }
             } else if (typeof valor_exp2 == "boolean") {
               // Segundo BOOLEAN
@@ -258,7 +258,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else {
             //Primero String
@@ -277,7 +277,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               } else {
                 // Segundo Numero String
                 let num_ascii2 = this.codigoAscii(valor_exp2);
@@ -292,7 +292,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           }
         } else if (typeof valor_exp1 == "boolean") {
@@ -310,7 +310,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           } else if (typeof valor_exp2 == "string") {
             // Segundo numero String, Char
             if (valor_exp2.length == 1) {
@@ -322,7 +322,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             } else {
               // Segundo Numero String
               let error = new Errores(
@@ -332,7 +332,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} > ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             // Segundo BOOLEAN
@@ -365,7 +365,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             //Segundo BOOLEAN
@@ -376,7 +376,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           }
         } else if (typeof valor_exp1 == "string") {
           if (valor_exp1.length == 1) {
@@ -399,7 +399,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               }
             } else if (typeof valor_exp2 == "boolean") {
               // Segundo BOOLEAN
@@ -410,7 +410,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else {
             //Primero String
@@ -429,7 +429,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               } else {
                 // Segundo Numero String
                 let num_ascii2 = this.codigoAscii(valor_exp2);
@@ -444,7 +444,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           }
         } else if (typeof valor_exp1 == "boolean") {
@@ -462,7 +462,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           } else if (typeof valor_exp2 == "string") {
             // Segundo numero String, Char
             if (valor_exp2.length == 1) {
@@ -474,7 +474,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             } else {
               // Segundo Numero String
               let error = new Errores(
@@ -484,7 +484,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} <= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             // Segundo BOOLEAN
@@ -516,7 +516,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             //Segundo BOOLEAN
@@ -527,7 +527,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           }
         } else if (typeof valor_exp1 == "string") {
           if (valor_exp1.length == 1) {
@@ -550,7 +550,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               }
             } else if (typeof valor_exp2 == "boolean") {
               // Segundo BOOLEAN
@@ -561,7 +561,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else {
             //Primero String
@@ -580,7 +580,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               } else {
                 // Segundo Numero String
                 let num_ascii2 = this.codigoAscii(valor_exp2);
@@ -595,7 +595,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           }
         } else if (typeof valor_exp1 == "boolean") {
@@ -613,7 +613,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           } else if (typeof valor_exp2 == "string") {
             // Segundo numero String, Char
             if (valor_exp2.length == 1) {
@@ -625,7 +625,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             } else {
               // Segundo Numero String
               let error = new Errores(
@@ -635,7 +635,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} >= ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             // Segundo BOOLEAN
@@ -667,7 +667,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             //Segundo BOOLEAN
@@ -678,7 +678,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           }
         } else if (typeof valor_exp1 == "string") {
           if (valor_exp1.length == 1) {
@@ -701,7 +701,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               }
             } else if (typeof valor_exp2 == "boolean") {
               // Segundo BOOLEAN
@@ -712,7 +712,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else {
             //Primero String
@@ -731,7 +731,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               } else {
                 // Segundo Numero String
                 let num_ascii2 = this.codigoAscii(valor_exp2);
@@ -746,7 +746,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           }
         } else if (typeof valor_exp1 == "boolean") {
@@ -764,7 +764,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           } else if (typeof valor_exp2 == "string") {
             // Segundo numero String, Char
             if (valor_exp2.length == 1) {
@@ -776,7 +776,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             } else {
               // Segundo Numero String
               let error = new Errores(
@@ -786,7 +786,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} == ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             // Segundo BOOLEAN
@@ -818,7 +818,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             //Segundo BOOLEAN
@@ -829,7 +829,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           }
         } else if (typeof valor_exp1 == "string") {
           if (valor_exp1.length == 1) {
@@ -852,7 +852,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               }
             } else if (typeof valor_exp2 == "boolean") {
               // Segundo BOOLEAN
@@ -863,7 +863,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else {
             //Primero String
@@ -882,7 +882,7 @@ export class Relacionales extends Operacion implements Expresion {
                   this.column
                 );
                 controlador.errores.push(error);
-                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+                return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
               } else {
                 // Segundo Numero String
                 let num_ascii2 = this.codigoAscii(valor_exp2);
@@ -897,7 +897,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           }
         } else if (typeof valor_exp1 == "boolean") {
@@ -915,7 +915,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+            return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           } else if (typeof valor_exp2 == "string") {
             // Segundo numero String, Char
             if (valor_exp2.length == 1) {
@@ -927,7 +927,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             } else {
               // Segundo Numero String
               let error = new Errores(
@@ -937,7 +937,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column}`;
+              return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} != ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             // Segundo BOOLEAN
