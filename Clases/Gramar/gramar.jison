@@ -128,6 +128,7 @@
     const {Simbolos} = require("../TablaSimbolos/Simbolos");
     const {Tipo} = require("../TablaSimbolos/Tipo");
     const {Identificador} = require("../Expresiones/Identificador");
+    const {If} = require("../Instrucciones/Control/If");
 %}
 
 
@@ -206,6 +207,7 @@ INSTRUCCIONES : INSTRUCCIONES INSTRUCCION           { $1.push($2); $$ = $1;  }
 INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
             | ASIGNACION_BLOQUE ptcoma              { $$ = $1; }
             | PRINT_BLOQUE ptcoma                   { $$ = $1; }
+            | SENTENCIA_IF                          { $$ = $1; }
             ;
 
 /*
@@ -314,23 +316,10 @@ ASIGNACION_BLOQUE : id igual EXPRESION                                     {$$ =
                   | EXPRESION punto id igual EXPRESION                     {$$ = []; console.log("asignacion valor de instancia"); }
                   ;
 
-IF_SUP : IF_SENTENCE                                           { $$ = []; $$.push($1); $$ = new If_Superior($$); }
-       | IF_SENTENCE ELSEIF_SUP                                { $$ = []; $$.push($1); $$ = $$.concat($2); $$ = new If_Superior($$); }
-       | IF_SENTENCE ELSEIF_SUP ELSE_SENTENCE                  { $$ = []; $$.push($1); $$ = $$.concat($2); $$.push($3); $$ = new If_Superior($$); }
-       | IF_SENTENCE ELSE_SENTENCE                             { $$ = []; $$.push($1); $$.push($2); $$ = new If_Superior($$); }
-       ;
-
-IF_SENTENCE : if EXPRESION llaveizq INSTRUCCIONES llavedec                  { $$ = new If($2,$4,@1.first_line,@1.first_column); }
-            ;
-
-ELSEIF_SUP : ELSEIF_SUP ELSEIF_SENTENCE                             { $$ = $1; $$.push($2); }
-           | ELSEIF_SENTENCE                                        { $$ = []; $$.push($1); }
-           ;
+SENTENCIA_IF: if parizq EXPRESION pardec llaveizq INSTRUCCIONES llavedec                                      { $$ = new If( $3, $6, [], @1.first_line, @1.last_column ); }
+        | if parizq EXPRESION pardec llaveizq INSTRUCCIONES llavedec else llaveizq INSTRUCCIONES llavedec      { $$ = new If( $3, $6, $10, @1.first_line, @1.last_column ); }
+        | if parizq EXPRESION pardec llaveizq INSTRUCCIONES llavedec else SENTENCIA_IF                      { $$ = new If( $3, $6, [$9], @1.first_line, @1.last_column ); }
+        ;
 
 
-ELSEIF_SENTENCE : else if EXPRESION llaveizq INSTRUCCIONES llavedec         { $$ = new If($3,$5,@1.first_line,@1.first_column); }
-                ;
-
-ELSE_SENTENCE : else llaveizq INSTRUCCIONES llavedec                      { $$ = new If(null,$3,@1.first_line,@1.first_column); }
-              ;
 %%
