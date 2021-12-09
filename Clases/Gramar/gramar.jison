@@ -134,7 +134,9 @@
     const {Case} = require("../Instrucciones/Control/Case");
     const {Default} = require("../Instrucciones/Control/Default");
     const {Break} = require("../Instrucciones/Transferencia/Break");
-    
+    const {Ternario} = require("../Expresiones/Ternario");
+    const {For} = require("../Instrucciones/Ciclica/For");
+    const {While} = require("../Instrucciones/Ciclica/While");
 %}
 
 
@@ -215,7 +217,10 @@ INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
             | PRINT_BLOQUE ptcoma                   { $$ = $1; }
             | SENTENCIA_IF                          { $$ = $1; }
             | SENTENCIA_SWITCH                      { $$ = $1; }
-            | SENTENCIA_BREAK ptcoma                { $$ = $1; }    
+            | SENTENCIA_FOR                         { $$ = $1; }
+            | SENTENCIA_WHILE                       { $$ = $1; }
+            | SENTENCIA_BREAK ptcoma                { $$ = $1; }
+            | UNARIA ptcoma                         { $$ = $1; }
             ;
 
 /*
@@ -243,6 +248,7 @@ EXPRESION : ARITMETICA                                          { $$ = $1; }
           | id corizq EXPRESION cordec                          { $$ = $1; }
           | punto id                                            { $$ = $1; }
           | punto id corizq EXPRESION cordec                    { $$ = $1; }
+          | SENTENCIA_TERNARIO                                  { $$ = $1; }
           ;
 
 LISTEXPRESIONES: LISTEXPRESIONES coma EXPRESION                 { $$ = $1; $$.push($3); }
@@ -288,11 +294,11 @@ LOGICA : EXPRESION or EXPRESION                                 { $$ = new Logic
        |           negacion EXPRESION                           { $$ = new Logicas($2, null, true , '!',@1.first_line, @1.last_column); }
        |           menos EXPRESION %prec UMENOS                 { $$ = new Aritmetica($2, null, true , 'UNARIO',@1.first_line, @1.last_column); }
        ;
-
-UNARIA : incremento EXPRESION                                   { $$ = $1; console.log("unaria"); }
-       | decremento EXPRESION                                   { $$ = $1; console.log("unaria"); }
-       | EXPRESION incremento                                   { $$ = $1; console.log("unaria"); }
-       | EXPRESION decremento                                   { $$ = $1; console.log("unaria"); }
+                                                                
+UNARIA : incremento id                                   { $$ = new Asignacion($2, new Aritmetica(new Identificador($2, @1.first_line, @1.last_column),new Primitivo(1, @1.first_line, @1.last_column),false, '+',  @1.first_line, @1.last_column),@1.first_line, @1.last_column);} 
+       | decremento id                                   { $$ = new Asignacion($2, new Aritmetica(new Identificador($2, @1.first_line, @1.last_column),new Primitivo(1, @1.first_line, @1.last_column),false, '-',  @1.first_line, @1.last_column),@1.first_line, @1.last_column);} 
+       | id incremento                                   { $$ = new Asignacion($1, new Aritmetica(new Identificador($1, @1.first_line, @1.last_column),new Primitivo(1, @1.first_line, @1.last_column),false, '+',  @1.first_line, @1.last_column),@1.first_line, @1.last_column);} 
+       | id decremento                                   { $$ = new Asignacion($1, new Aritmetica(new Identificador($1, @1.first_line, @1.last_column),new Primitivo(1, @1.first_line, @1.last_column),false, '-',  @1.first_line, @1.last_column),@1.first_line, @1.last_column);} 
        ;
 
 TERNARIO : parizq EXPRESION pardec ternario EXPRESION dspuntos EXPRESION  { $$ = $1; console.log("ternario"); }
@@ -343,8 +349,17 @@ SENTENCIA_CASE : case EXPRESION dspuntos INSTRUCCIONES                      {$$ 
 SENTENCIA_DEFAULT : default dspuntos INSTRUCCIONES                          { $$ =new Default($3,@1.first_line,@1.last_column);}
                   ;
 
-SENTENCIA_BREAK : break                                             {$$ = new Break(); }
+SENTENCIA_BREAK : break                                             { $$ = new Break(); }
                 ;
 
+SENTENCIA_TERNARIO : EXPRESION ternario EXPRESION dspuntos EXPRESION                 { $$ = new Ternario($1, $3, $5, @1.first_line, @1.last_column); }
+                ;
+
+
+SENTENCIA_FOR : for parizq DECLARACIONVARIABLE ptcoma EXPRESION ptcoma EXPRESION pardec llaveizq INSTRUCCIONES llavedec        { $$ = new For($3,$5,$7,$10,@1.first_line, @1.last_column); }
+              ;
+
+SENTENCIA_WHILE : while EXPRESION llaveizq INSTRUCCIONES llavedec                  { $$ = new While( $2, $4, @1.first_line, @1.last_column);  }
+                ;
 
 %%

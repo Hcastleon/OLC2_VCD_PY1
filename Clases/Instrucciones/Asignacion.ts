@@ -21,11 +21,12 @@ export class Asignacion implements Instruccion {
 
 
     ejecutar(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
+
         if (ts.existe(this.identificador)) {
             let valor = this.valor.getValor(controlador, ts,ts_u);
 
             ts.getSimbolo(this.identificador)?.setValor(valor);
-        } else {
+        }else {
             let error = new Errores('Semantico', `La variable ${this.valor.getValor(controlador, ts,ts_u)}, no existe en el entorno`, this.linea, this.column);
             controlador.errores.push(error)
             controlador.append(`La variable ${this.valor.getValor(controlador, ts,ts_u)}, no existe en el entorno nn la linea ${this.linea}, y columna ${this.column}`)

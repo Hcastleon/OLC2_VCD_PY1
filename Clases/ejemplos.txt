@@ -1,5 +1,13 @@
-void main (){
-  
+
+
+void main(){
+    println("Probando Manejo de Entornos");
+    println("El valor de var1 global es $a");  //10
+
+    int var1 = 10;
+    int var2 = 20;
+    println("El valor de var1 local es $a");  //25
+
     println("Probando expresiones Arítmeticas");
     println(-25*(69-33*2)+22-32*2-33*(-48+48));   // -117
     println(-93.555+92.12-81.33+19+26-68+-7/(79+11)/86);    // -105.765
@@ -12,35 +20,32 @@ void main (){
     println(56 < 48 && 68 >=12 && 62 != 96);    // false
     println((21.0==20.5||95>=94)&&((19<39&&83<=96)||35<97));    // true
     println((68==33||(2<95&&17==37))&&63<=9||12<=42||25==1);    // true
-  
-  println("Pruebas de Heidy----------------");
-  println(3.1-'U');
-  println('U'-3.1);
-  println('U'-'U');
 
-
-  int a,b,c,d;
-    print("Valor default variable 0 = ");
-    println(a);
-    int edad = 20;
-    print("Valor edad declarado 20 = ");
-    println(edad);
-    print("Valor edad asignado 30 = ");
-    edad = 30;
-    println(edad);
-    println(1);
-    println(true);
-    println("hola mundo");
-    
-
-    if(edad==20){
-        int edad = 25;
-        print("Valor edad declarado 25 = ");
-        println(edad);
-        print("Valor edad asignado 45 = ");
-        edad = 45;
-        println(edad);
+    println("Probando expresiones Arítmeticas, Booleanas y Lógicas");
+    if ((true == true && false != false) || true == false){
+        println("No entra acá");
     }
+    else{
+        println("Entra acá");
+    }
+
+    if (1 == (1 + 1 - (1 * 2 / 2)) && 20.5 == 20.5){
+        println("Entra acá");
+    }
+    else{
+        println("No entra acá");
+    }
+
+    if ("Hola" == "Mundo"){
+        println("No entra acá");
+    }
+    else{
+        println("Entra acá");
+    }
+
+    int edad = 62;
+    String respuesta = edad < 50 ? "Puede vacunarse" :   edad ==60  ? "Puede vacunarse con riesgo" :   "No puede vacunarse" ;
+    println(respuesta);  //No puede vacunarse
 }
 
 void main (){

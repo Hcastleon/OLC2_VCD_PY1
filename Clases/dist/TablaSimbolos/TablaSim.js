@@ -12,8 +12,8 @@ class TablaSim {
     existe(id) {
         let ts = this;
         while (ts != null) {
-            // let existe = ts.tabla.get(id.toLowerCase());
-            let existe = ts.tabla.get(id);
+            let existe = ts.tabla.get(id.toLowerCase());
+            // let existe = ts.tabla.get(id);
             if (existe != null) {
                 return true;
             }
