@@ -46,11 +46,18 @@ void main(){
     int edad = 62;
     String respuesta = edad < 50 ? "Puede vacunarse" :   edad ==60  ? "Puede vacunarse con riesgo" :   "No puede vacunarse" ;
     println(respuesta);  //No puede vacunarse
+
+    int i = 0;
+    do {
+    println(i);
+    i++;
+    }
+    while (i < 5);
 }
 
 void main (){
   println("Pruebas de Heidy----------------");
-  animal = "Tigre";
+  String animal = "Tigre";
   println(animal.caracterOfPosition(2)); //g
   println(animal.subString(2,4)); //gre
   println(animal.length()); //5
@@ -60,7 +67,11 @@ void main (){
   int valor1 = 10;
   int valor2 = 20;
   char operador = '-';
-
+  println(string(45.87));  // retorna "45.87"
+  println(string([1,2,3])); 
+  // retorna "[1,2,3]"
+  println(boolean.parse("1")); 
+   println(typeof(5 * 5));  // int
     switch(operador) {
         case '+':
             println(valor1+valor2);
@@ -76,7 +87,7 @@ void main (){
             break;
         default:
             println(0);
-    } 
+    }
 
 }
 

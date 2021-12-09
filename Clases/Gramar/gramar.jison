@@ -2,7 +2,7 @@
     LEXICO
 */
 %lex
-%options case-insensitive
+%options case-sensitive
 %%
 [ \r\t\n]+                                      {} // ESPACIOS
 \/\/.([^\n])*                                   {} // COMENTARIO SIMPLE
@@ -55,6 +55,8 @@
 [\'\‘\’].[\'\’\‘]                               { yytext = yytext.substr(1,yyleng-2); return 'caracter'; }
 [\"\“\”](([^\"\“\”\\])*([\\].)*)*[\"\“\”]       { yytext = yytext.substr(1,yyleng-2); return 'cadena'; }
 
+"string"                                        return 'tostring'
+
 "int"                                           return 'int'      //TIPOS
 "double"                                        return 'double'
 "char"                                          return 'char'
@@ -77,7 +79,6 @@
 "toInt"                                         return 'toint'
 "toDouble"                                      return 'todouble'
 "typeof"                                        return 'typeof'
-"string"                                        return 'typeof'
 
 "if"                                            return 'if'
 "else"                                          return 'else'
@@ -106,8 +107,8 @@
 "null"                                          return 'null'
 "struct"                                        return 'struct'
 
-"toUpperCase"                                   return 'touppercase'
-"toLowerCase"                                   return 'tolowercase'
+"toUppercase"                                   return 'touppercase'
+"toLowercase"                                   return 'tolowercase'
 
 [A-Za-z_\ñ\Ñ][A-Za-z_0-9\ñ\Ñ]*                  return 'id'
 <<EOF>>                                         return 'EOF'
@@ -137,6 +138,7 @@
     const {Ternario} = require("../Expresiones/Ternario");
     const {For} = require("../Instrucciones/Ciclica/For");
     const {While} = require("../Instrucciones/Ciclica/While");
+    const {DoWhile} = require("../Instrucciones/Ciclica/DoWhile");
 %}
 
 
@@ -182,10 +184,12 @@ CONTENIDO : CONTENIDO FUNCION_BLOQUE      { $1.push($2); $$ = $1;  }
           | FUNCION_BLOQUE                { $$ = $1; }
           ;
 
-FUNCION_BLOQUE : void id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$ = $5; }
-               | TIPO id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$ = $5; }
+FUNCION_BLOQUE : void id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$= new Funcion(3, new Tipo('VOID'), $2, $3, true, $5, @1.first_line, @1.last_column); }
+               | TIPO id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$= new Funcion(3, $1, $2, $3, false, $5, @1.first_line, @1.last_column); }
+               | id id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec     { $$ = $5; }
                | void main parizq pardec llaveizq INSTRUCCIONES llavedec        { $$ = $6; }
                ;
+
 
 PARAMETROS_SENTENCIA: parizq LISTPARAMETROS pardec                                { $$ = $2; }
                     | parizq pardec                                               { $$ = []; }
@@ -219,6 +223,7 @@ INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
             | SENTENCIA_SWITCH                      { $$ = $1; }
             | SENTENCIA_FOR                         { $$ = $1; }
             | SENTENCIA_WHILE                       { $$ = $1; }
+            | SENTENCIA_DOWHILE                     { $$ = $1; }
             | SENTENCIA_BREAK ptcoma                { $$ = $1; }
             | UNARIA ptcoma                         { $$ = $1; }
             ;
@@ -238,8 +243,8 @@ EXPRESION : ARITMETICA                                          { $$ = $1; }
           | TERNARIO                                            { $$ = $1; }
           | NATIVAS                                             { $$ = $1; }
           | NAT_CAD                                             { $$ = $1; }
+          | NAT_FUN                                             { $$ = $1; }
           //| arreglo_statement                                   { $$ = $1; }
-          | TOINT_STATEMENT                                     { $$ = $1; }
           | UNARIA                                              { $$ = $1; }
           | parizq EXPRESION pardec                             { $$ = $2; }
           | PRIMITIVO                                           { $$ = $1; }
@@ -273,6 +278,13 @@ NAT_CAD : EXPRESION punto caracterposition parizq EXPRESION pardec              
         | EXPRESION punto tolowercase parizq pardec                                { $$ = new Cadenas($1, null, null ,'tolowercase', @1.first_line,@1.last_column);}
         ;
 
+NAT_FUN : TIPO punto parse parizq EXPRESION pardec                                 { $$ = $1; console.log("parse"); }
+        | toint parizq EXPRESION pardec                                            { $$ = $1; console.log("parse"); }
+        | todouble parizq EXPRESION pardec                                         { $$ = $1; console.log("parse"); }
+        | typeof parizq EXPRESION pardec                                           { $$ = $1; console.log("parse"); }
+        | tostring parizq EXPRESION pardec                                         { $$ = $1; console.log("parse"); }
+        ;
+
 NATIVAS : pow parizq EXPRESION coma EXPRESION pardec         { $$ = new Nativa($3, $5, false ,'pow', @1.first_line,@1.last_column);}
         | sin parizq EXPRESION pardec                        { $$ = new Nativa($3, null, true , 'sin',@1.first_line, @1.last_column); }
         | cos parizq EXPRESION pardec                        { $$ = new Nativa($3, null, true , 'cos',@1.first_line, @1.last_column); }
@@ -294,7 +306,7 @@ LOGICA : EXPRESION or EXPRESION                                 { $$ = new Logic
        |           negacion EXPRESION                           { $$ = new Logicas($2, null, true , '!',@1.first_line, @1.last_column); }
        |           menos EXPRESION %prec UMENOS                 { $$ = new Aritmetica($2, null, true , 'UNARIO',@1.first_line, @1.last_column); }
        ;
-                                                                
+
 UNARIA : incremento id                                   { $$ = new Asignacion($2, new Aritmetica(new Identificador($2, @1.first_line, @1.last_column),new Primitivo(1, @1.first_line, @1.last_column),false, '+',  @1.first_line, @1.last_column),@1.first_line, @1.last_column);} 
        | decremento id                                   { $$ = new Asignacion($2, new Aritmetica(new Identificador($2, @1.first_line, @1.last_column),new Primitivo(1, @1.first_line, @1.last_column),false, '-',  @1.first_line, @1.last_column),@1.first_line, @1.last_column);} 
        | id incremento                                   { $$ = new Asignacion($1, new Aritmetica(new Identificador($1, @1.first_line, @1.last_column),new Primitivo(1, @1.first_line, @1.last_column),false, '+',  @1.first_line, @1.last_column),@1.first_line, @1.last_column);} 
@@ -303,10 +315,6 @@ UNARIA : incremento id                                   { $$ = new Asignacion($
 
 TERNARIO : parizq EXPRESION pardec ternario EXPRESION dspuntos EXPRESION  { $$ = $1; console.log("ternario"); }
          ;
-
-TOINT_STATEMENT : toint parizq EXPRESION pardec                                         { $$ = $1; console.log("toInt"); }
-                | todouble parizq EXPRESION pardec                                      { $$ = $1; console.log("toDouble"); }
-                ;
 
 PRIMITIVO : entero                  {$$ = new Primitivo(Number($1), @1.first_line, @1.first_column);}
           | decimal                 {$$ = new Primitivo(Number($1), @1.first_line, @1.first_column);}
@@ -361,5 +369,8 @@ SENTENCIA_FOR : for parizq DECLARACIONVARIABLE ptcoma EXPRESION ptcoma EXPRESION
 
 SENTENCIA_WHILE : while EXPRESION llaveizq INSTRUCCIONES llavedec                  { $$ = new While( $2, $4, @1.first_line, @1.last_column);  }
                 ;
+
+SENTENCIA_DOWHILE : do llaveizq INSTRUCCIONES llavedec while parizq EXPRESION pardec ptcoma           { $$ = new DoWhile($7,$3,@1.first_line,@1.first_column); }
+                  ;
 
 %%
