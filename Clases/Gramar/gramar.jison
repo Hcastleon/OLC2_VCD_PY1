@@ -139,6 +139,9 @@
     const {For} = require("../Instrucciones/Ciclica/For");
     const {While} = require("../Instrucciones/Ciclica/While");
     const {DoWhile} = require("../Instrucciones/Ciclica/DoWhile");
+    const {Funcion} = require("../Instrucciones/Funcion");
+    const {Llamada} = require("../Instrucciones/Llamada");
+    const {Return} = require("../Instrucciones/Transferencia/Return");
 %}
 
 
@@ -226,6 +229,8 @@ INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
             | SENTENCIA_DOWHILE                     { $$ = $1; }
             | SENTENCIA_BREAK ptcoma                { $$ = $1; }
             | UNARIA ptcoma                         { $$ = $1; }
+            | SENTENCIA_RETURN ptcoma               { $$ = $1; }
+            | LLAMADA ptcoma                        { $$ = $1; }
             ;
 
 /*
@@ -248,12 +253,10 @@ EXPRESION : ARITMETICA                                          { $$ = $1; }
           | UNARIA                                              { $$ = $1; }
           | parizq EXPRESION pardec                             { $$ = $2; }
           | PRIMITIVO                                           { $$ = $1; }
-          | id parizq pardec                                    { $$ = $1; }
-          | id parizq LISTEXPRESIONES pardec                    { $$ = $1; }
-          | id corizq EXPRESION cordec                          { $$ = $1; }
           | punto id                                            { $$ = $1; }
           | punto id corizq EXPRESION cordec                    { $$ = $1; }
           | SENTENCIA_TERNARIO                                  { $$ = $1; }
+          | LLAMADA                                             { $$ = $1; }
           ;
 
 LISTEXPRESIONES: LISTEXPRESIONES coma EXPRESION                 { $$ = $1; $$.push($3); }
@@ -372,5 +375,17 @@ SENTENCIA_WHILE : while EXPRESION llaveizq INSTRUCCIONES llavedec               
 
 SENTENCIA_DOWHILE : do llaveizq INSTRUCCIONES llavedec while parizq EXPRESION pardec ptcoma           { $$ = new DoWhile($7,$3,@1.first_line,@1.first_column); }
                   ;
+
+LLAMADA : id parizq pardec                                                { $$ = new Llamada($1, [], @1.first_line, @1.last_column); }
+        | id parizq LISTAEXPRESIONES pardec                               { $$ = new Llamada($1, $3, @1.first_line, @1.last_column); }
+        ;
+
+LISTAEXPRESIONES: LISTAEXPRESIONES coma EXPRESION                            { $$ = $1; $$.push($3); }
+                | EXPRESION                                                  { $$ = []; $$.push($1); }
+                ;
+
+SENTENCIA_RETURN : return EXPRESION                                             { $$ = new Return($2);}
+                 | return                                                       { $$ = new Return(null);}
+                 ;
 
 %%

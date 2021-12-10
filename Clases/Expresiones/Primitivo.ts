@@ -7,14 +7,14 @@ import { tipo } from "../TablaSimbolos/Tipo";
 
 export class Primitivo implements Expresion{
 
-    public primitvo : any;
+    public primitivo : any;
     public linea : number;
     public columna : number;
 
     constructor(primitivo: any, linea: number, columna : number){
         this.columna = columna
         this.linea = linea
-        this.primitvo = primitivo
+        this.primitivo = primitivo
     }
 
 
@@ -37,11 +37,11 @@ export class Primitivo implements Expresion{
 
     }
     getValor(controlador: Controller, ts: TablaSim,ts_u: TablaSim) {
-        return this.primitvo;
+        return this.primitivo;
     }
     recorrer(): Nodo  {
         let padre = new Nodo("Primitivo","");
-        padre.addHijo(new Nodo(this.primitvo.toString(),""));
+        padre.addHijo(new Nodo(this.primitivo.toString(),""));
         return padre
     }
 

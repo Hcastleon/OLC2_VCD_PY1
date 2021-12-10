@@ -25,6 +25,16 @@ export class Funcion extends Simbolos implements Instruccion{
 
     }
 
+        agregarSimboloFunc(controlador : Controller, ts :TablaSim, ts_u:TablaSim){
+        if(!(ts.existe(this.identificador))){
+            ts.agregar(this.identificador, this);
+            ts_u.agregar(this.identificador, this)
+
+        }else{
+            //Erro Semantico
+        }
+    }
+
     ejecutar(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
         let ts_local = new TablaSim(ts);
         let valor_type = this.tipo.stype;

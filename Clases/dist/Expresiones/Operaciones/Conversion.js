@@ -1,41 +1,31 @@
-import  {Nodo } from "../../AST/Nodo";
-import {Controller} from "../../Controller";
-import { Expresion } from "../../Interfaces/Expresion";
-import { tipo, Tipo } from "../../TablaSimbolos/Tipo";
-import  {TablaSim}  from "../../TablaSimbolos/TablaSim";
-
-export class Conversion implements Expresion{
-
-    public tipo: Tipo;
-    public expre2 : Expresion
-    public operador :  any
-    public linea : number
-    public column : number
-
-    constructor(tipo: any, expre2 : Expresion, operador : any, linea : number, column : number){
-        this.tipo = tipo
-        this.expre2 = expre2
-        this.linea = linea
-        this.column = column
-        this.operador = operador
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Conversion = void 0;
+const Nodo_1 = require("../../AST/Nodo");
+const Tipo_1 = require("../../TablaSimbolos/Tipo");
+class Conversion {
+    constructor(tipo, expre2, operador, linea, column) {
+        this.tipo = tipo;
+        this.expre2 = expre2;
+        this.linea = linea;
+        this.column = column;
+        this.operador = operador;
     }
-
-    getTipo(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
-
+    getTipo(controlador, ts, ts_u) {
     }
-    getValor(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
+    getValor(controlador, ts, ts_u) {
         let valor_expre2;
         valor_expre2 = this.expre2.getValor(controlador, ts, ts_u);
-
         switch (this.operador) {
             case 'parse':
-                if (this.tipo.tipo == tipo.DOUBLE || this.tipo.tipo == tipo.ENTERO) {
+                if (this.tipo.tipo == Tipo_1.tipo.DOUBLE || this.tipo.tipo == Tipo_1.tipo.ENTERO) {
                     if (typeof valor_expre2 === "string") {
                         return Number(valor_expre2);
                     }
-                }else if (this.tipo.tipo == tipo.BOOLEAN){
+                }
+                else if (this.tipo.tipo == Tipo_1.tipo.BOOLEAN) {
                     if (typeof valor_expre2 === "string") {
-                        if(valor_expre2.toLowerCase() == "true"){
+                        if (valor_expre2.toLowerCase() == "true") {
                             return true;
                         }
                         return false;
@@ -68,22 +58,18 @@ export class Conversion implements Expresion{
                 break;
         }
     }
-
-    recorrer(): Nodo {
-        let padre = new Nodo("Aritmetica", "");
-
+    recorrer() {
+        let padre = new Nodo_1.Nodo("Aritmetica", "");
         return padre;
     }
-
-    isInt(n: number) {
+    isInt(n) {
         return Number(n) === n && n % 1 === 0;
     }
-
-    isChar(n: string) {
+    isChar(n) {
         return n.length === 1 && n.match(/[a-zA-Z]/i);
     }
-
-    twoDecimal(numberInt: number){
+    twoDecimal(numberInt) {
         return Number((numberInt).toFixed(2));
     }
 }
+exports.Conversion = Conversion;

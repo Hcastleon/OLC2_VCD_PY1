@@ -191,6 +191,7 @@ const Ast_1 = require("./AST/Ast");
 const TablaSim_1 = require("./TablaSimbolos/TablaSim");
 const Controller_1 = require("./Controller");
 const gramatica = require("./Gramar/gramar");
+const Funcion_1 = require("./Instrucciones/Funcion");
 //import * as gramatica from "../Gramar/gramar";
 function ejecutarCodigo(entrada) {
     //traigo todas las raices
@@ -201,11 +202,15 @@ function ejecutarCodigo(entrada) {
     const ast = new Ast_1.AST(instrucciones);
     //recorro todas las raices  RECURSIVA
     /*
-      for (let element of instrucciones) {
-        element.ejecutar(controlador, entornoGlobal, entornoU);
-      }*/
-    // console.log(instrucciones);
-      
+    for (let element of instrucciones) {
+      element.ejecutar(controlador, entornoGlobal, entornoU);
+    }*/
+    instrucciones.forEach((ins) => {
+        if (ins instanceof Funcion_1.Funcion) {
+            let funcion = ins;
+            funcion.agregarSimboloFunc(controlador, entornoGlobal, entornoU);
+        }
+    });
     instrucciones.forEach((element) => {
         element.ejecutar(controlador, entornoGlobal, entornoU);
     });
