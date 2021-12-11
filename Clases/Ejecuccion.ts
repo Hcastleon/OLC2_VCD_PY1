@@ -32,5 +32,5 @@ function ejecutarCodigo(entrada: string) {
     element.ejecutar(controlador, entornoGlobal, entornoU);
   });
 
-  return controlador.consola;
+  return {salida:controlador.consola,tabla_e:controlador.graficar_tErrores()};
 }

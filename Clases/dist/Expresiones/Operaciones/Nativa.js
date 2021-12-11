@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Nativa = void 0;
+const Errores_1 = require("../../AST/Errores");
 const Nodo_1 = require("../../AST/Nodo");
 const Tipo_1 = require("../../TablaSimbolos/Tipo");
 const Operaciones_1 = require("./Operaciones");
@@ -45,31 +46,59 @@ class Nativa extends Operaciones_1.Operacion {
                     if (typeof valor_expre2 === "number") {
                         return Math.pow(valor_expre1, valor_expre2);
                     }
+                    else {
+                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        controlador.errores.push(error);
+                    }
+                }
+                else {
+                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
                 }
                 break;
             case Operaciones_1.Operador.SENO:
                 if (typeof valor_expre1 === "number") {
                     return Math.sin(valor_expre1);
                 }
+                else {
+                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
+                }
                 break;
             case Operaciones_1.Operador.COSENO:
                 if (typeof valor_expre1 === "number") {
                     return Math.cos(valor_expre1);
+                }
+                else {
+                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
                 }
                 break;
             case Operaciones_1.Operador.TANGENTE:
                 if (typeof valor_expre1 === "number") {
                     return Math.tan(valor_expre1);
                 }
+                else {
+                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
+                }
                 break;
             case Operaciones_1.Operador.RAIZ:
                 if (typeof valor_expre1 === "number") {
                     return Math.sqrt(valor_expre1);
                 }
+                else {
+                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
+                }
                 break;
             case Operaciones_1.Operador.LOGARITMO:
                 if (typeof valor_expre1 === "number") {
                     return Math.log10(valor_expre1);
+                }
+                else {
+                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
                 }
                 break;
             default:

@@ -7,7 +7,7 @@ class Primitivo {
     constructor(primitivo, linea, columna) {
         this.columna = columna;
         this.linea = linea;
-        this.primitvo = primitivo;
+        this.primitivo = primitivo;
     }
     getTipo(controlador, ts, ts_u) {
         let valor = this.getValor(controlador, ts, ts_u);
@@ -28,11 +28,11 @@ class Primitivo {
         }
     }
     getValor(controlador, ts, ts_u) {
-        return this.primitvo;
+        return this.primitivo;
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("Primitivo", "");
-        padre.addHijo(new Nodo_1.Nodo(this.primitvo.toString(), ""));
+        padre.addHijo(new Nodo_1.Nodo(this.primitivo.toString(), ""));
         return padre;
     }
     isInt(n) {

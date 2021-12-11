@@ -89,6 +89,8 @@
 
 "break"                                         return 'break'
 "continue"                                      return 'continue'
+"begin"                                         return 'begin'
+"end"                                           return 'end'
 
 "while"                                         return 'while'
 "do"                                            return 'do'
@@ -122,6 +124,7 @@
     const {Println} = require("../Instrucciones/Println");
     const {Aritmetica} = require("../Expresiones/Operaciones/Aritmetica");
     const {Nativa} = require("../Expresiones/Operaciones/Nativa");
+    const {Conversion} = require("../Expresiones/Operaciones/Conversion");
     const {Cadenas} = require("../Expresiones/Operaciones/Cadenas");
     const {Relacionales} = require("../Expresiones/Operaciones/Relacionales");
     const {Logicas} = require("../Expresiones/Operaciones/Logicas");
@@ -137,6 +140,7 @@
     const {Break} = require("../Instrucciones/Transferencia/Break");
     const {Ternario} = require("../Expresiones/Ternario");
     const {For} = require("../Instrucciones/Ciclica/For");
+    const {ForEsp} = require("../Instrucciones/Ciclica/ForEsp");
     const {While} = require("../Instrucciones/Ciclica/While");
     const {DoWhile} = require("../Instrucciones/Ciclica/DoWhile");
     const {Funcion} = require("../Instrucciones/Funcion");
@@ -183,8 +187,8 @@ INICIO : CONTENIDO EOF         { $$ = $1; return $$; }
        ;
 /*  ------------------------------  CUERPO DE TRABAJO --------------------------------- */
 
-CONTENIDO : CONTENIDO FUNCION_BLOQUE      { $1.push($2); $$ = $1;  } 
-          | FUNCION_BLOQUE                { $$ = $1; }
+CONTENIDO : CONTENIDO FUNCION_BLOQUE                  { $1.push($2); $$ = $1; } 
+          | FUNCION_BLOQUE                            { $$ = $1; }
           ;
 
 FUNCION_BLOQUE : void id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$= new Funcion(3, new Tipo('VOID'), $2, $3, true, $5, @1.first_line, @1.last_column); }
@@ -202,7 +206,7 @@ LISTPARAMETROS: LISTPARAMETROS coma PARAMETRO                                  {
                | PARAMETRO                                                     { $$ = []; $$.push($1); }
                ;
 
-PARAMETRO: TIPO id                                      { $$ = $1; console.log("Parametro"); }
+PARAMETRO: TIPO id                                      { $$ = new Simbolos(6,$1, $2, null); }
          | TIPO corizq cordec id                        { $$ = $1; console.log("Parametro"); }
          | id id                                        { $$ = $1; console.log("Parametro"); }
          | id corizq cordec id                          { $$ = $1; console.log("Parametro"); }
@@ -215,7 +219,7 @@ TIPO : string                                       { $$ = new Tipo('STRING'); }
      | boolean                                      { $$ = new Tipo('BOOLEAN'); }
      ;
 
-INSTRUCCIONES : INSTRUCCIONES INSTRUCCION           { $1.push($2); $$ = $1;  } 
+INSTRUCCIONES : INSTRUCCIONES INSTRUCCION           { $1.push($2); $$ = $1; }
               | INSTRUCCION                         { $$ = [$1]; }
               ;
 
@@ -225,6 +229,7 @@ INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
             | SENTENCIA_IF                          { $$ = $1; }
             | SENTENCIA_SWITCH                      { $$ = $1; }
             | SENTENCIA_FOR                         { $$ = $1; }
+            | SENTENCIA_FOR_ESP                     { $$ = $1; }
             | SENTENCIA_WHILE                       { $$ = $1; }
             | SENTENCIA_DOWHILE                     { $$ = $1; }
             | SENTENCIA_BREAK ptcoma                { $$ = $1; }
@@ -281,11 +286,11 @@ NAT_CAD : EXPRESION punto caracterposition parizq EXPRESION pardec              
         | EXPRESION punto tolowercase parizq pardec                                { $$ = new Cadenas($1, null, null ,'tolowercase', @1.first_line,@1.last_column);}
         ;
 
-NAT_FUN : TIPO punto parse parizq EXPRESION pardec                                 { $$ = $1; console.log("parse"); }
-        | toint parizq EXPRESION pardec                                            { $$ = $1; console.log("parse"); }
-        | todouble parizq EXPRESION pardec                                         { $$ = $1; console.log("parse"); }
-        | typeof parizq EXPRESION pardec                                           { $$ = $1; console.log("parse"); }
-        | tostring parizq EXPRESION pardec                                         { $$ = $1; console.log("parse"); }
+NAT_FUN : TIPO punto parse parizq EXPRESION pardec                                 { $$ = new Conversion($1, $5,'parse', @1.first_line,@1.last_column); }
+        | toint parizq EXPRESION pardec                                            { $$ = new Conversion(null, $3,'toint', @1.first_line,@1.last_column); }
+        | todouble parizq EXPRESION pardec                                         { $$ = new Conversion(null, $3,'todouble', @1.first_line,@1.last_column); }
+        | typeof parizq EXPRESION pardec                                           { $$ = new Conversion(null, $3,'typeof', @1.first_line,@1.last_column); }
+        | tostring parizq EXPRESION pardec                                         { $$ = new Conversion(null, $3,'tostring', @1.first_line,@1.last_column); }
         ;
 
 NATIVAS : pow parizq EXPRESION coma EXPRESION pardec         { $$ = new Nativa($3, $5, false ,'pow', @1.first_line,@1.last_column);}
@@ -369,6 +374,9 @@ SENTENCIA_TERNARIO : EXPRESION ternario EXPRESION dspuntos EXPRESION            
 
 SENTENCIA_FOR : for parizq DECLARACIONVARIABLE ptcoma EXPRESION ptcoma EXPRESION pardec llaveizq INSTRUCCIONES llavedec        { $$ = new For($3,$5,$7,$10,@1.first_line, @1.last_column); }
               ;
+
+SENTENCIA_FOR_ESP : for id in EXPRESION llaveizq INSTRUCCIONES llavedec        { $$ = new ForEsp(new Simbolos(1,null, $2, null),$4,$6,@1.first_line, @1.last_column); }
+                  ;
 
 SENTENCIA_WHILE : while EXPRESION llaveizq INSTRUCCIONES llavedec                  { $$ = new While( $2, $4, @1.first_line, @1.last_column);  }
                 ;

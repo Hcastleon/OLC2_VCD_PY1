@@ -56,6 +56,7 @@ export class Funcion extends Simbolos implements Instruccion{
                 }
                 if (ins instanceof Return) {
                     return result;
+                    console.log("BUEAN");
                 }
                 if (tipo_aux == 'VOID') {
                     return
@@ -70,6 +71,7 @@ export class Funcion extends Simbolos implements Instruccion{
                 }
             }
         }
+        
     }
 
     recorrer(): Nodo {

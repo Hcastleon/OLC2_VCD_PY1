@@ -184,7 +184,9 @@ document.getElementById("prueba").onclick = function() {ej()};
 
 
 function ej(){
-  document.getElementById(`textOutput-Blank`).value = ejecutarCodigo(TabActual.editor.getValue());
+  let ejecucion = ejecutarCodigo(TabActual.editor.getValue());
+  document.getElementById(`textOutput-Blank`).value = ejecucion.salida;
+  document.getElementById(`tabla_e-Blank`).innerHTML = ejecucion.tabla_e;
 }
 
 const Ast_1 = require("./AST/Ast");
@@ -214,5 +216,5 @@ function ejecutarCodigo(entrada) {
     instrucciones.forEach((element) => {
         element.ejecutar(controlador, entornoGlobal, entornoU);
     });
-    return controlador.consola;
+    return {salida:controlador.consola,tabla_e:controlador.graficar_tErrores()};
 }

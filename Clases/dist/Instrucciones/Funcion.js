@@ -44,6 +44,7 @@ class Funcion extends Simbolos_1.Simbolos {
                 }
                 if (ins instanceof Return_1.Return) {
                     return result;
+                    console.log("BUEAN");
                 }
                 if (tipo_aux == 'VOID') {
                     return;

@@ -54,32 +54,53 @@ export class Nativa extends Operacion implements Expresion {
                 if (typeof valor_expre1 === "number") {
                     if (typeof valor_expre2 === "number") {
                         return Math.pow(valor_expre1, valor_expre2);
+                    }else{
+                        let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        controlador.errores.push(error);
                     }
+                }else{
+                    let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
                 }
                 break;
             case Operador.SENO:
                 if (typeof valor_expre1 === "number") {
                     return Math.sin(valor_expre1);
+                }else{
+                    let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
                 }
                 break;
             case Operador.COSENO:
                 if (typeof valor_expre1 === "number") {
                     return Math.cos(valor_expre1);
+                }else{
+                    let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
                 }
                 break;
             case Operador.TANGENTE:
                 if (typeof valor_expre1 === "number") {
                     return Math.tan(valor_expre1);
+                }else{
+                    let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
                 }
                 break;
             case Operador.RAIZ:
                 if (typeof valor_expre1 === "number") {
                     return Math.sqrt(valor_expre1);
+                }else{
+                    let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
                 }
                 break;
             case Operador.LOGARITMO:
                 if (typeof valor_expre1 === "number") {
                     return Math.log10(valor_expre1);
+                }else{
+                    let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    controlador.errores.push(error);
                 }
                 break;
             default:

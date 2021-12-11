@@ -35,25 +35,23 @@ class Conversion {
             case 'toint':
                 if (typeof valor_expre2 === "number") {
                     if (!(this.isInt(Number(valor_expre2)))) {
-                        return Math.round(valor_expre2);
+                        return Math.ceil(valor_expre2);
                     }
                 }
                 break;
-            /*case 'todouble':
-                if (typeof valor_expre1 === "string") {
-                    return valor_expre1.length;
+            case 'todouble':
+                if (typeof valor_expre2 === "number") {
+                    return this.twoDecimal(valor_expre2);
                 }
                 break;
             case 'typeof':
-                if (typeof valor_expre1 === "string") {
-                    return valor_expre1.toUpperCase();
-                }
+                return typeof (valor_expre2);
                 break;
             case 'tostring':
-                if (typeof valor_expre1 === "string") {
-                    return valor_expre1.toLowerCase();
+                if (!(typeof valor_expre2 === null)) {
+                    return String(valor_expre2);
                 }
-                break;*/
+                break;
             default:
                 break;
         }
@@ -69,7 +67,7 @@ class Conversion {
         return n.length === 1 && n.match(/[a-zA-Z]/i);
     }
     twoDecimal(numberInt) {
-        return Number((numberInt).toFixed(2));
+        return Number.parseFloat(numberInt.toFixed(4));
     }
 }
 exports.Conversion = Conversion;

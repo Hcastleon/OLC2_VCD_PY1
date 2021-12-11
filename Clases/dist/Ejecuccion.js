@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Ast_1 = require("./AST/Ast");
 const TablaSim_1 = require("./TablaSimbolos/TablaSim");
 const Controller_1 = require("./Controller");
-const Funcion = require("./Instrucciones/Funcion");
+const Funcion_1 = require("./Instrucciones/Funcion");
 const gramatica = require("./Gramar/gramar");
 //import * as gramatica from "../Gramar/gramar";
 function ejecutarCodigo(entrada) {
@@ -19,7 +19,7 @@ function ejecutarCodigo(entrada) {
       element.ejecutar(controlador, entornoGlobal, entornoU);
     }*/
     instrucciones.forEach((ins) => {
-        if (ins instanceof Funcion) {
+        if (ins instanceof Funcion_1.Funcion) {
             let funcion = ins;
             funcion.agregarSimboloFunc(controlador, entornoGlobal, entornoU);
         }
@@ -27,5 +27,5 @@ function ejecutarCodigo(entrada) {
     instrucciones.forEach((element) => {
         element.ejecutar(controlador, entornoGlobal, entornoU);
     });
-    return controlador.consola;
+    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores() };
 }

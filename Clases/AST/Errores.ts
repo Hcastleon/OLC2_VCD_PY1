@@ -4,11 +4,10 @@ export class Errores{
     public linea : number;
     public column: number;
 
-    constructor(tipo : string, descripcion: string, linea: number, column: number){
+    constructor(tipo : string, descripcion: string,linea: number, column: number){
         this.tipo = tipo;
         this.descripcion = descripcion;
         this.linea = linea;
         this.column = column;
     }
-    
 }

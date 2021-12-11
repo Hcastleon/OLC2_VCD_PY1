@@ -58,7 +58,13 @@ export class Aritmetica extends Operacion implements Expresion {
           } else if (typeof valor_expre2 === "string") {
             if (this.isChar(String(valor_expre2))) {
               return valor_expre1 + valor_expre2.charCodeAt(0);
+            } else {
+              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              controlador.errores.push(error);
             }
+          } else {
+            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "string") {
           if (this.isChar(String(valor_expre1))) {
@@ -67,14 +73,22 @@ export class Aritmetica extends Operacion implements Expresion {
             } else if (typeof valor_expre2 === "string") {
               if (this.isChar(String(valor_expre2))) {
                 return valor_expre1.charCodeAt(0) + valor_expre2.charCodeAt(0);
+              } else {
+                let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                controlador.errores.push(error);
               }
+            } else {
+              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              controlador.errores.push(error);
             }
           } else {
-            if (typeof valor_expre2 === "number") {
-              return valor_expre1 + valor_expre2.toString();
-            }
+            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
-        }// ;D
+        } else {
+          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          controlador.errores.push(error);
+        }
         break;
       case Operador.RESTA:
         if (typeof valor_expre1 === "number") {
@@ -83,7 +97,13 @@ export class Aritmetica extends Operacion implements Expresion {
           } else if (typeof valor_expre2 === "string") {
             if (this.isChar(String(valor_expre2))) {
               return valor_expre1 - valor_expre2.charCodeAt(0);
+            } else {
+              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              controlador.errores.push(error);
             }
+          } else {
+            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "string") {
           if (this.isChar(String(valor_expre1))) {
@@ -92,9 +112,21 @@ export class Aritmetica extends Operacion implements Expresion {
             } else if (typeof valor_expre2 === "string") {
               if (this.isChar(String(valor_expre2))) {
                 return valor_expre1.charCodeAt(0) - valor_expre2.charCodeAt(0);
+              } else {
+                let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                controlador.errores.push(error);
               }
+            } else {
+              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              controlador.errores.push(error);
             }
+          } else {
+            let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
+        } else {
+          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          controlador.errores.push(error);
         }
         break;
       case Operador.MULT:
@@ -104,7 +136,13 @@ export class Aritmetica extends Operacion implements Expresion {
           } else if (typeof valor_expre2 === "string") {
             if (this.isChar(String(valor_expre2))) {
               return valor_expre1 * valor_expre2.charCodeAt(0);
+            } else {
+              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              controlador.errores.push(error);
             }
+          } else {
+            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "string") {
           if (this.isChar(String(valor_expre1))) {
@@ -113,9 +151,21 @@ export class Aritmetica extends Operacion implements Expresion {
             } else if (typeof valor_expre2 === "string") {
               if (this.isChar(String(valor_expre2))) {
                 return valor_expre1.charCodeAt(0) * valor_expre2.charCodeAt(0);
+              } else {
+                let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                controlador.errores.push(error);
               }
+            } else {
+              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              controlador.errores.push(error);
             }
+          } else {
+            let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
+        } else {
+          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          controlador.errores.push(error);
         }
         break;
       case Operador.DIV:
@@ -125,7 +175,13 @@ export class Aritmetica extends Operacion implements Expresion {
           } else if (typeof valor_expre2 === "string") {
             if (this.isChar(String(valor_expre2))) {
               return valor_expre1 / valor_expre2.charCodeAt(0);
+            } else {
+              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              controlador.errores.push(error);
             }
+          } else {
+            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "string") {
           if (this.isChar(String(valor_expre1))) {
@@ -134,9 +190,21 @@ export class Aritmetica extends Operacion implements Expresion {
             } else if (typeof valor_expre2 === "string") {
               if (this.isChar(String(valor_expre2))) {
                 return valor_expre1.charCodeAt(0) / valor_expre2.charCodeAt(0);
+              } else {
+                let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                controlador.errores.push(error);
               }
+            } else {
+              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              controlador.errores.push(error);
             }
+          } else {
+            let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
+        } else {
+          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          controlador.errores.push(error);
         }
         break;
       case Operador.MODULO:
@@ -146,7 +214,13 @@ export class Aritmetica extends Operacion implements Expresion {
           } else if (typeof valor_expre2 === "string") {
             if (this.isChar(String(valor_expre2))) {
               return valor_expre1 % valor_expre2.charCodeAt(0);
+            } else {
+              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              controlador.errores.push(error);
             }
+          } else {
+            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "string") {
           if (this.isChar(String(valor_expre1))) {
@@ -155,14 +229,29 @@ export class Aritmetica extends Operacion implements Expresion {
             } else if (typeof valor_expre2 === "string") {
               if (this.isChar(String(valor_expre2))) {
                 return valor_expre1.charCodeAt(0) % valor_expre2.charCodeAt(0);
+              } else {
+                let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                controlador.errores.push(error);
               }
+            } else {
+              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              controlador.errores.push(error);
             }
+          } else {
+            let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
+        } else {
+          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          controlador.errores.push(error);
         }
         break;
       case Operador.UNARIO:
         if (typeof valor_U === "number") {
           return -valor_U;
+        }else{
+          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          controlador.errores.push(error);
         }
         break;
       case Operador.CONCATENAR:
@@ -173,15 +262,27 @@ export class Aritmetica extends Operacion implements Expresion {
             return valor_expre1 + valor_expre2.toString();
           } else if (typeof valor_expre2 === "boolean") {
             return valor_expre1 + valor_expre2.toString();
+          }else{
+            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "number") {
           if (typeof valor_expre2 === "string") {
             return valor_expre1.toString() + valor_expre2;
+          }else{
+            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "boolean") {
           if (typeof valor_expre2 === "string") {
             return valor_expre1.toString() + valor_expre2;
+          }else{
+            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
+        }else{
+          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          controlador.errores.push(error);
         }
         break;
       case Operador.REPETIR:
@@ -190,11 +291,20 @@ export class Aritmetica extends Operacion implements Expresion {
             if (this.isInt(Number(valor_expre2))) {
               var sum_concat = "";
               for (var _i = 0; _i < valor_expre2; _i++) {
-                sum_concat = sum_concat+valor_expre1;
+                sum_concat = sum_concat + valor_expre1;
               }
               return sum_concat;
+            }else{
+              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              controlador.errores.push(error);
             }
+          }else{
+            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            controlador.errores.push(error);
           }
+        }else{
+          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          controlador.errores.push(error);
         }
         break;
       default:

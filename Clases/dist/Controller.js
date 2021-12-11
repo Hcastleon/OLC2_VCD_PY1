@@ -25,15 +25,20 @@ class Controller {
         return cuerpohtml;
     }
     graficar_tErrores() {
-        var cuerpohtml = "<thead><tr><th>Tipo</th><th>Descripcion</th><th>Linea</th><th>Columna</th></thead>";
+        var cuerpotabla = "";
+        var contador = 0;
         for (let error of this.errores) {
-            cuerpohtml += "<tr ><th >" + error.tipo + "</th><td>" + error.descripcion +
-                "</td><td>" + error.linea + "</td>" +
-                "</td><td>" + error.column +
-                "</td> </tr>";
+            contador += 1;
+            cuerpotabla += `<tr>
+                            <th scope="row">${contador}</th>
+                            <td>${error.tipo}</td>
+                            <td>${error.linea}</td>
+                            <td>${error.column}</td>
+                            <td>${error.descripcion}</td>
+                            <td>Global</td>
+                           </tr>`;
         }
-        cuerpohtml = '<table class=\"ui selectable inverted table\">' + cuerpohtml + '</table>';
-        return cuerpohtml;
+        return cuerpotabla;
     }
     getValor(sim) {
         if (sim.valor != null) {
