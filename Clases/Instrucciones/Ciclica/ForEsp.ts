@@ -45,7 +45,8 @@ export class ForEsp implements Instruccion {
       let tamno = valor_condi.length;
       let contador = 0;
       siguiente: while (contador < tamno) {
-        let ts_local = new TablaSim(ts);
+        let ts_local = new TablaSim(ts, "ForIn");
+        ts.setSiguiente(ts_local);
         for (let ins of this.lista_ins) {
           if (ts.existe(variable.identificador)) {
             let valor = valor_condi.charAt(contador);

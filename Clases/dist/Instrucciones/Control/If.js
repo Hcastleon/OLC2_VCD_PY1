@@ -16,7 +16,8 @@ class If {
         this.columna = columna;
     }
     ejecutar(controlador, ts, ts_u) {
-        let ts_local = new TablaSim_1.TablaSim(ts);
+        let ts_local = new TablaSim_1.TablaSim(ts, "If");
+        ts.setSiguiente(ts_local);
         let valor_condi = this.condicion.getValor(controlador, ts, ts_u);
         if (this.condicion.getTipo(controlador, ts, ts_u) == Tipo_1.tipo.BOOLEAN) {
             if (valor_condi) {

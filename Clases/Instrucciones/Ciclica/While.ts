@@ -28,7 +28,8 @@ export class While implements Instruccion{
             siguiente: 
             while(this.condicion.getValor(controlador, ts,ts_u)){
 
-                let ts_local = new TablaSim(ts);
+                let ts_local = new TablaSim(ts, "While");
+                ts.setSiguiente(ts_local);
                 for(let ins of this.lista_ins){
                     let res = ins.ejecutar(controlador, ts_local,ts_u);
                     if(ins instanceof Break || res instanceof Break){

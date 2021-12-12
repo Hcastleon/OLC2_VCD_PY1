@@ -27,7 +27,8 @@ class Llamada {
     }
     ejecutar(controlador, ts, ts_u) {
         if (ts.existe(this.identificador)) {
-            let ts_local = new TablaSim_1.TablaSim(ts);
+            let ts_local = new TablaSim_1.TablaSim(ts, this.identificador);
+            ts.setSiguiente(ts_local);
             let sim_func = ts.getSimbolo(this.identificador);
             if (this.verificarParams(this.parametros, sim_func.lista_params, controlador, ts, ts_local, ts_u)) {
                 let r = sim_func === null || sim_func === void 0 ? void 0 : sim_func.ejecutar(controlador, ts_local, ts_u);

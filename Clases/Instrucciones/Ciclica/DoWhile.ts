@@ -26,7 +26,8 @@ export class DoWhile implements Instruccion{
         let valor_condicion = this.condicion.getValor(controlador, ts, ts_u);
         if (typeof valor_condicion == 'boolean') {
 
-            let ts_local = new TablaSim(ts);
+            let ts_local = new TablaSim(ts, "DoWhile");
+            ts.setSiguiente(ts_local);
             for (let ins of this.lista_ins) {
                 let res = ins.ejecutar(controlador, ts_local, ts_u);
                 if (ins instanceof Break || res instanceof Break) {

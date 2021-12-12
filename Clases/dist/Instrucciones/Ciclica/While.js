@@ -17,7 +17,8 @@ class While {
         let valor_condi = this.condicion.getValor(controlador, ts, ts_u);
         if (typeof valor_condi == 'boolean') {
             siguiente: while (this.condicion.getValor(controlador, ts, ts_u)) {
-                let ts_local = new TablaSim_1.TablaSim(ts);
+                let ts_local = new TablaSim_1.TablaSim(ts, "While");
+                ts.setSiguiente(ts_local);
                 for (let ins of this.lista_ins) {
                     let res = ins.ejecutar(controlador, ts_local, ts_u);
                     if (ins instanceof Break_1.Break || res instanceof Break_1.Break) {

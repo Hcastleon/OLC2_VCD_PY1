@@ -35,7 +35,8 @@ export class Llamada implements Instruccion, Expresion {
 
   ejecutar(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     if (ts.existe(this.identificador)) {
-      let ts_local = new TablaSim(ts);
+      let ts_local = new TablaSim(ts, this.identificador);
+      ts.setSiguiente(ts_local);
       let sim_func = ts.getSimbolo(this.identificador) as Funcion;
 
       if (

@@ -14,7 +14,8 @@ class Switch {
         this.columna = c;
     }
     ejecutar(controlador, ts, ts_u) {
-        let ts_local = new TablaSim_1.TablaSim(ts);
+        let ts_local = new TablaSim_1.TablaSim(ts, "Switch");
+        ts.setSiguiente(ts_local);
         let aux = false;
         for (let ins of this.list_cases) {
             let caso = ins;

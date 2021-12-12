@@ -2,12 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TablaSim = void 0;
 class TablaSim {
-    constructor(ant) {
+    constructor(ant, nombre) {
         this.ant = ant;
+        this.sig = [];
         this.tabla = new Map();
+        this.nombre = nombre;
     }
     agregar(id, simbolo) {
         this.tabla.set(id.toLowerCase(), simbolo); //convertimos a minuscula ya que nuestro lenguaje es caseinsitive ej. prueba = PRUeba
+    }
+    setSiguiente(tablita) {
+        this.sig.push(tablita);
     }
     existe(id) {
         let ts = this;

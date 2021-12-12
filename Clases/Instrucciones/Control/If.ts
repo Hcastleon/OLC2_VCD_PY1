@@ -25,7 +25,8 @@ export class If implements Instruccion{
     }
 
     ejecutar(controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
-        let ts_local = new TablaSim(ts);
+        let ts_local = new TablaSim(ts, "If");
+        ts.setSiguiente(ts_local);
         let valor_condi = this.condicion.getValor(controlador, ts,ts_u);
         if(this.condicion.getTipo(controlador, ts,ts_u) == tipo.BOOLEAN){
             if(valor_condi){

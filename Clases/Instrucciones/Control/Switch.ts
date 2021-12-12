@@ -24,7 +24,8 @@ export class Switch implements Instruccion {
     }
 
     ejecutar(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
-        let ts_local = new TablaSim(ts);
+        let ts_local = new TablaSim(ts, "Switch");
+        ts.setSiguiente(ts_local);
         let aux = false;
         for (let ins of this.list_cases) {
             let caso = ins as Case

@@ -6,7 +6,8 @@ export enum tipo{
     CADENA,
     NULO,
     VOID,
-    ARRAY
+    ARRAY,
+    MAIN
 }
 
 export class Tipo{

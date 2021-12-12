@@ -36,7 +36,8 @@ export class For implements Instruccion {
     let valor_condi = this.condicion.getValor(controlador, ts, ts_u);
     if (typeof valor_condi == "boolean") {
       siguiente: while (this.condicion.getValor(controlador, ts, ts_u)) {
-        let ts_local = new TablaSim(ts);
+        let ts_local = new TablaSim(ts, "For");
+        ts.setSiguiente(ts_local);
         for (let ins of this.lista_ins) {
           let result = ins.ejecutar(controlador, ts_local, ts_u);
           if (ins instanceof Break || result instanceof Break) {

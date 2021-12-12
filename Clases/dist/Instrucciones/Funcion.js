@@ -15,7 +15,7 @@ class Funcion extends Simbolos_1.Simbolos {
         this.column = columna;
     }
     agregarSimboloFunc(controlador, ts, ts_u) {
-        if (!(ts.existe(this.identificador))) {
+        if (!ts.existe(this.identificador)) {
             ts.agregar(this.identificador, this);
             ts_u.agregar(this.identificador, this);
         }
@@ -24,17 +24,18 @@ class Funcion extends Simbolos_1.Simbolos {
         }
     }
     ejecutar(controlador, ts, ts_u) {
-        let ts_local = new TablaSim_1.TablaSim(ts);
+        let ts_local = new TablaSim_1.TablaSim(ts, this.identificador);
+        ts.setSiguiente(ts_local);
         let valor_type = this.tipo.stype;
         let tipo_aux = "";
         if (valor_type == "ENTERO" || valor_type == "DECIMAL") {
-            tipo_aux = 'number';
+            tipo_aux = "number";
         }
         else if (valor_type == "STRING" || valor_type == "CHAR") {
-            tipo_aux = 'string';
+            tipo_aux = "string";
         }
         else if (valor_type == "BOOLEAN") {
-            tipo_aux = 'boolean';
+            tipo_aux = "boolean";
         }
         for (let ins of this.lista_ints) {
             let result = ins.ejecutar(controlador, ts_local, ts_u);
@@ -44,9 +45,8 @@ class Funcion extends Simbolos_1.Simbolos {
                 }
                 if (ins instanceof Return_1.Return) {
                     return result;
-                    console.log("BUEAN");
                 }
-                if (tipo_aux == 'VOID') {
+                if (tipo_aux == "VOID") {
                     return;
                 }
                 else {
@@ -54,9 +54,8 @@ class Funcion extends Simbolos_1.Simbolos {
                         return result;
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', ` La variable no concuerda con el tipo`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", ` La variable no concuerda con el tipo`, this.linea, this.column);
                         controlador.errores.push(error);
-                        controlador.append(`La variable no concuerda con el tipo, En la linea ${this.linea}, y columna ${this.column}`);
                     }
                 }
             }

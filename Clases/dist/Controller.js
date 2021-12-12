@@ -9,20 +9,27 @@ class Controller {
     append(aux) {
         this.consola += aux;
     }
-    graficar_ts(controlador, ts) {
-        var cuerpohtml = "<thead><tr><th>Rol</th><th>Nombre</th><th>Tipo</th><th>Ambito</th><th>Valor</th><th>Parametros</th></tr></thead>";
-        while (ts != null) {
-            for (let sim of ts.tabla.values()) {
-                cuerpohtml += "<tr ><th >" + this.getRol(sim) + "</th><td>" + sim.identificador +
-                    "</td><td>" + this.getTipo(sim) + "</td>" +
-                    "</td><td>" + this.getAmbito() +
-                    "</td><td>" + this.getValor(sim) +
-                    "</td><td>" + this.parametros(sim) + "</td>" + "</tr>";
-            }
-            ts = ts.ant;
+    recursivo_tablita(entornito, cuerpotabla, contador) {
+        let auxS = cuerpotabla;
+        let auxC = contador;
+        for (let sim of entornito.tabla.values()) {
+            auxC += 1;
+            auxS += `<tr>
+                                <th scope="row">${auxC}</th>
+                                <td>${this.getRol(sim)}</td>
+                                <td>${this.getNombre(sim)}</td>
+                                <td>${this.getTipo(sim)}</td>
+                                <td>${entornito.nombre}</td>
+                                <td>${this.getValor(sim)}</td>
+                                <td>${this.parametros(sim)}</td>
+                            </tr>`;
         }
-        cuerpohtml = '<table class=\"ui selectable inverted table\">' + cuerpohtml + '</table>';
-        return cuerpohtml;
+        if (entornito.sig.length > 0) {
+            entornito.sig.forEach((element) => {
+                auxS = this.recursivo_tablita(element, auxS, auxC);
+            });
+        }
+        return auxS;
     }
     graficar_tErrores() {
         var cuerpotabla = "";
@@ -45,14 +52,14 @@ class Controller {
             return sim.valor.toString();
         }
         else {
-            return '...';
+            return "...";
         }
     }
     getTipo(sim) {
         return sim.tipo.stype.toLowerCase();
     }
     getRol(sim) {
-        let rol = '';
+        let rol = "";
         switch (sim.simbolo) {
             case 1:
                 rol = "variable";
@@ -75,8 +82,11 @@ class Controller {
         }
         return rol;
     }
+    getNombre(sim) {
+        return sim.getIdentificador().toLowerCase();
+    }
     getAmbito() {
-        return 'global';
+        return "global";
     }
     parametros(sim) {
         if (sim.lista_params != undefined) {

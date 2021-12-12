@@ -146,6 +146,9 @@
     const {Funcion} = require("../Instrucciones/Funcion");
     const {Llamada} = require("../Instrucciones/Llamada");
     const {Return} = require("../Instrucciones/Transferencia/Return");
+    const {AsignacionArray} = require("../Instrucciones/AsignacionArray");
+    const {Arreglo} = require("../Expresiones/Arreglo");
+    const {AccesoArreglo} = require("../Expresiones/AccesoArreglo");
 %}
 
 
@@ -187,14 +190,18 @@ INICIO : CONTENIDO EOF         { $$ = $1; return $$; }
        ;
 /*  ------------------------------  CUERPO DE TRABAJO --------------------------------- */
 
-CONTENIDO : CONTENIDO FUNCION_BLOQUE                  { $1.push($2); $$ = $1; } 
+CONTENIDO : CONTENIDO BLOQUE_GB                  { $1.push($2); $$ = $1; } 
+          | BLOQUE_GB                            { $$ = [$1]; }
+          ;
+
+BLOQUE_GB : DECLARACIONVARIABLE ptcoma                { $$ = $1; }
           | FUNCION_BLOQUE                            { $$ = $1; }
           ;
 
 FUNCION_BLOQUE : void id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$= new Funcion(3, new Tipo('VOID'), $2, $3, true, $5, @1.first_line, @1.last_column); }
                | TIPO id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$= new Funcion(3, $1, $2, $3, false, $5, @1.first_line, @1.last_column); }
                | id id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec     { $$ = $5; }
-               | void main parizq pardec llaveizq INSTRUCCIONES llavedec        { $$ = $6; }
+               | void main parizq pardec llaveizq INSTRUCCIONES llavedec        {  $$= new Funcion(3, new Tipo('VOID'), $2, [], true, $6, @1.first_line, @1.last_column); }
                ;
 
 
@@ -262,6 +269,8 @@ EXPRESION : ARITMETICA                                          { $$ = $1; }
           | punto id corizq EXPRESION cordec                    { $$ = $1; }
           | SENTENCIA_TERNARIO                                  { $$ = $1; }
           | LLAMADA                                             { $$ = $1; }
+          | ID corizq EXPRESION cordec                          { $$ = new AccesoArreglo($1,$3,@1.first_line,@1.first_column); }
+          
           ;
 
 LISTEXPRESIONES: LISTEXPRESIONES coma EXPRESION                 { $$ = $1; $$.push($3); }
@@ -334,9 +343,14 @@ PRIMITIVO : entero                  {$$ = new Primitivo(Number($1), @1.first_lin
           | null                    {$$ = new Primitivo(null, @1.first_line, @1.first_column); }
           ;
 
-DECLARACIONVARIABLE : TIPO LISTAIDS                                        { $$ = new Declaracion($1, $2, @1.first_line, @1.last_column);  }
-                    | TIPO id igual EXPRESION                              { $$ = new Declaracion($1, [new Simbolos(1,null, $2, $4)], @1.first_line, @1.last_column); }
+DECLARACIONVARIABLE : TIPO LISTAIDS                                          { $$ = new Declaracion($1, $2, @1.first_line, @1.last_column);  }
+                    | TIPO id igual EXPRESION                                { $$ = new Declaracion($1, [new Simbolos(1,null, $2, $4)], @1.first_line, @1.last_column); }
+                    | TIPO corizq cordec id                                  { $$ = new Declaracion($1, [new Simbolos(1,null, $4, new Arreglo($1,$1,null))],@1.first_line,@1.first_column); }
+                    | TIPO corizq cordec id igual corizq LISTAARRAY cordec   { $$ = new Declaracion($1, [new Simbolos(1,null, $4, new Arreglo($1,$1,$6))],@1.first_line,@1.first_column); }
                     ;
+
+LISTAARRAY : LISTAARRAY coma EXPRESION                  {$1.push(new Simbolos(1,null, $3, null)); $$ = $1; }
+           | EXPRESION                                  { $$ = [new Simbolos(1,null, $1, null)]; }
 
 LISTAIDS : LISTAIDS coma id                               {$1.push(new Simbolos(1,null, $3, null)); $$ = $1; }
          | id                                             { $$ = [new Simbolos(1,null, $1, null)]; }
@@ -344,6 +358,7 @@ LISTAIDS : LISTAIDS coma id                               {$1.push(new Simbolos(
 
 ASIGNACION_BLOQUE : id igual EXPRESION                                     {$$ = new Asignacion($1, $3, @1.first_line, @1.last_column);  }
                   | EXPRESION punto id igual EXPRESION                     {$$ = []; console.log("asignacion valor de instancia"); }
+                  | id corizq EXPRESION cordec igual EXPRESION             { $$ = []; $$.push(new AsignacionArray($1,$3,$6,@1.first_line,@1.first_column)); }
                   ;
 
 SENTENCIA_IF: if parizq EXPRESION pardec llaveizq INSTRUCCIONES llavedec                                      { $$ = new If( $3, $6, [], @1.first_line, @1.last_column ); }
@@ -394,6 +409,14 @@ LISTAEXPRESIONES: LISTAEXPRESIONES coma EXPRESION                            { $
 
 SENTENCIA_RETURN : return EXPRESION                                             { $$ = new Return($2);}
                  | return                                                       { $$ = new Return(null);}
+                 ;
+
+SENTENCIA_ARREGLO : new TIPO LISTADIMENSIONES                                { $$ = new crearArreglo($2.tipo,$2.valor,$3,@1.first_line,@1.first_column);}
+                  | new id LISTADIMENSIONES                                  { $$ = new crearArreglo(Tipo.ID,$2,$3,@1.first_line,@1.first_column);}
+                  ;
+
+LISTADIMENSIONES : LISTADIMENSIONES corizq EXPRESION cordec                         { $$ = $1; $$.push($3); }
+                 | corizq EXPRESION cordec                                          { $$ = []; $$.push($2); }
                  ;
 
 %%
