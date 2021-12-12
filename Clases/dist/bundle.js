@@ -722,6 +722,36 @@ process.umask = function() { return 0; };
 },{}],4:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Arbol = void 0;
+class Arbol {
+    constructor() {
+        this.id_n = 1;
+    }
+    tour(node) {
+        var concat = '';
+        if (node.id == 0) {
+            node.id = this.id_n;
+            this.id_n++;
+        }
+        if (node.token.includes('"')) {
+            var aux = node.lexema.replace(/"/gi, '');
+            concat += node.id + '[label="' + aux + '" fillcolor="#ad85e4" shape="box"];\n';
+        }
+        else {
+            concat += node.id + '[label="' + node.token + '" fillcolor="#ad85e4" shape="box"];\n';
+        }
+        node.hijos.forEach(element => {
+            concat += node.id + '->' + this.id_n + ';\n';
+            concat += this.tour(element);
+        });
+        return concat;
+    }
+}
+exports.Arbol = Arbol;
+
+},{}],5:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.AST = void 0;
 class AST {
     constructor(instrucciones) {
@@ -732,7 +762,7 @@ class AST {
 }
 exports.AST = AST;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Errores = void 0;
@@ -746,13 +776,14 @@ class Errores {
 }
 exports.Errores = Errores;
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Nodo = void 0;
 class Nodo {
     constructor(t, l) {
-        this.k = 0;
+        this.id = 0;
+        this.id = 0;
         this.token = t;
         this.lexema = l;
         this.hijos = new Array();
@@ -766,7 +797,7 @@ class Nodo {
 }
 exports.Nodo = Nodo;
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Controller = void 0;
@@ -868,7 +899,7 @@ class Controller {
 }
 exports.Controller = Controller;
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AccesoArreglo = void 0;
@@ -905,7 +936,7 @@ class AccesoArreglo {
             else {
                 let dimension = this.niveles.getValor(controlador, ts, ts_u);
                 let array = id_exists.getValor();
-                return array.getValor(dimension, array.valores, this.linea, this.column);
+                // return array.getValor(dimension, array.valores, this.linea, this.column); 
             }
         }
         else {
@@ -918,10 +949,11 @@ class AccesoArreglo {
 }
 exports.AccesoArreglo = AccesoArreglo;
 
-},{"../AST/Errores":5,"../AST/Nodo":6,"../TablaSimbolos/Tipo":41}],9:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Tipo":42}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Arreglo = void 0;
+const Nodo_1 = require("../AST/Nodo");
 class Arreglo {
     // public niveles: Array<Expresion>;
     // public linea: number;
@@ -931,15 +963,17 @@ class Arreglo {
         this.tipoObjeto = tipoObjeto;
         this.valores = valores;
     }
-    getValor(posicion, niveles, linea, columna) {
+    getTipo(controlador, ts, ts_u) {
+    }
+    getValor(controlador, ts, ts_u) {
+        /*
         let nivel = posicion;
         if (nivel > niveles.length - 1) {
-            //Error posicion inexistente
-            return niveles;
-        }
-        else {
-            return niveles[nivel];
-        }
+          //Error posicion inexistente
+          return niveles
+        } else {
+          return niveles[nivel];
+        }*/
     }
     setValor(posicion, niveles, value, linea, columna) {
         let nivel = posicion;
@@ -952,10 +986,14 @@ class Arreglo {
             return niveles;
         }
     }
+    recorrer() {
+        let padre = new Nodo_1.Nodo("ID", "");
+        return padre;
+    }
 }
 exports.Arreglo = Arreglo;
 
-},{}],10:[function(require,module,exports){
+},{"../AST/Nodo":7}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Identificador = void 0;
@@ -979,14 +1017,14 @@ class Identificador {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("ID", "");
-        padre.addHijo(new Nodo_1.Nodo(this.identificador, ""));
+        let padre = new Nodo_1.Nodo(this.identificador, "");
+        // padre.addHijo(new Nodo(this.identificador, ""))
         return padre;
     }
 }
 exports.Identificador = Identificador;
 
-},{"../AST/Nodo":6}],11:[function(require,module,exports){
+},{"../AST/Nodo":7}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Aritmetica = void 0;
@@ -1349,14 +1387,14 @@ class Aritmetica extends Operaciones_1.Operacion {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Aritmetica", "");
+        let padre = new Nodo_1.Nodo(this.op_string, "");
         if (this.expreU) {
-            padre.addHijo(new Nodo_1.Nodo(this.op_string, ""));
+            // padre.addHijo(new Nodo(this.op_string, ""));
             padre.addHijo(this.expre1.recorrer());
         }
         else {
             padre.addHijo(this.expre1.recorrer());
-            padre.addHijo(new Nodo_1.Nodo(this.op_string, ""));
+            // padre.addHijo(new Nodo(this.op_string, ""));
             padre.addHijo(this.expre2.recorrer());
         }
         return padre;
@@ -1370,7 +1408,7 @@ class Aritmetica extends Operaciones_1.Operacion {
 }
 exports.Aritmetica = Aritmetica;
 
-},{"../../AST/Errores":5,"../../AST/Nodo":6,"../../TablaSimbolos/Tipo":41,"./Operaciones":16}],12:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":42,"./Operaciones":17}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Cadenas = void 0;
@@ -1385,8 +1423,7 @@ class Cadenas {
         this.column = column;
         this.operador = operador;
     }
-    getTipo(controlador, ts, ts_u) {
-    }
+    getTipo(controlador, ts, ts_u) { }
     getValor(controlador, ts, ts_u) {
         let valor_expre1;
         let valor_expre2;
@@ -1406,28 +1443,28 @@ class Cadenas {
             }
         }
         switch (this.operador) {
-            case 'caracterposition':
+            case "caracterposition":
                 if (typeof valor_expre1 === "string") {
                     if (typeof valor_expre2 === "number") {
                         if (this.isInt(Number(valor_expre2))) {
                             return valor_expre1.charAt(valor_expre2);
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
-            case 'substring':
+            case "substring":
                 if (typeof valor_expre1 === "string") {
                     if (typeof valor_expre2 === "number") {
                         if (this.isInt(Number(valor_expre2))) {
@@ -1436,54 +1473,54 @@ class Cadenas {
                                     return valor_expre1.substring(valor_expre2, valor_expre3);
                                 }
                                 else {
-                                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre3}, tipo de dato incorrecto`, this.linea, this.column);
+                                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre3}, tipo de dato incorrecto`, this.linea, this.column);
                                     controlador.errores.push(error);
                                 }
                             }
                             else {
-                                let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre3}, tipo de dato incorrecto`, this.linea, this.column);
+                                let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre3}, tipo de dato incorrecto`, this.linea, this.column);
                                 controlador.errores.push(error);
                             }
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
-            case 'length':
+            case "length":
                 if (typeof valor_expre1 === "string") {
                     return valor_expre1.length;
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
-            case 'touppercase':
+            case "touppercase":
                 if (typeof valor_expre1 === "string") {
                     return valor_expre1.toUpperCase();
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
-            case 'tolowercase':
+            case "tolowercase":
                 if (typeof valor_expre1 === "string") {
                     return valor_expre1.toLowerCase();
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
@@ -1492,7 +1529,19 @@ class Cadenas {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Aritmetica", "");
+        let padre = new Nodo_1.Nodo(this.operador, "");
+        if (this.operador == "caracterposition") {
+            padre.addHijo(this.expre1.recorrer());
+            padre.addHijo(this.expre2.recorrer());
+        }
+        else if (this.operador == "substring") {
+            padre.addHijo(this.expre1.recorrer());
+            padre.addHijo(this.expre2.recorrer());
+            padre.addHijo(this.expre3.recorrer());
+        }
+        else {
+            padre.addHijo(this.expre1.recorrer());
+        }
         return padre;
     }
     isInt(n) {
@@ -1504,7 +1553,7 @@ class Cadenas {
 }
 exports.Cadenas = Cadenas;
 
-},{"../../AST/Errores":5,"../../AST/Nodo":6}],13:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7}],14:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Conversion = void 0;
@@ -1518,13 +1567,12 @@ class Conversion {
         this.column = column;
         this.operador = operador;
     }
-    getTipo(controlador, ts, ts_u) {
-    }
+    getTipo(controlador, ts, ts_u) { }
     getValor(controlador, ts, ts_u) {
         let valor_expre2;
         valor_expre2 = this.expre2.getValor(controlador, ts, ts_u);
         switch (this.operador) {
-            case 'parse':
+            case "parse":
                 if (this.tipo.tipo == Tipo_1.tipo.DOUBLE || this.tipo.tipo == Tipo_1.tipo.ENTERO) {
                     if (typeof valor_expre2 === "string") {
                         return Number(valor_expre2);
@@ -1539,22 +1587,22 @@ class Conversion {
                     }
                 }
                 break;
-            case 'toint':
+            case "toint":
                 if (typeof valor_expre2 === "number") {
-                    if (!(this.isInt(Number(valor_expre2)))) {
+                    if (!this.isInt(Number(valor_expre2))) {
                         return Math.ceil(valor_expre2);
                     }
                 }
                 break;
-            case 'todouble':
+            case "todouble":
                 if (typeof valor_expre2 === "number") {
                     return this.twoDecimal(valor_expre2);
                 }
                 break;
-            case 'typeof':
-                return typeof (valor_expre2);
+            case "typeof":
+                return typeof valor_expre2;
                 break;
-            case 'tostring':
+            case "tostring":
                 if (!(typeof valor_expre2 === null)) {
                     return String(valor_expre2);
                 }
@@ -1564,7 +1612,8 @@ class Conversion {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Aritmetica", "");
+        let padre = new Nodo_1.Nodo(this.operador, "");
+        padre.addHijo(this.expre2.recorrer());
         return padre;
     }
     isInt(n) {
@@ -1579,7 +1628,7 @@ class Conversion {
 }
 exports.Conversion = Conversion;
 
-},{"../../AST/Nodo":6,"../../TablaSimbolos/Tipo":41}],14:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":42}],15:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Logicas = void 0;
@@ -1638,14 +1687,14 @@ class Logicas extends Operaciones_1.Operacion {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Logica", "");
+        let padre = new Nodo_1.Nodo(this.op_string, "");
         if (this.expreU) {
-            padre.addHijo(new Nodo_1.Nodo(this.op_string, ""));
+            //  padre.addHijo(new Nodo(this.op_string, ""));
             padre.addHijo(this.expre1.recorrer());
         }
         else {
             padre.addHijo(this.expre1.recorrer());
-            padre.addHijo(new Nodo_1.Nodo(this.op_string, ""));
+            // padre.addHijo(new Nodo(this.op_string, ""));
             padre.addHijo(this.expre2.recorrer());
         }
         return padre;
@@ -1653,7 +1702,7 @@ class Logicas extends Operaciones_1.Operacion {
 }
 exports.Logicas = Logicas;
 
-},{"../../AST/Nodo":6,"../../TablaSimbolos/Tipo":41,"./Operaciones":16}],15:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":42,"./Operaciones":17}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Nativa = void 0;
@@ -1762,7 +1811,15 @@ class Nativa extends Operaciones_1.Operacion {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Aritmetica", "");
+        let padre = new Nodo_1.Nodo(this.operador.toString(), "");
+        if (this.operador == Operaciones_1.Operador.POTENCIA) {
+            // padre.addHijo(new Nodo(this.op_string, ""));
+            padre.addHijo(this.expre1.recorrer());
+            padre.addHijo(this.expre2.recorrer());
+        }
+        else {
+            padre.addHijo(this.expre1.recorrer());
+        }
         return padre;
     }
     isInt(n) {
@@ -1774,7 +1831,7 @@ class Nativa extends Operaciones_1.Operacion {
 }
 exports.Nativa = Nativa;
 
-},{"../../AST/Errores":5,"../../AST/Nodo":6,"../../TablaSimbolos/Tipo":41,"./Operaciones":16}],16:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":42,"./Operaciones":17}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Operacion = exports.Operador = void 0;
@@ -1894,14 +1951,14 @@ class Operacion {
         throw new Error("Method not implemented.");
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Operaciones", "");
+        let padre = new Nodo_1.Nodo(this.op_string, "");
         if (this.expreU) {
-            padre.addHijo(new Nodo_1.Nodo(this.op_string, ""));
+            //  padre.addHijo(new Nodo(this.op_string,""));
             padre.addHijo(this.expre1.recorrer());
         }
         else {
             padre.addHijo(this.expre1.recorrer());
-            padre.addHijo(new Nodo_1.Nodo(this.op_string, ""));
+            // padre.addHijo(new Nodo(this.op_string,""));
             padre.addHijo(this.expre2.recorrer());
         }
         return padre;
@@ -1909,7 +1966,7 @@ class Operacion {
 }
 exports.Operacion = Operacion;
 
-},{"../../AST/Nodo":6}],17:[function(require,module,exports){
+},{"../../AST/Nodo":7}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Relacionales = void 0;
@@ -2676,14 +2733,14 @@ class Relacionales extends Operaciones_1.Operacion {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Relacionales", "");
+        let padre = new Nodo_1.Nodo(this.op_string, "");
         if (this.expreU) {
-            padre.addHijo(new Nodo_1.Nodo(this.op_string, ""));
+            // padre.addHijo(new Nodo(this.op_string, ""));
             padre.addHijo(this.expre1.recorrer());
         }
         else {
             padre.addHijo(this.expre1.recorrer());
-            padre.addHijo(new Nodo_1.Nodo(this.op_string, ""));
+            //  padre.addHijo(new Nodo(this.op_string, ""));
             padre.addHijo(this.expre2.recorrer());
         }
         return padre;
@@ -2698,7 +2755,7 @@ class Relacionales extends Operaciones_1.Operacion {
 }
 exports.Relacionales = Relacionales;
 
-},{"../../AST/Errores":5,"../../AST/Nodo":6,"../../TablaSimbolos/Tipo":41,"./Operaciones":16}],18:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":42,"./Operaciones":17}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Primitivo = void 0;
@@ -2732,8 +2789,8 @@ class Primitivo {
         return this.primitivo;
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Primitivo", "");
-        padre.addHijo(new Nodo_1.Nodo(this.primitivo.toString(), ""));
+        let padre = new Nodo_1.Nodo(this.primitivo.toString(), "");
+        //padre.addHijo(new Nodo(this.primitivo.toString(),""));
         return padre;
     }
     isInt(n) {
@@ -2742,7 +2799,7 @@ class Primitivo {
 }
 exports.Primitivo = Primitivo;
 
-},{"../AST/Nodo":6,"../TablaSimbolos/Tipo":41}],19:[function(require,module,exports){
+},{"../AST/Nodo":7,"../TablaSimbolos/Tipo":42}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Ternario = void 0;
@@ -2791,7 +2848,7 @@ class Ternario {
 }
 exports.Ternario = Ternario;
 
-},{"../AST/Errores":5,"../AST/Nodo":6}],20:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7}],21:[function(require,module,exports){
 (function (process){(function (){
 /* parser generated by jison 0.4.18 */
 /*
@@ -3877,7 +3934,7 @@ if (typeof module !== 'undefined' && require.main === module) {
 }
 }
 }).call(this)}).call(this,require('_process'))
-},{"../Expresiones/AccesoArreglo":8,"../Expresiones/Arreglo":9,"../Expresiones/Identificador":10,"../Expresiones/Operaciones/Aritmetica":11,"../Expresiones/Operaciones/Cadenas":12,"../Expresiones/Operaciones/Conversion":13,"../Expresiones/Operaciones/Logicas":14,"../Expresiones/Operaciones/Nativa":15,"../Expresiones/Operaciones/Relacionales":17,"../Expresiones/Primitivo":18,"../Expresiones/Ternario":19,"../Instrucciones/Asignacion":21,"../Instrucciones/AsignacionArray":22,"../Instrucciones/Ciclica/DoWhile":23,"../Instrucciones/Ciclica/For":24,"../Instrucciones/Ciclica/ForEsp":25,"../Instrucciones/Ciclica/While":26,"../Instrucciones/Control/Case":27,"../Instrucciones/Control/Default":28,"../Instrucciones/Control/If":29,"../Instrucciones/Control/Switch":30,"../Instrucciones/Declaracion":31,"../Instrucciones/Funcion":32,"../Instrucciones/Llamada":33,"../Instrucciones/Print":34,"../Instrucciones/Println":35,"../Instrucciones/Transferencia/Break":36,"../Instrucciones/Transferencia/Return":38,"../TablaSimbolos/Simbolos":39,"../TablaSimbolos/Tipo":41,"_process":3,"fs":1,"path":2}],21:[function(require,module,exports){
+},{"../Expresiones/AccesoArreglo":9,"../Expresiones/Arreglo":10,"../Expresiones/Identificador":11,"../Expresiones/Operaciones/Aritmetica":12,"../Expresiones/Operaciones/Cadenas":13,"../Expresiones/Operaciones/Conversion":14,"../Expresiones/Operaciones/Logicas":15,"../Expresiones/Operaciones/Nativa":16,"../Expresiones/Operaciones/Relacionales":18,"../Expresiones/Primitivo":19,"../Expresiones/Ternario":20,"../Instrucciones/Asignacion":22,"../Instrucciones/AsignacionArray":23,"../Instrucciones/Ciclica/DoWhile":24,"../Instrucciones/Ciclica/For":25,"../Instrucciones/Ciclica/ForEsp":26,"../Instrucciones/Ciclica/While":27,"../Instrucciones/Control/Case":28,"../Instrucciones/Control/Default":29,"../Instrucciones/Control/If":30,"../Instrucciones/Control/Switch":31,"../Instrucciones/Declaracion":32,"../Instrucciones/Funcion":33,"../Instrucciones/Llamada":34,"../Instrucciones/Print":35,"../Instrucciones/Println":36,"../Instrucciones/Transferencia/Break":37,"../Instrucciones/Transferencia/Return":39,"../TablaSimbolos/Simbolos":40,"../TablaSimbolos/Tipo":42,"_process":3,"fs":1,"path":2}],22:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Asignacion = void 0;
@@ -3903,16 +3960,16 @@ class Asignacion {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Asignacion", "");
+        let padre = new Nodo_1.Nodo("=", "");
         padre.addHijo(new Nodo_1.Nodo(this.identificador, ""));
-        padre.addHijo(new Nodo_1.Nodo("=", ""));
+        //padre.addHijo(new Nodo("=", ""))
         padre.addHijo(this.valor.recorrer());
         return padre;
     }
 }
 exports.Asignacion = Asignacion;
 
-},{"../AST/Errores":5,"../AST/Nodo":6}],22:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7}],23:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AsignacionArray = void 0;
@@ -3953,7 +4010,7 @@ class AsignacionArray {
 }
 exports.AsignacionArray = AsignacionArray;
 
-},{"../AST/Errores":5,"../AST/Nodo":6,"../TablaSimbolos/Tipo":41}],23:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Tipo":42}],24:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DoWhile = void 0;
@@ -4005,24 +4062,24 @@ class DoWhile {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("DoWhile", "");
-        padre.addHijo(new Nodo_1.Nodo("Do", ""));
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_ins = new Nodo_1.Nodo("Intrucciones", "");
+        let padre = new Nodo_1.Nodo("Do", "");
+        //padre.addHijo(new Nodo("Do", ""))
+        // padre.addHijo(new Nodo("{", ""))
+        // let hijo_ins = new Nodo("Intrucciones", "")
         for (let ins of this.lista_ins) {
-            hijo_ins.addHijo(ins.recorrer());
+            padre.addHijo(ins.recorrer());
         }
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
+        // padre.addHijo(new Nodo("}", ""))
         padre.addHijo(new Nodo_1.Nodo("While", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
+        // padre.addHijo(new Nodo("(", ""))
         padre.addHijo(this.condicion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
+        //padre.addHijo(new Nodo(")", ""))
         return padre;
     }
 }
 exports.DoWhile = DoWhile;
 
-},{"../../AST/Nodo":6,"../../TablaSimbolos/TablaSim":40,"../Transferencia/Break":36,"../Transferencia/Continue":37,"../Transferencia/Return":38}],24:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":41,"../Transferencia/Break":37,"../Transferencia/Continue":38,"../Transferencia/Return":39}],25:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.For = void 0;
@@ -4069,26 +4126,26 @@ class For {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("For", "");
-        padre.addHijo(new Nodo_1.Nodo("for", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
+        //  padre.addHijo(new Nodo("for", ""));
+        // padre.addHijo(new Nodo("(", ""));
         padre.addHijo(this.asig_decla.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(";", ""));
+        // padre.addHijo(new Nodo(";", ""));
         padre.addHijo(this.condicion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(";", ""));
+        //  padre.addHijo(new Nodo(";", ""));
         padre.addHijo(this.actualizacion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_ins = new Nodo_1.Nodo("Intrucciones", "");
+        //  padre.addHijo(new Nodo("{", ""));
+        // let hijo_ins = new Nodo("Intrucciones", "");
         for (let ins of this.lista_ins) {
-            hijo_ins.addHijo(ins.recorrer());
+            padre.addHijo(ins.recorrer());
         }
-        padre.addHijo(hijo_ins);
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
+        //padre.addHijo(hijo_ins);
+        //padre.addHijo(new Nodo("}", ""));
         return padre;
     }
 }
 exports.For = For;
 
-},{"../../AST/Nodo":6,"../../TablaSimbolos/TablaSim":40,"../Transferencia/Break":36,"../Transferencia/Continue":37,"../Transferencia/Return":38}],25:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":41,"../Transferencia/Break":37,"../Transferencia/Continue":38,"../Transferencia/Return":39}],26:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ForEsp = void 0;
@@ -4155,27 +4212,17 @@ class ForEsp {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("For", "");
-        padre.addHijo(new Nodo_1.Nodo("for", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
-        //padre.addHijo(this.asig_decla.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(";", ""));
-        //padre.addHijo(this.condicion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(";", ""));
+        let padre = new Nodo_1.Nodo("ForIn", "");
         padre.addHijo(this.actualizacion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_ins = new Nodo_1.Nodo("Intrucciones", "");
         for (let ins of this.lista_ins) {
-            hijo_ins.addHijo(ins.recorrer());
+            padre.addHijo(ins.recorrer());
         }
-        padre.addHijo(hijo_ins);
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
         return padre;
     }
 }
 exports.ForEsp = ForEsp;
 
-},{"../../AST/Errores":5,"../../AST/Nodo":6,"../../TablaSimbolos/Simbolos":39,"../../TablaSimbolos/TablaSim":40,"../Transferencia/Break":36,"../Transferencia/Continue":37,"../Transferencia/Return":38}],26:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Simbolos":40,"../../TablaSimbolos/TablaSim":41,"../Transferencia/Break":37,"../Transferencia/Continue":38,"../Transferencia/Return":39}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.While = void 0;
@@ -4217,23 +4264,16 @@ class While {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("While", "");
-        padre.addHijo(new Nodo_1.Nodo("while", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
         padre.addHijo(this.condicion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_inst = new Nodo_1.Nodo("Instrucciones", "");
         for (let ins of this.lista_ins) {
-            hijo_inst.addHijo(ins.recorrer());
+            padre.addHijo(ins.recorrer());
         }
-        padre.addHijo(hijo_inst);
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
         return padre;
     }
 }
 exports.While = While;
 
-},{"../../AST/Nodo":6,"../../TablaSimbolos/TablaSim":40,"../Transferencia/Break":36,"../Transferencia/Continue":37,"../Transferencia/Return":38}],27:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":41,"../Transferencia/Break":37,"../Transferencia/Continue":38,"../Transferencia/Return":39}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Case = void 0;
@@ -4263,20 +4303,16 @@ class Case {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("CASE", "");
-        padre.addHijo(new Nodo_1.Nodo("case", ""));
         padre.addHijo(this.expresion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(":", ""));
-        let hijo_ins = new Nodo_1.Nodo("Instrucciones", "");
         for (let ins of this.list_inst) {
-            hijo_ins.addHijo(ins.recorrer());
+            padre.addHijo(ins.recorrer());
         }
-        padre.addHijo(hijo_ins);
         return padre;
     }
 }
 exports.Case = Case;
 
-},{"../../AST/Nodo":6,"../Transferencia/Break":36,"../Transferencia/Return":38}],28:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../Transferencia/Break":37,"../Transferencia/Return":39}],29:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Default = void 0;
@@ -4305,19 +4341,15 @@ class Default {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("DEFAULT", "");
-        padre.addHijo(new Nodo_1.Nodo("default", ""));
-        padre.addHijo(new Nodo_1.Nodo(":", ""));
-        let hijo_ins = new Nodo_1.Nodo("Instrucciones", "");
         for (let ins of this.list_ins) {
-            hijo_ins.addHijo(ins.recorrer());
+            padre.addHijo(ins.recorrer());
         }
-        padre.addHijo(hijo_ins);
         return padre;
     }
 }
 exports.Default = Default;
 
-},{"../../AST/Nodo":6,"../Transferencia/Break":36,"../Transferencia/Return":38}],29:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../Transferencia/Break":37,"../Transferencia/Return":39}],30:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.If = void 0;
@@ -4370,31 +4402,23 @@ class If {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("IF", "");
-        padre.addHijo(new Nodo_1.Nodo("if", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
         padre.addHijo(this.condicion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_ifs = new Nodo_1.Nodo("IntruccionesIf", "");
+        let ifs = new Nodo_1.Nodo("IFS", "");
         for (let inst of this.lista_ifs) {
-            hijo_ifs.addHijo(inst.recorrer());
+            ifs.addHijo(inst.recorrer());
         }
-        padre.addHijo(hijo_ifs);
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
-        padre.addHijo(new Nodo_1.Nodo("else", ""));
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_elses = new Nodo_1.Nodo("IntruccionElse", "");
+        padre.addHijo(ifs);
+        let elses = new Nodo_1.Nodo("ELSES", "");
         for (let inst of this.lista_elses) {
-            hijo_elses.addHijo(inst.recorrer());
+            elses.addHijo(inst.recorrer());
         }
-        padre.addHijo(hijo_elses);
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
+        padre.addHijo(elses);
         return padre;
     }
 }
 exports.If = If;
 
-},{"../../AST/Nodo":6,"../../TablaSimbolos/TablaSim":40,"../../TablaSimbolos/Tipo":41,"../Transferencia/Break":36,"../Transferencia/Continue":37,"../Transferencia/Return":38}],30:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":41,"../../TablaSimbolos/Tipo":42,"../Transferencia/Break":37,"../Transferencia/Continue":38,"../Transferencia/Return":39}],31:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Switch = void 0;
@@ -4416,7 +4440,8 @@ class Switch {
         let aux = false;
         for (let ins of this.list_cases) {
             let caso = ins;
-            if (this.valor.getValor(controlador, ts, ts_u) == caso.expresion.getValor(controlador, ts, ts_u)) {
+            if (this.valor.getValor(controlador, ts, ts_u) ==
+                caso.expresion.getValor(controlador, ts, ts_u)) {
                 let res = ins.ejecutar(controlador, ts_local, ts_u);
                 if (ins instanceof Break_1.Break || res instanceof Break_1.Break) {
                     aux = true;
@@ -4446,25 +4471,19 @@ class Switch {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("SWITCH", "");
-        padre.addHijo(new Nodo_1.Nodo("switch", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
         padre.addHijo(this.valor.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_cases = new Nodo_1.Nodo("Casos", "");
         for (let casito of this.list_cases) {
-            let hijito = new Nodo_1.Nodo("Case", "");
-            hijito.addHijo(casito.recorrer());
-            hijo_cases.addHijo(hijito);
+            padre.addHijo(casito.recorrer());
         }
-        padre.addHijo(hijo_cases);
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
+        if (this.defaulteo != null) {
+            padre.addHijo(this.defaulteo.recorrer());
+        }
         return padre;
     }
 }
 exports.Switch = Switch;
 
-},{"../../AST/Nodo":6,"../../TablaSimbolos/TablaSim":40,"../Transferencia/Break":36,"../Transferencia/Return":38}],31:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":41,"../Transferencia/Break":37,"../Transferencia/Return":39}],32:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Declaracion = void 0;
@@ -4511,28 +4530,24 @@ class Declaracion {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Declaracion", "");
-        let hijo_sim = new Nodo_1.Nodo("Simbolos", "");
+        let padre = new Nodo_1.Nodo("=", "");
+        // let hijo_sim = new Nodo("Simbolos", "")
         padre.addHijo(new Nodo_1.Nodo(this.tipo.stype, ""));
         for (let simb of this.lista_simbolos) {
             let varia = simb;
             if (varia.valor != null) {
-                hijo_sim.addHijo(new Nodo_1.Nodo(simb.identificador, ""));
-                hijo_sim.addHijo(new Nodo_1.Nodo("=", ""));
+                padre.addHijo(new Nodo_1.Nodo(simb.identificador, ""));
+                // padre.addHijo(new Nodo("=", ""))
                 let aux = simb.valor;
-                hijo_sim.addHijo(aux.recorrer());
-            }
-            else {
-                hijo_sim.addHijo(new Nodo_1.Nodo(";", ""));
+                padre.addHijo(aux.recorrer());
             }
         }
-        padre.addHijo(hijo_sim);
         return padre;
     }
 }
 exports.Declaracion = Declaracion;
 
-},{"../AST/Errores":5,"../AST/Nodo":6,"../TablaSimbolos/Simbolos":39,"../TablaSimbolos/Tipo":41}],32:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Simbolos":40,"../TablaSimbolos/Tipo":42}],33:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Funcion = void 0;
@@ -4597,13 +4612,16 @@ class Funcion extends Simbolos_1.Simbolos {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Funcion", "");
+        let padre = new Nodo_1.Nodo(this.identificador, "");
+        this.lista_ints.forEach(element => {
+            padre.addHijo(element.recorrer());
+        });
         return padre;
     }
 }
 exports.Funcion = Funcion;
 
-},{"../AST/Errores":5,"../AST/Nodo":6,"../TablaSimbolos/Simbolos":39,"../TablaSimbolos/TablaSim":40,"./Transferencia/Break":36,"./Transferencia/Return":38}],33:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Simbolos":40,"../TablaSimbolos/TablaSim":41,"./Transferencia/Break":37,"./Transferencia/Return":39}],34:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Llamada = void 0;
@@ -4652,17 +4670,17 @@ class Llamada {
     recorrer() {
         let padre = new Nodo_1.Nodo("Llamada", "");
         padre.addHijo(new Nodo_1.Nodo(this.identificador, ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
-        let hijo_para = new Nodo_1.Nodo("Parametros", "");
+        //padre.addHijo(new Nodo("(", ""));
+        //let hijo_para = new Nodo("Parametros", "");
         if (this.parametros != null) {
             for (let para of this.parametros) {
-                let hijo_para2 = new Nodo_1.Nodo("Parametro", "");
-                hijo_para2.addHijo(para.recorrer());
-                hijo_para.addHijo(hijo_para2);
+                // let hijo_para2 = new Nodo("Parametro", "");
+                padre.addHijo(para.recorrer());
+                // hijo_para.addHijo(hijo_para2);
             }
         }
-        padre.addHijo(hijo_para);
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
+        //  padre.addHijo(hijo_para);
+        //  padre.addHijo(new Nodo(")", ""));
         return padre;
     }
     verificarParams(para_llama, para_func, controlador, ts, ts_local, ts_u) {
@@ -4700,7 +4718,7 @@ class Llamada {
 }
 exports.Llamada = Llamada;
 
-},{"../AST/Errores":5,"../AST/Nodo":6,"../TablaSimbolos/Simbolos":39,"../TablaSimbolos/TablaSim":40,"../TablaSimbolos/Tipo":41}],34:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Simbolos":40,"../TablaSimbolos/TablaSim":41,"../TablaSimbolos/Tipo":42}],35:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Print = void 0;
@@ -4718,18 +4736,13 @@ class Print {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("Print", "");
-        padre.addHijo(new Nodo_1.Nodo("pint", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
-        let hijo = new Nodo_1.Nodo("exp", "");
-        hijo.addHijo(this.expresion.recorrer());
-        padre.addHijo(hijo);
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
+        padre.addHijo(this.expresion.recorrer());
         return padre;
     }
 }
 exports.Print = Print;
 
-},{"../AST/Nodo":6}],35:[function(require,module,exports){
+},{"../AST/Nodo":7}],36:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Println = void 0;
@@ -4746,19 +4759,19 @@ class Println {
         return null;
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Print", "");
-        padre.addHijo(new Nodo_1.Nodo("pint", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
-        let hijo = new Nodo_1.Nodo("exp", "");
-        hijo.addHijo(this.expresion.recorrer());
-        padre.addHijo(hijo);
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
+        let padre = new Nodo_1.Nodo("PrintLn", "");
+        // padre.addHijo(new Nodo("int",""));
+        // padre.addHijo(new Nodo("(",""));
+        //let hijo =  new Nodo("exp","");
+        padre.addHijo(this.expresion.recorrer());
+        // padre.addHijo(hijo);
+        //padre.addHijo(new Nodo(")",""));
         return padre;
     }
 }
 exports.Println = Println;
 
-},{"../AST/Nodo":6}],36:[function(require,module,exports){
+},{"../AST/Nodo":7}],37:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Break = void 0;
@@ -4776,7 +4789,7 @@ class Break {
 }
 exports.Break = Break;
 
-},{"../../AST/Nodo":6}],37:[function(require,module,exports){
+},{"../../AST/Nodo":7}],38:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Continue = void 0;
@@ -4794,7 +4807,7 @@ class Continue {
 }
 exports.Continue = Continue;
 
-},{"../../AST/Nodo":6}],38:[function(require,module,exports){
+},{"../../AST/Nodo":7}],39:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Return = void 0;
@@ -4814,16 +4827,14 @@ class Return {
     recorrer() {
         let padre = new Nodo_1.Nodo("Retornar", "");
         if (this.valor_retur != null) {
-            let hijo = new Nodo_1.Nodo("Valor", "");
-            hijo.addHijo(this.valor_retur.recorrer());
-            padre.addHijo(hijo);
+            padre.addHijo(this.valor_retur.recorrer());
         }
         return padre;
     }
 }
 exports.Return = Return;
 
-},{"../../AST/Nodo":6}],39:[function(require,module,exports){
+},{"../../AST/Nodo":7}],40:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Simbolos = void 0;
@@ -4863,7 +4874,7 @@ class Simbolos {
 }
 exports.Simbolos = Simbolos;
 
-},{}],40:[function(require,module,exports){
+},{}],41:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TablaSim = void 0;
@@ -4914,7 +4925,7 @@ class TablaSim {
 }
 exports.TablaSim = TablaSim;
 
-},{}],41:[function(require,module,exports){
+},{}],42:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tipo = exports.tipo = void 0;
@@ -4965,7 +4976,7 @@ class Tipo {
 }
 exports.Tipo = Tipo;
 
-},{}],42:[function(require,module,exports){
+},{}],43:[function(require,module,exports){
 // ------------------- global ---------------------------------------
 var TabId = 0;
 var ListaTab= [];
@@ -5139,8 +5150,44 @@ function addContentTab(text,filename){
     TabActual=tab_completo;
 }
 // -------------------------------------- reporteria -----------------------------------------
-function showModal(){
+function graficando_ast_d(contenido){
+  var DOTstring = obtener_arbol_ast_(contenido);
+  
+  var container = document.getElementById('arbol_ast');
+  var parsedData = vis.network.convertDot(DOTstring);
+  var dataDOT = {
+       nodes: parsedData.nodes,
+       edges: parsedData.edges
+       }
+       console.log(dataDOT);
 
+   var options = {
+   autoResize: true,
+   physics:{
+   stabilization:false
+   },
+   layout: {
+           hierarchical:{
+               levelSeparation: 150,
+               nodeSpacing: 150,
+               parentCentralization: true,
+               direction: 'UD',
+               sortMethod: 'directed' 
+           },
+       }
+   };
+
+   var network = new vis.Network(container, dataDOT, options);
+  
+}
+
+
+function obtener_arbol_ast_(contenido){
+  var grafo = `digraph {
+      node [shape=box, fontsize=15]
+      edge [length=150, color=#ad85e4, fontcolor=black]
+      `+contenido+`}`;
+  return grafo;
 }
 
 
@@ -5152,6 +5199,7 @@ function ej(){
   document.getElementById(`textOutput-Blank`).value = ejecucion.salida;
   document.getElementById(`tabla_e-Blank`).innerHTML = ejecucion.tabla_e;
   document.getElementById(`tabla_s-Blank`).innerHTML = ejecucion.tabla_s;
+  graficando_ast_d(ejecucion.ast);
 }
 
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -5161,8 +5209,9 @@ const Controller_1 = require("./Controller");
 const Funcion_1 = require("./Instrucciones/Funcion");
 const Declaracion_1 = require("./Instrucciones/Declaracion");
 const Asignacion_1 = require("./Instrucciones/Asignacion");
+const Nodo_1 = require("./AST/Nodo");
+const Arbol_1 = require("./AST/Arbol");
 const gramatica = require("./Gramar/gramar");
-
 //import * as gramatica from "../Gramar/gramar";
 function ejecutarCodigo(entrada) {
     //traigo todas las raices
@@ -5193,7 +5242,14 @@ function ejecutarCodigo(entrada) {
             }
         }
     });
-    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0) };
+    let raiz = new Nodo_1.Nodo("Inicio", "");
+    instrucciones.forEach((element) => {
+        raiz.addHijo(element.recorrer());
+    });
+    let grafo = new Arbol_1.Arbol();
+    let res = grafo.tour(raiz);
+
+    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res };
 }
 
-},{"./AST/Ast":4,"./Controller":7,"./Gramar/gramar":20,"./Instrucciones/Asignacion":21,"./Instrucciones/Declaracion":31,"./Instrucciones/Funcion":32,"./TablaSimbolos/TablaSim":40}]},{},[42]);
+},{"./AST/Arbol":4,"./AST/Ast":5,"./AST/Nodo":7,"./Controller":8,"./Gramar/gramar":21,"./Instrucciones/Asignacion":22,"./Instrucciones/Declaracion":32,"./Instrucciones/Funcion":33,"./TablaSimbolos/TablaSim":41}]},{},[43]);

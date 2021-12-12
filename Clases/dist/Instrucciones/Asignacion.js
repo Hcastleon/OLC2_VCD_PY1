@@ -23,9 +23,9 @@ class Asignacion {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Asignacion", "");
+        let padre = new Nodo_1.Nodo("=", "");
         padre.addHijo(new Nodo_1.Nodo(this.identificador, ""));
-        padre.addHijo(new Nodo_1.Nodo("=", ""));
+        //padre.addHijo(new Nodo("=", ""))
         padre.addHijo(this.valor.recorrer());
         return padre;
     }

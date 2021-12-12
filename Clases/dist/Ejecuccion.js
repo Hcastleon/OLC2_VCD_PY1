@@ -6,6 +6,8 @@ const Controller_1 = require("./Controller");
 const Funcion_1 = require("./Instrucciones/Funcion");
 const Declaracion_1 = require("./Instrucciones/Declaracion");
 const Asignacion_1 = require("./Instrucciones/Asignacion");
+const Nodo_1 = require("./AST/Nodo");
+const Arbol_1 = require("./AST/Arbol");
 const gramatica = require("./Gramar/gramar");
 //import * as gramatica from "../Gramar/gramar";
 function ejecutarCodigo(entrada) {
@@ -37,5 +39,11 @@ function ejecutarCodigo(entrada) {
             }
         }
     });
-    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0) };
+    let raiz = new Nodo_1.Nodo("Inicio", "");
+    instrucciones.forEach((element) => {
+        raiz.addHijo(element.recorrer());
+    });
+    let grafo = new Arbol_1.Arbol();
+    let res = grafo.tour(raiz);
+    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res };
 }

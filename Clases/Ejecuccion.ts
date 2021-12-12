@@ -6,6 +6,8 @@ import { Funcion } from "./Instrucciones/Funcion";
 import { tipo } from "./TablaSimbolos/Tipo";
 import { Declaracion } from "./Instrucciones/Declaracion";
 import { Asignacion } from "./Instrucciones/Asignacion";
+import { Nodo } from "./AST/Nodo"
+import { Arbol } from "./AST/Arbol"
 
 const gramatica = require("./Gramar/gramar");
 //import * as gramatica from "../Gramar/gramar";
@@ -45,5 +47,15 @@ function ejecutarCodigo(entrada: string) {
     }
   });
 
-  return {salida:controlador.consola,tabla_e:controlador.graficar_tErrores(),tabla_s: controlador.recursivo_tablita(entornoGlobal,"",0)};
+  let raiz = new Nodo("Inicio","");
+
+  instrucciones.forEach((element: Instruccion) => {
+    raiz.addHijo(element.recorrer())
+  });
+ 
+ 
+  let grafo: Arbol = new Arbol();
+  let res = grafo.tour(raiz);
+  
+  return {salida:controlador.consola,tabla_e:controlador.graficar_tErrores(),tabla_s: controlador.recursivo_tablita(entornoGlobal,"",0), ast: res};
 }

@@ -12,8 +12,7 @@ class Cadenas {
         this.column = column;
         this.operador = operador;
     }
-    getTipo(controlador, ts, ts_u) {
-    }
+    getTipo(controlador, ts, ts_u) { }
     getValor(controlador, ts, ts_u) {
         let valor_expre1;
         let valor_expre2;
@@ -33,28 +32,28 @@ class Cadenas {
             }
         }
         switch (this.operador) {
-            case 'caracterposition':
+            case "caracterposition":
                 if (typeof valor_expre1 === "string") {
                     if (typeof valor_expre2 === "number") {
                         if (this.isInt(Number(valor_expre2))) {
                             return valor_expre1.charAt(valor_expre2);
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
-            case 'substring':
+            case "substring":
                 if (typeof valor_expre1 === "string") {
                     if (typeof valor_expre2 === "number") {
                         if (this.isInt(Number(valor_expre2))) {
@@ -63,54 +62,54 @@ class Cadenas {
                                     return valor_expre1.substring(valor_expre2, valor_expre3);
                                 }
                                 else {
-                                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre3}, tipo de dato incorrecto`, this.linea, this.column);
+                                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre3}, tipo de dato incorrecto`, this.linea, this.column);
                                     controlador.errores.push(error);
                                 }
                             }
                             else {
-                                let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre3}, tipo de dato incorrecto`, this.linea, this.column);
+                                let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre3}, tipo de dato incorrecto`, this.linea, this.column);
                                 controlador.errores.push(error);
                             }
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
-            case 'length':
+            case "length":
                 if (typeof valor_expre1 === "string") {
                     return valor_expre1.length;
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
-            case 'touppercase':
+            case "touppercase":
                 if (typeof valor_expre1 === "string") {
                     return valor_expre1.toUpperCase();
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
-            case 'tolowercase':
+            case "tolowercase":
                 if (typeof valor_expre1 === "string") {
                     return valor_expre1.toLowerCase();
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
@@ -119,7 +118,19 @@ class Cadenas {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Aritmetica", "");
+        let padre = new Nodo_1.Nodo(this.operador, "");
+        if (this.operador == "caracterposition") {
+            padre.addHijo(this.expre1.recorrer());
+            padre.addHijo(this.expre2.recorrer());
+        }
+        else if (this.operador == "substring") {
+            padre.addHijo(this.expre1.recorrer());
+            padre.addHijo(this.expre2.recorrer());
+            padre.addHijo(this.expre3.recorrer());
+        }
+        else {
+            padre.addHijo(this.expre1.recorrer());
+        }
         return padre;
     }
     isInt(n) {

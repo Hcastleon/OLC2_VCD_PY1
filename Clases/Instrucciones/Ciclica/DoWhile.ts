@@ -64,18 +64,18 @@ export class DoWhile implements Instruccion{
     }
 
     recorrer(): Nodo {
-        let padre = new Nodo("DoWhile", "")
-        padre.addHijo(new Nodo("Do", ""))
-        padre.addHijo(new Nodo("{", ""))
-        let hijo_ins = new Nodo("Intrucciones", "")
+        let padre = new Nodo("Do", "")
+        //padre.addHijo(new Nodo("Do", ""))
+       // padre.addHijo(new Nodo("{", ""))
+       // let hijo_ins = new Nodo("Intrucciones", "")
         for (let ins of this.lista_ins) {
-            hijo_ins.addHijo(ins.recorrer())
+            padre.addHijo(ins.recorrer())
         }
-        padre.addHijo(new Nodo("}", ""))
+       // padre.addHijo(new Nodo("}", ""))
         padre.addHijo(new Nodo("While", ""))
-        padre.addHijo(new Nodo("(", ""))
+       // padre.addHijo(new Nodo("(", ""))
         padre.addHijo(this.condicion.recorrer())
-        padre.addHijo(new Nodo(")", ""))
+        //padre.addHijo(new Nodo(")", ""))
         return padre
     }
 }

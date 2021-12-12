@@ -34,7 +34,7 @@ class AccesoArreglo {
             else {
                 let dimension = this.niveles.getValor(controlador, ts, ts_u);
                 let array = id_exists.getValor();
-                return array.getValor(dimension, array.valores, this.linea, this.column);
+                // return array.getValor(dimension, array.valores, this.linea, this.column); 
             }
         }
         else {

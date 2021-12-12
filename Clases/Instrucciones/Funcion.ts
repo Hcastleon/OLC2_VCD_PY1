@@ -82,7 +82,11 @@ export class Funcion extends Simbolos implements Instruccion {
   }
 
   recorrer(): Nodo {
-    let padre = new Nodo("Funcion", "");
+    let padre = new Nodo(this.identificador, "");
+    this.lista_ints.forEach(element => {
+      padre.addHijo(element.recorrer());
+    });
+    
     return padre;
   }
 }

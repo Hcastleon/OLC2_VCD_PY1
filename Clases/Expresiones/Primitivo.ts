@@ -40,8 +40,8 @@ export class Primitivo implements Expresion{
         return this.primitivo;
     }
     recorrer(): Nodo  {
-        let padre = new Nodo("Primitivo","");
-        padre.addHijo(new Nodo(this.primitivo.toString(),""));
+        let padre = new Nodo(this.primitivo.toString(),"");
+        //padre.addHijo(new Nodo(this.primitivo.toString(),""));
         return padre
     }
 

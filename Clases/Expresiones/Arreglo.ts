@@ -6,7 +6,7 @@ import { Instruccion } from "../Interfaces/Instruccion";
 import { TablaSim } from "../TablaSimbolos/TablaSim";
 import { Tipo, tipo } from "../TablaSimbolos/Tipo";
 
-export class Arreglo {
+export class Arreglo implements Expresion{
   public tipoo: Tipo;
   public tipoObjeto: string;
   public valores: Array<any>;
@@ -20,14 +20,19 @@ export class Arreglo {
     this.valores = valores;
   }
 
-  getValor(posicion: any, niveles: Array<any>, linea: any, columna: any) {
+  getTipo(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
+      
+  }
+
+  getValor(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
+    /*
     let nivel = posicion;
     if (nivel > niveles.length - 1) {
       //Error posicion inexistente
       return niveles
     } else {
       return niveles[nivel];
-    }
+    }*/
   }
 
   setValor(posicion: any, niveles: Array<any>,value: any ,linea: any, columna: any) {
@@ -39,5 +44,10 @@ export class Arreglo {
         niveles[nivel] = value;
         return niveles;
     }
+  }
+
+  recorrer(): Nodo {
+      let padre = new Nodo("ID", "");
+        return padre
   }
 }

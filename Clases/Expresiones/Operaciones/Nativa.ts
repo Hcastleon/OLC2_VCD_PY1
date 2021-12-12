@@ -109,9 +109,17 @@ export class Nativa extends Operacion implements Expresion {
     }
 
     recorrer(): Nodo {
-        let padre = new Nodo("Aritmetica", "");
+        let padre = new Nodo(this.operador.toString(), "");
 
-        return padre;
+    if (this.operador == Operador.POTENCIA) {
+     // padre.addHijo(new Nodo(this.op_string, ""));
+      padre.addHijo(this.expre1.recorrer());
+      padre.addHijo(this.expre2.recorrer());
+    } else {
+      padre.addHijo(this.expre1.recorrer());
+    }
+
+    return padre;
     }
 
     isInt(n: number) {

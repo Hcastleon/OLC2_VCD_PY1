@@ -27,14 +27,10 @@ class Case {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("CASE", "");
-        padre.addHijo(new Nodo_1.Nodo("case", ""));
         padre.addHijo(this.expresion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(":", ""));
-        let hijo_ins = new Nodo_1.Nodo("Instrucciones", "");
         for (let ins of this.list_inst) {
-            hijo_ins.addHijo(ins.recorrer());
+            padre.addHijo(ins.recorrer());
         }
-        padre.addHijo(hijo_ins);
         return padre;
     }
 }

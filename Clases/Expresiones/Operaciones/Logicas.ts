@@ -61,14 +61,14 @@ export class Logicas extends Operacion implements Expresion {
         }
     }
     recorrer(): Nodo {
-        let padre = new Nodo("Logica", "")
+        let padre = new Nodo(this.op_string, "")
 
         if (this.expreU) {
-            padre.addHijo(new Nodo(this.op_string, ""));
+          //  padre.addHijo(new Nodo(this.op_string, ""));
             padre.addHijo(this.expre1.recorrer())
         } else {
             padre.addHijo(this.expre1.recorrer());
-            padre.addHijo(new Nodo(this.op_string, ""));
+           // padre.addHijo(new Nodo(this.op_string, ""));
             padre.addHijo(this.expre2.recorrer());
         }
 

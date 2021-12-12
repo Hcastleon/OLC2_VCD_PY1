@@ -11,13 +11,12 @@ class Conversion {
         this.column = column;
         this.operador = operador;
     }
-    getTipo(controlador, ts, ts_u) {
-    }
+    getTipo(controlador, ts, ts_u) { }
     getValor(controlador, ts, ts_u) {
         let valor_expre2;
         valor_expre2 = this.expre2.getValor(controlador, ts, ts_u);
         switch (this.operador) {
-            case 'parse':
+            case "parse":
                 if (this.tipo.tipo == Tipo_1.tipo.DOUBLE || this.tipo.tipo == Tipo_1.tipo.ENTERO) {
                     if (typeof valor_expre2 === "string") {
                         return Number(valor_expre2);
@@ -32,22 +31,22 @@ class Conversion {
                     }
                 }
                 break;
-            case 'toint':
+            case "toint":
                 if (typeof valor_expre2 === "number") {
-                    if (!(this.isInt(Number(valor_expre2)))) {
+                    if (!this.isInt(Number(valor_expre2))) {
                         return Math.ceil(valor_expre2);
                     }
                 }
                 break;
-            case 'todouble':
+            case "todouble":
                 if (typeof valor_expre2 === "number") {
                     return this.twoDecimal(valor_expre2);
                 }
                 break;
-            case 'typeof':
-                return typeof (valor_expre2);
+            case "typeof":
+                return typeof valor_expre2;
                 break;
-            case 'tostring':
+            case "tostring":
                 if (!(typeof valor_expre2 === null)) {
                     return String(valor_expre2);
                 }
@@ -57,7 +56,8 @@ class Conversion {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Aritmetica", "");
+        let padre = new Nodo_1.Nodo(this.operador, "");
+        padre.addHijo(this.expre2.recorrer());
         return padre;
     }
     isInt(n) {

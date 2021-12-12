@@ -106,7 +106,15 @@ class Nativa extends Operaciones_1.Operacion {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Aritmetica", "");
+        let padre = new Nodo_1.Nodo(this.operador.toString(), "");
+        if (this.operador == Operaciones_1.Operador.POTENCIA) {
+            // padre.addHijo(new Nodo(this.op_string, ""));
+            padre.addHijo(this.expre1.recorrer());
+            padre.addHijo(this.expre2.recorrer());
+        }
+        else {
+            padre.addHijo(this.expre1.recorrer());
+        }
         return padre;
     }
     isInt(n) {

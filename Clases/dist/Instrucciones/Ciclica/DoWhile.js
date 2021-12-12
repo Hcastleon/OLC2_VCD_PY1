@@ -49,18 +49,18 @@ class DoWhile {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("DoWhile", "");
-        padre.addHijo(new Nodo_1.Nodo("Do", ""));
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_ins = new Nodo_1.Nodo("Intrucciones", "");
+        let padre = new Nodo_1.Nodo("Do", "");
+        //padre.addHijo(new Nodo("Do", ""))
+        // padre.addHijo(new Nodo("{", ""))
+        // let hijo_ins = new Nodo("Intrucciones", "")
         for (let ins of this.lista_ins) {
-            hijo_ins.addHijo(ins.recorrer());
+            padre.addHijo(ins.recorrer());
         }
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
+        // padre.addHijo(new Nodo("}", ""))
         padre.addHijo(new Nodo_1.Nodo("While", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
+        // padre.addHijo(new Nodo("(", ""))
         padre.addHijo(this.condicion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
+        //padre.addHijo(new Nodo(")", ""))
         return padre;
     }
 }

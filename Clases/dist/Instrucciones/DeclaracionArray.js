@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Declaracion = void 0;
 const Errores_1 = require("../AST/Errores");
 const Nodo_1 = require("../AST/Nodo");
-const Simbolos_1 = require("../TablaSimbolos/Simbolos");
 const Tipo_1 = require("../TablaSimbolos/Tipo");
 class Declaracion {
     constructor(tipo, lista_simbolos, linea, columna) {
@@ -23,39 +22,41 @@ class Declaracion {
                 continue;
             }
             if (variable.valor != null) {
-                let valor = variable.valor.getValor(controlador, ts, ts_u);
-                let tipo_valor = variable.valor.getTipo(controlador, ts, ts_u);
-                if (tipo_valor == this.tipo.tipo || (tipo_valor == Tipo_1.tipo.DOUBLE && this.tipo.tipo == Tipo_1.tipo.ENTERO) || (tipo_valor == Tipo_1.tipo.CADENA && this.tipo.tipo == Tipo_1.tipo.CARACTER)) {
-                    let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, this.tipo, variable.identificador, valor);
-                    ts.agregar(variable.identificador, nuevo_sim);
-                    ts_u.agregar(variable.identificador, nuevo_sim);
-                }
-                else {
-                    let error = new Errores_1.Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
-                    controlador.errores.push(error);
-                    controlador.append(`**Error Sematnico -> Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo, en la linea ${this.linea}, y columna ${this.columna} **`);
-                }
-            }
-            else {
-                let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, this.tipo, variable.identificador, null);
+                let valor;
+                let tipo_valor;
+                variable.valor.forEach((element) => {
+                    valor = element.getValor(controlador, ts, ts_u);
+                    tipo_valor = element.getTipo(controlador, ts, ts_u);
+                    if (tipo_valor != this.tipo.tipo || (tipo_valor != Tipo_1.tipo.DOUBLE && this.tipo.tipo != Tipo_1.tipo.ENTERO) || (tipo_valor != Tipo_1.tipo.CADENA && this.tipo.tipo != Tipo_1.tipo.CARACTER)) {
+                        let error = new Errores_1.Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                        controlador.append(`**Error Sematnico -> Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo, en la linea ${this.linea}, y columna ${this.columna} **`);
+                    }
+                });
+            } /*else {
+                let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, null);
                 ts.agregar(variable.identificador, nuevo_sim);
                 ts_u.agregar(variable.identificador, nuevo_sim);
-            }
+            }*/
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("=", "");
-        // let hijo_sim = new Nodo("Simbolos", "")
+        let padre = new Nodo_1.Nodo("Declaracion", "");
+        let hijo_sim = new Nodo_1.Nodo("Simbolos", "");
         padre.addHijo(new Nodo_1.Nodo(this.tipo.stype, ""));
         for (let simb of this.lista_simbolos) {
             let varia = simb;
             if (varia.valor != null) {
-                padre.addHijo(new Nodo_1.Nodo(simb.identificador, ""));
-                // padre.addHijo(new Nodo("=", ""))
+                hijo_sim.addHijo(new Nodo_1.Nodo(simb.identificador, ""));
+                hijo_sim.addHijo(new Nodo_1.Nodo("=", ""));
                 let aux = simb.valor;
-                padre.addHijo(aux.recorrer());
+                hijo_sim.addHijo(aux.recorrer());
+            }
+            else {
+                hijo_sim.addHijo(new Nodo_1.Nodo(";", ""));
             }
         }
+        padre.addHijo(hijo_sim);
         return padre;
     }
 }

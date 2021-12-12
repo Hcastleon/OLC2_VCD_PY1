@@ -31,8 +31,8 @@ export class Identificador implements Expresion {
         } 
     }
     recorrer(): Nodo {
-        let padre = new Nodo("ID", "")
-        padre.addHijo(new Nodo(this.identificador, ""))
+        let padre = new Nodo(this.identificador, "");
+       // padre.addHijo(new Nodo(this.identificador, ""))
         return padre
     }
 

@@ -19,7 +19,8 @@ class Switch {
         let aux = false;
         for (let ins of this.list_cases) {
             let caso = ins;
-            if (this.valor.getValor(controlador, ts, ts_u) == caso.expresion.getValor(controlador, ts, ts_u)) {
+            if (this.valor.getValor(controlador, ts, ts_u) ==
+                caso.expresion.getValor(controlador, ts, ts_u)) {
                 let res = ins.ejecutar(controlador, ts_local, ts_u);
                 if (ins instanceof Break_1.Break || res instanceof Break_1.Break) {
                     aux = true;
@@ -49,19 +50,13 @@ class Switch {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("SWITCH", "");
-        padre.addHijo(new Nodo_1.Nodo("switch", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
         padre.addHijo(this.valor.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_cases = new Nodo_1.Nodo("Casos", "");
         for (let casito of this.list_cases) {
-            let hijito = new Nodo_1.Nodo("Case", "");
-            hijito.addHijo(casito.recorrer());
-            hijo_cases.addHijo(hijito);
+            padre.addHijo(casito.recorrer());
         }
-        padre.addHijo(hijo_cases);
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
+        if (this.defaulteo != null) {
+            padre.addHijo(this.defaulteo.recorrer());
+        }
         return padre;
     }
 }

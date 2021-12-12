@@ -50,17 +50,10 @@ export class While implements Instruccion{
     }
     recorrer(): Nodo {
         let padre = new Nodo("While","")
-        padre.addHijo(new Nodo("while",""))
-        padre.addHijo(new Nodo("(",""))
         padre.addHijo(this.condicion.recorrer())
-        padre.addHijo(new Nodo(")",""))
-        padre.addHijo(new Nodo("{",""))
-        let hijo_inst = new Nodo("Instrucciones","")
         for(let ins of this.lista_ins){
-            hijo_inst.addHijo(ins.recorrer())
+            padre.addHijo(ins.recorrer())
         }
-        padre.addHijo(hijo_inst)
-        padre.addHijo(new Nodo("}",""))
         return padre
     }
     

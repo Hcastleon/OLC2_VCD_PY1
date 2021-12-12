@@ -14,13 +14,13 @@ class Println {
         return null;
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Print", "");
-        padre.addHijo(new Nodo_1.Nodo("pint", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
-        let hijo = new Nodo_1.Nodo("exp", "");
-        hijo.addHijo(this.expresion.recorrer());
-        padre.addHijo(hijo);
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
+        let padre = new Nodo_1.Nodo("PrintLn", "");
+        // padre.addHijo(new Nodo("int",""));
+        // padre.addHijo(new Nodo("(",""));
+        //let hijo =  new Nodo("exp","");
+        padre.addHijo(this.expresion.recorrer());
+        // padre.addHijo(hijo);
+        //padre.addHijo(new Nodo(")",""));
         return padre;
     }
 }

@@ -38,14 +38,10 @@ export class Case implements Instruccion{
     }
     recorrer(): Nodo {
         let padre = new Nodo("CASE","")
-        padre.addHijo(new Nodo("case",""))
         padre.addHijo(this.expresion.recorrer())
-        padre.addHijo(new Nodo(":",""))
-        let hijo_ins=new Nodo("Instrucciones","")
         for(let ins of this.list_inst){
-            hijo_ins.addHijo(ins.recorrer())
+            padre.addHijo(ins.recorrer())
         }
-        padre.addHijo(hijo_ins)
         return padre
     }
 

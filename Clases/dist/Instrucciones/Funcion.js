@@ -62,7 +62,10 @@ class Funcion extends Simbolos_1.Simbolos {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Funcion", "");
+        let padre = new Nodo_1.Nodo(this.identificador, "");
+        this.lista_ints.forEach(element => {
+            padre.addHijo(element.recorrer());
+        });
         return padre;
     }
 }

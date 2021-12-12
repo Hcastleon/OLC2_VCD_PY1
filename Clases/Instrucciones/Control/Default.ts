@@ -34,13 +34,9 @@ export class Default implements Instruccion{
     }
     recorrer(): Nodo {
         let padre = new Nodo("DEFAULT","")
-        padre.addHijo(new Nodo("default",""))
-        padre.addHijo(new Nodo(":",""))
-        let hijo_ins = new Nodo("Instrucciones","")
         for(let ins of this.list_ins){
-            hijo_ins.addHijo(ins.recorrer())
+            padre.addHijo(ins.recorrer())
         }
-        padre.addHijo(hijo_ins)
         return padre
     }
 

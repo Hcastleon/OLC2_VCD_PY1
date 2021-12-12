@@ -33,9 +33,9 @@ export class Asignacion implements Instruccion {
         }
     }
     recorrer(): Nodo {
-        let padre = new Nodo("Asignacion", "");
+        let padre = new Nodo("=", "");
         padre.addHijo(new Nodo(this.identificador, ""))
-        padre.addHijo(new Nodo("=", ""))
+        //padre.addHijo(new Nodo("=", ""))
         padre.addHijo(this.valor.recorrer())
         return padre
     }

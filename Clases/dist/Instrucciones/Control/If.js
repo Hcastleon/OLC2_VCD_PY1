@@ -50,25 +50,17 @@ class If {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("IF", "");
-        padre.addHijo(new Nodo_1.Nodo("if", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
         padre.addHijo(this.condicion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_ifs = new Nodo_1.Nodo("IntruccionesIf", "");
+        let ifs = new Nodo_1.Nodo("IFS", "");
         for (let inst of this.lista_ifs) {
-            hijo_ifs.addHijo(inst.recorrer());
+            ifs.addHijo(inst.recorrer());
         }
-        padre.addHijo(hijo_ifs);
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
-        padre.addHijo(new Nodo_1.Nodo("else", ""));
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_elses = new Nodo_1.Nodo("IntruccionElse", "");
+        padre.addHijo(ifs);
+        let elses = new Nodo_1.Nodo("ELSES", "");
         for (let inst of this.lista_elses) {
-            hijo_elses.addHijo(inst.recorrer());
+            elses.addHijo(inst.recorrer());
         }
-        padre.addHijo(hijo_elses);
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
+        padre.addHijo(elses);
         return padre;
     }
 }

@@ -171,8 +171,44 @@ function addContentTab(text,filename){
     TabActual=tab_completo;
 }
 // -------------------------------------- reporteria -----------------------------------------
-function showModal(){
+function graficando_ast_d(contenido){
+  var DOTstring = obtener_arbol_ast_(contenido);
+  
+  var container = document.getElementById('arbol_ast');
+  var parsedData = vis.network.convertDot(DOTstring);
+  var dataDOT = {
+       nodes: parsedData.nodes,
+       edges: parsedData.edges
+       }
+       console.log(dataDOT);
 
+   var options = {
+   autoResize: true,
+   physics:{
+   stabilization:false
+   },
+   layout: {
+           hierarchical:{
+               levelSeparation: 150,
+               nodeSpacing: 150,
+               parentCentralization: true,
+               direction: 'UD',
+               sortMethod: 'directed' 
+           },
+       }
+   };
+
+   var network = new vis.Network(container, dataDOT, options);
+  
+}
+
+
+function obtener_arbol_ast_(contenido){
+  var grafo = `digraph {
+      node [shape=box, fontsize=15]
+      edge [length=150, color=#ad85e4, fontcolor=black]
+      `+contenido+`}`;
+  return grafo;
 }
 
 
@@ -184,6 +220,7 @@ function ej(){
   document.getElementById(`textOutput-Blank`).value = ejecucion.salida;
   document.getElementById(`tabla_e-Blank`).innerHTML = ejecucion.tabla_e;
   document.getElementById(`tabla_s-Blank`).innerHTML = ejecucion.tabla_s;
+  graficando_ast_d(ejecucion.ast);
 }
 
 Object.defineProperty(exports, "__esModule", { value: true });
@@ -193,8 +230,9 @@ const Controller_1 = require("./Controller");
 const Funcion_1 = require("./Instrucciones/Funcion");
 const Declaracion_1 = require("./Instrucciones/Declaracion");
 const Asignacion_1 = require("./Instrucciones/Asignacion");
+const Nodo_1 = require("./AST/Nodo");
+const Arbol_1 = require("./AST/Arbol");
 const gramatica = require("./Gramar/gramar");
-
 //import * as gramatica from "../Gramar/gramar";
 function ejecutarCodigo(entrada) {
     //traigo todas las raices
@@ -225,5 +263,12 @@ function ejecutarCodigo(entrada) {
             }
         }
     });
-    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0) };
+    let raiz = new Nodo_1.Nodo("Inicio", "");
+    instrucciones.forEach((element) => {
+        raiz.addHijo(element.recorrer());
+    });
+    let grafo = new Arbol_1.Arbol();
+    let res = grafo.tour(raiz);
+
+    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res };
 }

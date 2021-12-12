@@ -26,9 +26,7 @@ export class Return implements Instruccion{
         let padre = new Nodo("Retornar","");
         
         if(this.valor_retur != null){
-            let hijo = new Nodo("Valor","")
-            hijo.addHijo(this.valor_retur.recorrer())
-            padre.addHijo(hijo)
+            padre.addHijo(this.valor_retur.recorrer())
         }
 
         return padre

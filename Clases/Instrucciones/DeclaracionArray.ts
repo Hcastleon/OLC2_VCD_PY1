@@ -36,45 +36,48 @@ export class Declaracion implements Instruccion {
             }
 
             if (variable.valor != null) {
-                let valor = variable.valor.getValor(controlador, ts,ts_u);
-                let tipo_valor = variable.valor.getTipo(controlador, ts,ts_u);
-                
+                let valor;
+                let tipo_valor;
 
-                if (tipo_valor == this.tipo.tipo || (tipo_valor == tipo.DOUBLE && this.tipo.tipo == tipo.ENTERO) || (tipo_valor == tipo.CADENA && this.tipo.tipo == tipo.CARACTER) )  {
-                    let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, valor);
-                    ts.agregar(variable.identificador, nuevo_sim);
-                    ts_u.agregar(variable.identificador,nuevo_sim)
-                        
-                }else{
-                    let error = new Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+               
+                variable.valor.forEach((element: Primitivo) => {
+                     valor = element.getValor(controlador, ts,ts_u);
+                      tipo_valor = element.getTipo(controlador, ts,ts_u);
+
+                    if (tipo_valor != this.tipo.tipo || (tipo_valor != tipo.DOUBLE && this.tipo.tipo != tipo.ENTERO) || (tipo_valor != tipo.CADENA && this.tipo.tipo != tipo.CARACTER) )  {
+                      let error = new Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
                     controlador.errores.push(error)
                     controlador.append(`**Error Sematnico -> Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo, en la linea ${this.linea}, y columna ${this.columna} **` )
+               
                 }
+                });
 
-
-            } else {
+            } /*else {
                 let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, null);
                 ts.agregar(variable.identificador, nuevo_sim);
                 ts_u.agregar(variable.identificador, nuevo_sim);
-            }
+            }*/
         }
 
 
     }
     recorrer(): Nodo {
-        let padre = new Nodo("=", "")
-       // let hijo_sim = new Nodo("Simbolos", "")
+        let padre = new Nodo("Declaracion", "")
+        let hijo_sim = new Nodo("Simbolos", "")
         padre.addHijo(new Nodo(this.tipo.stype, ""))
         for (let simb of this.lista_simbolos) {
             let varia = simb as Simbolos
             if (varia.valor != null) {
-                padre.addHijo(new Nodo(simb.identificador, ""))
-               // padre.addHijo(new Nodo("=", ""))
+                hijo_sim.addHijo(new Nodo(simb.identificador, ""))
+                hijo_sim.addHijo(new Nodo("=", ""))
                 let aux = simb.valor as Primitivo
-                padre.addHijo(aux.recorrer())
-            } 
+                hijo_sim.addHijo(aux.recorrer())
+            } else {
+                hijo_sim.addHijo(new Nodo(";", ""))
+            }
 
         }
+        padre.addHijo(hijo_sim);
         return padre
     }
 }

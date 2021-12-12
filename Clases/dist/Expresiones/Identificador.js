@@ -21,8 +21,8 @@ class Identificador {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("ID", "");
-        padre.addHijo(new Nodo_1.Nodo(this.identificador, ""));
+        let padre = new Nodo_1.Nodo(this.identificador, "");
+        // padre.addHijo(new Nodo(this.identificador, ""))
         return padre;
     }
 }

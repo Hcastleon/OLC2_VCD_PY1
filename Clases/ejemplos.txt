@@ -1,11 +1,11 @@
-
+int var1 = 10;
+int var2 = 20;
 
 void main(){
     println("Probando Manejo de Entornos");
     println("El valor de var1 global es $a");  //10
 
-    int var1 = 10;
-    int var2 = 20;
+    int var1 = 5*5;
     println("El valor de var1 local es $a");  //25
 
     println("Probando expresiones Arítmeticas");
@@ -23,37 +23,45 @@ void main(){
 
     println("Probando expresiones Arítmeticas, Booleanas y Lógicas");
     if ((true == true && false != false) || true == false){
-        println("No entra acá");
-    }
+        println("No entra acá");}
     else{
-        println("Entra acá");
-    }
+        println("Entra acá");}
 
     if (1 == (1 + 1 - (1 * 2 / 2)) && 20.5 == 20.5){
-        println("Entra acá");
-    }
+        println("Entra acá");}
     else{
-        println("No entra acá");
-    }
+        println("No entra acá");}
 
     if ("Hola" == "Mundo"){
-        println("No entra acá");
-    }
+        println("No entra acá");}
     else{
-        println("Entra acá");
-    }
+        println("Entra acá");}
 
     int edad = 62;
     String respuesta = edad < 50 ? "Puede vacunarse" :   edad ==60  ? "Puede vacunarse con riesgo" :   "No puede vacunarse" ;
     println(respuesta);  //No puede vacunarse
-
-    int i = 0;
-    do {
-    println(i);
-    i++;
-    }
-    while (i < 5);
 }
+
+double operacionMatematica(char operador, int valor1, int valor2){
+    switch(operador) {
+        case '+':
+            return valor1 + valor2;
+            break;
+        case '-':
+            return valor1 - valor2;
+            break;
+        case '*':
+            return valor1 * valor2;
+            break;
+        case '/':
+            return valor1 / valor2;
+            break;
+        default:
+            return 0;
+    } 
+}
+
+//
 
 void main (){
   println("Pruebas de Heidy----------------");

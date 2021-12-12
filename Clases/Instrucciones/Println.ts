@@ -27,14 +27,14 @@ export class Println implements Instruccion{
 
     }
     recorrer(): Nodo {
-        let padre = new Nodo("Print","");
-        padre.addHijo(new Nodo("pint",""));
-        padre.addHijo(new Nodo("(",""));
+        let padre = new Nodo("PrintLn","");
+       // padre.addHijo(new Nodo("int",""));
+       // padre.addHijo(new Nodo("(",""));
 
-        let hijo =  new Nodo("exp","");
-        hijo.addHijo(this.expresion.recorrer());
-        padre.addHijo(hijo);
-        padre.addHijo(new Nodo(")",""));
+        //let hijo =  new Nodo("exp","");
+        padre.addHijo(this.expresion.recorrer());
+       // padre.addHijo(hijo);
+//padre.addHijo(new Nodo(")",""));
         return padre
     }
     

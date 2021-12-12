@@ -46,17 +46,17 @@ class Llamada {
     recorrer() {
         let padre = new Nodo_1.Nodo("Llamada", "");
         padre.addHijo(new Nodo_1.Nodo(this.identificador, ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
-        let hijo_para = new Nodo_1.Nodo("Parametros", "");
+        //padre.addHijo(new Nodo("(", ""));
+        //let hijo_para = new Nodo("Parametros", "");
         if (this.parametros != null) {
             for (let para of this.parametros) {
-                let hijo_para2 = new Nodo_1.Nodo("Parametro", "");
-                hijo_para2.addHijo(para.recorrer());
-                hijo_para.addHijo(hijo_para2);
+                // let hijo_para2 = new Nodo("Parametro", "");
+                padre.addHijo(para.recorrer());
+                // hijo_para.addHijo(hijo_para2);
             }
         }
-        padre.addHijo(hijo_para);
-        padre.addHijo(new Nodo_1.Nodo(")", ""));
+        //  padre.addHijo(hijo_para);
+        //  padre.addHijo(new Nodo(")", ""));
         return padre;
     }
     verificarParams(para_llama, para_func, controlador, ts, ts_local, ts_u) {

@@ -31,8 +31,8 @@ class Primitivo {
         return this.primitivo;
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Primitivo", "");
-        padre.addHijo(new Nodo_1.Nodo(this.primitivo.toString(), ""));
+        let padre = new Nodo_1.Nodo(this.primitivo.toString(), "");
+        //padre.addHijo(new Nodo(this.primitivo.toString(),""));
         return padre;
     }
     isInt(n) {

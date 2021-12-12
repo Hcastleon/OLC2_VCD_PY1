@@ -44,20 +44,20 @@ class For {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("For", "");
-        padre.addHijo(new Nodo_1.Nodo("for", ""));
-        padre.addHijo(new Nodo_1.Nodo("(", ""));
+        //  padre.addHijo(new Nodo("for", ""));
+        // padre.addHijo(new Nodo("(", ""));
         padre.addHijo(this.asig_decla.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(";", ""));
+        // padre.addHijo(new Nodo(";", ""));
         padre.addHijo(this.condicion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo(";", ""));
+        //  padre.addHijo(new Nodo(";", ""));
         padre.addHijo(this.actualizacion.recorrer());
-        padre.addHijo(new Nodo_1.Nodo("{", ""));
-        let hijo_ins = new Nodo_1.Nodo("Intrucciones", "");
+        //  padre.addHijo(new Nodo("{", ""));
+        // let hijo_ins = new Nodo("Intrucciones", "");
         for (let ins of this.lista_ins) {
-            hijo_ins.addHijo(ins.recorrer());
+            padre.addHijo(ins.recorrer());
         }
-        padre.addHijo(hijo_ins);
-        padre.addHijo(new Nodo_1.Nodo("}", ""));
+        //padre.addHijo(hijo_ins);
+        //padre.addHijo(new Nodo("}", ""));
         return padre;
     }
 }

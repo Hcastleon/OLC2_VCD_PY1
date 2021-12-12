@@ -56,14 +56,14 @@ class Logicas extends Operaciones_1.Operacion {
         }
     }
     recorrer() {
-        let padre = new Nodo_1.Nodo("Logica", "");
+        let padre = new Nodo_1.Nodo(this.op_string, "");
         if (this.expreU) {
-            padre.addHijo(new Nodo_1.Nodo(this.op_string, ""));
+            //  padre.addHijo(new Nodo(this.op_string, ""));
             padre.addHijo(this.expre1.recorrer());
         }
         else {
             padre.addHijo(this.expre1.recorrer());
-            padre.addHijo(new Nodo_1.Nodo(this.op_string, ""));
+            // padre.addHijo(new Nodo(this.op_string, ""));
             padre.addHijo(this.expre2.recorrer());
         }
         return padre;
