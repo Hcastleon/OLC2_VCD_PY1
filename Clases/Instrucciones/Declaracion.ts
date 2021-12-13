@@ -40,7 +40,7 @@ export class Declaracion implements Instruccion {
                 let tipo_valor = variable.valor.getTipo(controlador, ts,ts_u);
                 
 
-                if (tipo_valor == this.tipo.tipo || (tipo_valor == tipo.DOUBLE && this.tipo.tipo == tipo.ENTERO) || (tipo_valor == tipo.CADENA && this.tipo.tipo == tipo.CARACTER) )  {
+                if (tipo_valor == this.tipo.tipo || ((tipo_valor == tipo.DOUBLE||tipo_valor == tipo.ENTERO) && (this.tipo.tipo == tipo.ENTERO||this.tipo.tipo == tipo.DOUBLE)) || (tipo_valor == tipo.CADENA && this.tipo.tipo == tipo.CARACTER) )  {
                     let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, valor);
                     ts.agregar(variable.identificador, nuevo_sim);
                     ts_u.agregar(variable.identificador,nuevo_sim)

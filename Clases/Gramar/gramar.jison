@@ -6,7 +6,7 @@
 %%
 [ \r\t\n]+                                      {} // ESPACIOS
 \/\/.([^\n])*                                   {} // COMENTARIO SIMPLE
-\/\*(.?\n?)*\*\/                                {} // COMENTARIO MULTILINEA
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]                               {} // COMENTARIO MULTILINEA
 [0-9]+("."[0-9]+)                               return 'decimal'       // NUMERICO
 [0-9]+                                          return 'entero'
 
@@ -346,12 +346,12 @@ PRIMITIVO : entero                  {$$ = new Primitivo(Number($1), @1.first_lin
 DECLARACIONVARIABLE : TIPO LISTAIDS                                          { $$ = new Declaracion($1, $2, @1.first_line, @1.last_column);  }
                     | TIPO id igual EXPRESION                                { $$ = new Declaracion($1, [new Simbolos(1,null, $2, $4)], @1.first_line, @1.last_column); }
                    // | TIPO corizq cordec id                                  { $$ = new Declaracion($1, [new Simbolos(1,null, $4, new Arreglo($1,$1,null))],@1.first_line,@1.first_column); }
-                    | TIPO corizq cordec id igual corizq LISTAARRAY cordec   { $$ = new Declaracion($1, [new Simbolos(1,null, $4, new Arreglo($1,$1,$6))],@1.first_line,@1.first_column); }
+                  //  | TIPO corizq cordec id igual corizq LISTAARRAY cordec   { $$ = new Declaracion($1, [new Simbolos(1,null, $4, new Arreglo($1,$1,$6))],@1.first_line,@1.first_column); }
                     ;
-
+/*
 LISTAARRAY : LISTAARRAY coma EXPRESION                  {  $$ = $1; $$.push($3);}
            | EXPRESION                                  {  $$ = []; $$.push($1);}
-
+*/
 LISTAIDS : LISTAIDS coma id                               {$1.push(new Simbolos(1,null, $3, null)); $$ = $1; }
          | id                                             { $$ = [new Simbolos(1,null, $1, null)]; }
          ;
@@ -388,6 +388,7 @@ SENTENCIA_TERNARIO : EXPRESION ternario EXPRESION dspuntos EXPRESION            
 
 
 SENTENCIA_FOR : for parizq DECLARACIONVARIABLE ptcoma EXPRESION ptcoma EXPRESION pardec llaveizq INSTRUCCIONES llavedec        { $$ = new For($3,$5,$7,$10,@1.first_line, @1.last_column); }
+              | for parizq ASIGNACION_BLOQUE ptcoma EXPRESION ptcoma EXPRESION pardec llaveizq INSTRUCCIONES llavedec        { $$ = new For($3,$5,$7,$10,@1.first_line, @1.last_column); }
               ;
 
 SENTENCIA_FOR_ESP : for id in EXPRESION llaveizq INSTRUCCIONES llavedec        { $$ = new ForEsp(new Simbolos(1,null, $2, null),$4,$6,@1.first_line, @1.last_column); }
@@ -410,13 +411,13 @@ LISTAEXPRESIONES: LISTAEXPRESIONES coma EXPRESION                            { $
 SENTENCIA_RETURN : return EXPRESION                                             { $$ = new Return($2);}
                  | return                                                       { $$ = new Return(null);}
                  ;
-
+/*
 SENTENCIA_ARREGLO : new TIPO LISTADIMENSIONES                                { $$ = new crearArreglo($2.tipo,$2.valor,$3,@1.first_line,@1.first_column);}
                   | new id LISTADIMENSIONES                                  { $$ = new crearArreglo(Tipo.ID,$2,$3,@1.first_line,@1.first_column);}
                   ;
 
 LISTADIMENSIONES : LISTADIMENSIONES corizq EXPRESION cordec                         { $$ = $1; $$.push($3); }
                  | corizq EXPRESION cordec                                          { $$ = []; $$.push($2); }
-                 ;
+                 ;*/
 
 %%

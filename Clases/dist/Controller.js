@@ -42,7 +42,6 @@ class Controller {
                             <td>${error.linea}</td>
                             <td>${error.column}</td>
                             <td>${error.descripcion}</td>
-                            <td>Global</td>
                            </tr>`;
         }
         return cuerpotabla;
