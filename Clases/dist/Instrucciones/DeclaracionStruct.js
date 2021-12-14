@@ -23,9 +23,9 @@ class DeclaracionStruct {
             //console.log(sim_struct.lista_param);
             if (this.verificarParams(this.lista_valores, sim_struct.lista_params, controlador, ts, ts_local, ts_u)) {
                 let r = sim_struct === null || sim_struct === void 0 ? void 0 : sim_struct.ejecutar(controlador, ts_local, ts_u);
-                let nuevo_sim = new Simbolos_1.Simbolos(1, new Tipo_1.Tipo("STRUCT"), this.id2, r);
-                ts_local.agregar(this.id2, nuevo_sim);
-                ts_u.agregar(this.id2, nuevo_sim);
+                /*  let nuevo_sim = new Simbolos(1, new Tipo("STRUCT"), this.id2, r);
+                        ts_local.agregar(this.id2, nuevo_sim);
+                        ts_u.agregar(this.id2, nuevo_sim);*/
                 if (r != null) {
                     return r;
                 }
@@ -33,8 +33,6 @@ class DeclaracionStruct {
         }
     }
     verificarParams(para_llama, para_func, controlador, ts, ts_local, ts_u) {
-        console.log(para_func);
-        console.log(para_llama);
         if (para_llama.length == (para_func === null || para_func === void 0 ? void 0 : para_func.length)) {
             let aux;
             let id_aux;
@@ -43,7 +41,7 @@ class DeclaracionStruct {
             let tipo_valor;
             let valor_aux;
             for (let i = 0; i < para_llama.length; i++) {
-                aux = para_func[i].lista_simbolos[0];
+                aux = para_func[i];
                 id_aux = aux.identificador;
                 tipo_axu = aux.tipo.tipo;
                 exp_aux = para_llama[i];

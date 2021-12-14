@@ -4,74 +4,77 @@ import { Controller } from "../Controller";
 import { Expresion } from "../Interfaces/Expresion";
 import { Instruccion } from "../Interfaces/Instruccion";
 import { TablaSim } from "../TablaSimbolos/TablaSim";
-import { Tipo, tipo } from '../TablaSimbolos/Tipo'
-import { Simbolos } from '../TablaSimbolos/Simbolos'
-import { Arreglo } from '../Expresiones/Arreglo'
-import { Struct } from '../Expresiones/Struct'
-import { Identificador } from '../Expresiones/Identificador'
+import { Tipo, tipo } from "../TablaSimbolos/Tipo";
+import { Simbolos } from "../TablaSimbolos/Simbolos";
+import { Arreglo } from "../Expresiones/Arreglo";
+import { Struct } from "../Expresiones/Struct";
+import { Identificador } from "../Expresiones/Identificador";
 
 export class AccesoStruct implements Expresion {
+  //public accesos: Array<string>;
+  public acceso1: Identificador;
+  public acceso2: Identificador;
+  // public identificador: string;
+  public linea: number;
+  public column: number;
 
-    //public accesos: Array<string>;
-    public acceso1: Identificador;
-    public acceso2: Identificador;
-   // public identificador: string;
-    public linea: number;
-    public column: number;
+  constructor(
+    acceso1: Identificador,
+    acceso2: Identificador,
+    linea: any,
+    columna: any
+  ) {
+    this.acceso1 = acceso1;
+    this.acceso2 = acceso2;
+    this.linea = linea;
+    this.column = columna;
+  }
 
-    constructor(
-        acceso1: Identificador,
-        acceso2: Identificador,
-        linea: any,
-        columna: any
-    ) {
-        this.acceso1 = acceso1;
-        this.acceso2 = acceso2;
-        this.linea = linea;
-        this.column = columna;
+  getTipo(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
+    // let valor = this.getValor(controlador,ts,ts_u);
+    let id_exists = ts.getSimbolo(this.acceso1.identificador);
+    if (id_exists != null) {
+      return id_exists.tipo.tipo;
     }
+  }
 
-    
-    getTipo(controlador: Controller, ts: TablaSim, ts_u: TablaSim){
-       // let valor = this.getValor(controlador,ts,ts_u);
-        let id_exists = ts.getSimbolo(this.acceso1.identificador);
-        if (id_exists != null) {
-            return id_exists.tipo.tipo;
-        }
-    }
-
-    getValor(controlador: Controller, ts: TablaSim, ts_u: TablaSim){
-        //busco en global
-        let tabla: TablaSim = ts;
-        while (tabla.ant != null) {
-            tabla = tabla.ant;
-        }
-        let struct = tabla.getSimbolo(this.acceso1.identificador);
-        if(struct != null){
+  getValor(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
+    //busco en global
+    let entornos = ts.sig;
+    let res;
+    if(entornos instanceof Array){
+        entornos.forEach(entorno => {
+        if(entorno.nombre == this.acceso1.identificador){
             
-            let entornoStruct = struct.valor.entorno;
-
-            let variable = entornoStruct.getSimbolo(this.acceso2.identificador);
-            return variable.valor;
-        }
-        
-
-/*
-        if (struct != null){
-            if(struct instanceof Struct){
-                //return simbolo.getValor(controlador, ts, ts_u);
+            let valor = entorno.getSimbolo(this.acceso2.identificador);
+            
+            if(valor != null){
+                console.log("es: "+valor.valor);
+                res = valor.valor
             }
-        }*/
+            return valor
+        }
+        return null
+    });
     }
+    return res
 
-    getValorRecursivo(obj: Struct, accesos: Array<string>, controlador: Controller, ts: TablaSim, ts_u: TablaSim ){
-        let temporales = accesos.slice();
-        let acceso = temporales[0];
-        temporales.shift();
-      /*  if(obj.entorno.tabla.size == 0){
+  }
+
+  getValorRecursivo(
+    obj: Struct,
+    accesos: Array<string>,
+    controlador: Controller,
+    ts: TablaSim,
+    ts_u: TablaSim
+  ) {
+    let temporales = accesos.slice();
+    let acceso = temporales[0];
+    temporales.shift();
+    /*  if(obj.entorno.tabla.size == 0){
             obj.ejecutar(controlador, ts, ts_u);
         }*/
-
+    /*
         if(!obj.entorno.existeEnActual(acceso)){
             let error = new Errores(
                 "Semantico",
@@ -100,13 +103,12 @@ export class AccesoStruct implements Expresion {
             }
         }else{
             return simbolo?.valor;
-        }
-    }
+        }*/
+  }
 
-    recorrer(): Nodo {
-        let padre = new Nodo("accesoStruct", "");
+  recorrer(): Nodo {
+    let padre = new Nodo("accesoStruct", "");
 
-        return padre;
-    }
-
+    return padre;
+  }
 }

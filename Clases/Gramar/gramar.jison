@@ -150,6 +150,7 @@
     const {Llamada} = require("../Instrucciones/Llamada");
     const {Return} = require("../Instrucciones/Transferencia/Return");
     const {AsignacionArray} = require("../Instrucciones/AsignacionArray");
+    const {AsignacionStruct} = require("../Instrucciones/AsignacionStruct");
     const {Arreglo} = require("../Expresiones/Arreglo");
     const {Errores} = require("../AST/Errores");
     const {Struct} = require("../Expresiones/Struct");
@@ -210,7 +211,7 @@ FUNCION_BLOQUE : void id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   
                | TIPO id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$= new Funcion(3, $1, $2, $3, false, $5, @1.first_line, @1.last_column); }
                | id id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec     { $$ = $5; }
                | void main parizq pardec llaveizq INSTRUCCIONES llavedec        { $$= new Funcion(3, new Tipo('VOID'), $2, [], true, $6, @1.first_line, @1.last_column); }
-               | struct id llaveizq LISTA_STRUCT llavedec                       { $$ = new Struct($2, $4,$4,@1.first_line, @1.last_column);}
+               | struct id llaveizq LISTPARAMETROS llavedec                       { $$= new Struct(3, new Tipo('STRUCT'), $2, $4, true, [], @1.first_line, @1.last_column);}
                ;
 
 LISTA_STRUCT : LISTA_STRUCT coma DECLA_STRUCT                                { $$ = $1; $$.push($3);}
@@ -292,7 +293,7 @@ EXPRESION : ARITMETICA                                          { $$ = $1; }
 LISTEXPRESIONES: LISTEXPRESIONES coma EXPRESION                 { $$ = $1; $$.push($3); }
                 | EXPRESION                                     { $$ = []; $$.push($1); }
                 ;*/
-ACCESO_STRUCT : EXPRESION punto id                          { $$ = new AccesoStruct($2,new Identificador($2, @1.first_line, @1.last_column),@1.first_line,@1.last_column); }
+ACCESO_STRUCT : EXPRESION punto id                          { $$ = new AccesoStruct($1,new Identificador($3, @1.first_line, @1.last_column),@1.first_line,@1.last_column); }
               ;
 
 
@@ -389,7 +390,7 @@ LISTAIDS : LISTAIDS coma id                               {$1.push(new Simbolos(
          ;
 
 ASIGNACION_BLOQUE : id igual EXPRESION                                     {$$ = new Asignacion($1, $3, @1.first_line, @1.last_column);  }
-                //  | EXPRESION punto id igual EXPRESION                     {$$ = []; console.log("asignacion valor de instancia"); }
+                  | id punto id igual EXPRESION                     {$$ = new AsignacionStruct(new Identificador($1, @1.first_line, @1.last_column), new Identificador($3, @1.first_line, @1.last_column),$5, @1.first_line, @1.last_column); }
                   | id corizq EXPRESION cordec igual EXPRESION             { $$ = []; $$.push(new AsignacionArray($1,$3,$6,@1.first_line,@1.first_column)); }
                   ;
 

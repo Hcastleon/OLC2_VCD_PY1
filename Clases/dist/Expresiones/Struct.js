@@ -3,14 +3,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Struct = void 0;
 const Nodo_1 = require("../AST/Nodo");
 const Simbolos_1 = require("../TablaSimbolos/Simbolos");
-const TablaSim_1 = require("../TablaSimbolos/TablaSim");
-const Tipo_1 = require("../TablaSimbolos/Tipo");
 class Struct extends Simbolos_1.Simbolos {
-    constructor(id, declaraciones, lista_params, linea, columna) {
-        super(1, new Tipo_1.Tipo('STRUCT'), id, null, lista_params, false);
-        this.identificador = id;
-        this.declaraciones = declaraciones;
-        this.entorno = new TablaSim_1.TablaSim(null, "");
+    constructor(simbolo, tipo, identificador, lista_params, metodo, lista_ints, linea, columna) {
+        super(simbolo, tipo, identificador, null, lista_params, metodo);
+        this.lista_ints = lista_ints;
         this.linea = linea;
         this.column = columna;
     }

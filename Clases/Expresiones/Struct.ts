@@ -8,25 +8,24 @@ import { TablaSim } from "../TablaSimbolos/TablaSim";
 import { tipo, Tipo } from "../TablaSimbolos/Tipo";
 
 export class Struct extends Simbolos implements Instruccion {
-    public instruccione: Array<Instruccion>;
-    //public entorno: TablaSim;
-    public identificador: string;
-    public linea: number;
-    public column: number;
+    public lista_ints: Array<Instruccion>;
+  public linea: number;
+  public column: number;
 
     constructor(
-        id:string,
-        declaraciones: any,
-        lista_params:any,
-        linea: any,
-        columna: any
+        simbolo: number,
+    tipo: Tipo,
+    identificador: string,
+    lista_params: any,
+    metodo: any,
+    lista_ints: any,
+    linea: any,
+    columna: any
     ) {
-        super(1, new Tipo('STRUCT'), id, null, lista_params, false);
-        this.identificador = id;
-        this.declaraciones = declaraciones;
-        this.entorno = new TablaSim(null, "");
-        this.linea = linea;
-        this.column = columna;
+        super(simbolo, tipo, identificador, null, lista_params, metodo);
+        this.lista_ints = lista_ints;
+    this.linea = linea;
+    this.column = columna;
     }
 
     agregarSimboloStruct(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
