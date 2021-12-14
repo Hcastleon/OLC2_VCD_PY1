@@ -36,7 +36,7 @@ export class AsignacionArray implements Instruccion{
                 let dimension = this.niveles.getValor(controlador,ts,ts_u);
                 let valor = this.valor.getValor(controlador, ts, ts_u);
                 let array:Arreglo = simbolo.getValor();
-                array.valores = array.setValor(dimension, array.valores, valor, this.linea, this.column);
+               // array.valores = array.setValor(dimension, array.valores, valor, this.linea, this.column);
                 simbolo.valor = array;
                 
                 ts.getSimbolo(this.identificador)?.setValor(simbolo);

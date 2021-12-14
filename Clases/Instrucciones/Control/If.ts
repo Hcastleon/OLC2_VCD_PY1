@@ -38,8 +38,6 @@ export class If implements Instruccion{
                     if(ins instanceof Break || res != null){
                         return res;
                     }
-
-                    
                 }
             }else{
                 for(let ins of this.lista_elses){

@@ -6,6 +6,7 @@ const Nodo_1 = require("../AST/Nodo");
 const Simbolos_1 = require("../TablaSimbolos/Simbolos");
 const TablaSim_1 = require("../TablaSimbolos/TablaSim");
 const Break_1 = require("./Transferencia/Break");
+const Continue_1 = require("./Transferencia/Continue");
 const Return_1 = require("./Transferencia/Return");
 class Funcion extends Simbolos_1.Simbolos {
     constructor(simbolo, tipo, identificador, lista_params, metodo, lista_ints, linea, columna) {
@@ -40,22 +41,28 @@ class Funcion extends Simbolos_1.Simbolos {
         for (let ins of this.lista_ints) {
             let result = ins.ejecutar(controlador, ts_local, ts_u);
             if (result != null) {
-                if (ins instanceof Break_1.Break || result instanceof Break_1.Break) {
-                    continue;
-                }
-                if (ins instanceof Return_1.Return) {
+                if (result instanceof Errores_1.Errores) {
                     return result;
                 }
-                if (tipo_aux == "VOID") {
-                    return;
-                }
                 else {
-                    if (typeof result == tipo_aux) {
+                    if (ins instanceof Break_1.Break || result instanceof Continue_1.Continue) {
+                        let error = new Errores_1.Errores("Semantico", ` No se acepta el tipo en el entorno`, this.linea, this.column);
+                        controlador.errores.push(error);
+                    }
+                    if (ins instanceof Return_1.Return) {
                         return result;
                     }
+                    if (tipo_aux == "VOID") {
+                        return;
+                    }
                     else {
-                        let error = new Errores_1.Errores("Semantico", ` La variable no concuerda con el tipo`, this.linea, this.column);
-                        controlador.errores.push(error);
+                        if (typeof result == tipo_aux) {
+                            return result;
+                        }
+                        else {
+                            let error = new Errores_1.Errores("Semantico", ` La funcion no concuerda con el tipo`, this.linea, this.column);
+                            controlador.errores.push(error);
+                        }
                     }
                 }
             }

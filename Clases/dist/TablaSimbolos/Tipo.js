@@ -12,6 +12,7 @@ var tipo;
     tipo[tipo["VOID"] = 6] = "VOID";
     tipo[tipo["ARRAY"] = 7] = "ARRAY";
     tipo[tipo["MAIN"] = 8] = "MAIN";
+    tipo[tipo["STRUCT"] = 9] = "STRUCT";
 })(tipo = exports.tipo || (exports.tipo = {}));
 class Tipo {
     constructor(stype) {
@@ -39,6 +40,9 @@ class Tipo {
         }
         else if (stype == "ARRAY") {
             return tipo.ARRAY;
+        }
+        else if (stype == "STRUCT") {
+            return tipo.STRUCT;
         }
         return tipo.CADENA;
     }

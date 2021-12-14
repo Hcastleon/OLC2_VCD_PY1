@@ -12,16 +12,14 @@ const gramatica = require("./Gramar/gramar");
 //import * as gramatica from "../Gramar/gramar";
 function ejecutarCodigo(entrada) {
     //traigo todas las raices
-    const instrucciones = gramatica.parse(entrada);
+    const salida = gramatica.parse(entrada);
+    const instrucciones = salida.arbol;
+    let listaErrores = salida.errores;
     let controlador = new Controller_1.Controller();
     const entornoGlobal = new TablaSim_1.TablaSim(null, "Global");
     let entornoU = new TablaSim_1.TablaSim(null, "Global");
+    controlador.errores = listaErrores.slice();
     const ast = new Ast_1.AST(instrucciones);
-    //recorro todas las raices  RECURSIVA
-    /*
-    for (let element of instrucciones) {
-      element.ejecutar(controlador, entornoGlobal, entornoU);
-    }*/
     instrucciones.forEach((ins) => {
         if (ins instanceof Funcion_1.Funcion) {
             let funcion = ins;

@@ -1,12 +1,15 @@
 /*
     LEXICO
 */
+%{
+    let listaErrores =[];
+%}
 %lex
 %options case-sensitive
 %%
 [ \r\t\n]+                                      {} // ESPACIOS
 \/\/.([^\n])*                                   {} // COMENTARIO SIMPLE
-[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]                               {} // COMENTARIO MULTILINEA
+[/][*][^*]*[*]+([^/*][^*]*[*]+)*[/]             {} // COMENTARIO MULTILINEA
 [0-9]+("."[0-9]+)                               return 'decimal'       // NUMERICO
 [0-9]+                                          return 'entero'
 
@@ -114,7 +117,7 @@
 
 [A-Za-z_\ñ\Ñ][A-Za-z_0-9\ñ\Ñ]*                  return 'id'
 <<EOF>>                                         return 'EOF'
-.                                               { console.log("error lexico"); }//ERRORES LEXICOS
+.                                               { listaErrores.push( new Errores('Lexico', `El caracter no portenece al lenguaje ${yytext}`,  yylloc.first_line, yylloc.first_column)); }//ERRORES LEXICOS
 /lex
 
 //SECCION DE IMPORTS
@@ -148,6 +151,10 @@
     const {Return} = require("../Instrucciones/Transferencia/Return");
     const {AsignacionArray} = require("../Instrucciones/AsignacionArray");
     const {Arreglo} = require("../Expresiones/Arreglo");
+    const {Errores} = require("../AST/Errores");
+    const {Struct} = require("../Expresiones/Struct");
+    const {DeclaracionStruct} = require("../Instrucciones/DeclaracionStruct");
+    const {AccesoStruct} = require("../Expresiones/AccesoStruct");
     const {AccesoArreglo} = require("../Expresiones/AccesoArreglo");
 %}
 
@@ -186,24 +193,31 @@
     SINTACTICO
 */
 
-INICIO : CONTENIDO EOF         { $$ = $1; return $$; }
+INICIO : CONTENIDO EOF         { $$ = $1; return { arbol:$$, errores: listaErrores}; }
        ;
 /*  ------------------------------  CUERPO DE TRABAJO --------------------------------- */
 
-CONTENIDO : CONTENIDO BLOQUE_GB                  { $1.push($2); $$ = $1; } 
-          | BLOQUE_GB                            { $$ = [$1]; }
+CONTENIDO : CONTENIDO BLOQUE_GB                  { if($2!=null){$1.push($2);} $$ = $1; }
+          | BLOQUE_GB                            { if($$!=null){$$ = [$1];} }
           ;
 
 BLOQUE_GB : DECLARACIONVARIABLE ptcoma                { $$ = $1; }
           | FUNCION_BLOQUE                            { $$ = $1; }
+          | error                                     { $$ = null; listaErrores.push(new Errores('Sintactico', `El caracter no portenece al lenguaje ${yytext}`, this._$.first_line, this._$.first_column));}
           ;
 
 FUNCION_BLOQUE : void id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$= new Funcion(3, new Tipo('VOID'), $2, $3, true, $5, @1.first_line, @1.last_column); }
                | TIPO id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec   { $$= new Funcion(3, $1, $2, $3, false, $5, @1.first_line, @1.last_column); }
                | id id PARAMETROS_SENTENCIA llaveizq INSTRUCCIONES llavedec     { $$ = $5; }
-               | void main parizq pardec llaveizq INSTRUCCIONES llavedec        {  $$= new Funcion(3, new Tipo('VOID'), $2, [], true, $6, @1.first_line, @1.last_column); }
+               | void main parizq pardec llaveizq INSTRUCCIONES llavedec        { $$= new Funcion(3, new Tipo('VOID'), $2, [], true, $6, @1.first_line, @1.last_column); }
+               | struct id llaveizq LISTA_STRUCT llavedec                       { $$ = new Struct($2, $4,$4,@1.first_line, @1.last_column);}
                ;
 
+LISTA_STRUCT : LISTA_STRUCT coma DECLA_STRUCT                                { $$ = $1; $$.push($3);}
+             | DECLA_STRUCT                                                   { $$ = []; $$.push($1);} 
+             ;
+DECLA_STRUCT : TIPO id                                                    {$$ = new Declaracion($1, [new Simbolos(1,null, $2, null)], @1.first_line, @1.last_column); }
+             ;
 
 PARAMETROS_SENTENCIA: parizq LISTPARAMETROS pardec                                { $$ = $2; }
                     | parizq pardec                                               { $$ = []; }
@@ -226,8 +240,8 @@ TIPO : string                                       { $$ = new Tipo('STRING'); }
      | boolean                                      { $$ = new Tipo('BOOLEAN'); }
      ;
 
-INSTRUCCIONES : INSTRUCCIONES INSTRUCCION           { $1.push($2); $$ = $1; }
-              | INSTRUCCION                         { $$ = [$1]; }
+INSTRUCCIONES : INSTRUCCIONES INSTRUCCION           { if($2!=null){$1.push($2);} $$ = $1; }
+              | INSTRUCCION                         { if($$!=null){$$ = [$1];} }
               ;
 
 INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
@@ -243,6 +257,7 @@ INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
             | UNARIA ptcoma                         { $$ = $1; }
             | SENTENCIA_RETURN ptcoma               { $$ = $1; }
             | LLAMADA ptcoma                        { $$ = $1; }
+            | error                                 { $$=null; listaErrores.push(new Errores('Sintactico', `No se esperaba el token ${yytext}`, this._$.first_line, this._$.first_column)); }
             ;
 
 /*
@@ -265,17 +280,33 @@ EXPRESION : ARITMETICA                                          { $$ = $1; }
           | UNARIA                                              { $$ = $1; }
           | parizq EXPRESION pardec                             { $$ = $2; }
           | PRIMITIVO                                           { $$ = $1; }
-          | punto id                                            { $$ = $1; }
-          | punto id corizq EXPRESION cordec                    { $$ = $1; }
+        //  | punto id                                            { $$ = $1; }
+        //  | punto id corizq EXPRESION cordec                    { $$ = $1; }
           | SENTENCIA_TERNARIO                                  { $$ = $1; }
           | LLAMADA                                             { $$ = $1; }
-          | ID corizq EXPRESION cordec                          { $$ = new AccesoArreglo($1,$3,@1.first_line,@1.first_column); }
-          
+          | ACCESO_STRUCT                                       { $$ = $1; }
+          | corizq LISTAARRAY cordec                            { $$ = new Arreglo($2); }
+          | ACCESO_ARREGLO                                      { $$ = $1; }
           ;
-
+/*
 LISTEXPRESIONES: LISTEXPRESIONES coma EXPRESION                 { $$ = $1; $$.push($3); }
                 | EXPRESION                                     { $$ = []; $$.push($1); }
-                ;
+                ;*/
+ACCESO_STRUCT : EXPRESION punto id                          { $$ = new AccesoStruct($2,new Identificador($2, @1.first_line, @1.last_column),@1.first_line,@1.last_column); }
+              ;
+
+
+ACCESO_ARREGLO : EXPRESION corizq EXPRESION cordec                            {$$= new AccesoArreglo($1,$3,null,false,null,null,@1.first_line,@1.last_column);}
+               | EXPRESION corizq EXPRESION dspuntos EXPRESION cordec         {$$= new AccesoArreglo($1,$3,$5,true,null,null,@1.first_line,@1.last_column); }
+               | EXPRESION corizq EXPRESION dspuntos end cordec               {$$= new AccesoArreglo($1,$3,null,true,null,$5,@1.first_line,@1.last_column); }
+               | EXPRESION corizq begin dspuntos EXPRESION cordec             {$$= new AccesoArreglo($1,null,$5,true,$3,null,@1.first_line,@1.last_column); }
+               | EXPRESION corizq begin dspuntos end cordec                   {$$= new AccesoArreglo($1,null,null,true,$3,$5,@1.first_line,@1.last_column); }
+               ;
+/*
+ACCESOS       : ACCESOS punto id                                { $$ = $1; $$.push($3); }
+              | id                                             { $$ = []; $$.push($1); }
+              ;*/
+
 
 ARITMETICA : EXPRESION mas EXPRESION                            { $$ = new Aritmetica($1, $3, false ,'+', @1.first_line,@1.last_column);}
            | EXPRESION menos EXPRESION                          { $$ = new Aritmetica($1, $3, false ,'-', @1.first_line,@1.last_column); }
@@ -345,19 +376,20 @@ PRIMITIVO : entero                  {$$ = new Primitivo(Number($1), @1.first_lin
 
 DECLARACIONVARIABLE : TIPO LISTAIDS                                          { $$ = new Declaracion($1, $2, @1.first_line, @1.last_column);  }
                     | TIPO id igual EXPRESION                                { $$ = new Declaracion($1, [new Simbolos(1,null, $2, $4)], @1.first_line, @1.last_column); }
-                   // | TIPO corizq cordec id                                  { $$ = new Declaracion($1, [new Simbolos(1,null, $4, new Arreglo($1,$1,null))],@1.first_line,@1.first_column); }
-                  //  | TIPO corizq cordec id igual corizq LISTAARRAY cordec   { $$ = new Declaracion($1, [new Simbolos(1,null, $4, new Arreglo($1,$1,$6))],@1.first_line,@1.first_column); }
+                    | TIPO corizq cordec id igual corizq LISTAARRAY cordec   { $$ = new Declaracion($1, [new Simbolos(1,null, $4, new Arreglo($7))],@1.first_line,@1.first_column);}
+                    | id id igual id parizq LISTAARRAY pardec                { $$ = new DeclaracionStruct($1,$2,$4,$6,@1.first_line,@1.first_column);}
                     ;
-/*
+
 LISTAARRAY : LISTAARRAY coma EXPRESION                  {  $$ = $1; $$.push($3);}
            | EXPRESION                                  {  $$ = []; $$.push($1);}
-*/
+           ;
+
 LISTAIDS : LISTAIDS coma id                               {$1.push(new Simbolos(1,null, $3, null)); $$ = $1; }
          | id                                             { $$ = [new Simbolos(1,null, $1, null)]; }
          ;
 
 ASIGNACION_BLOQUE : id igual EXPRESION                                     {$$ = new Asignacion($1, $3, @1.first_line, @1.last_column);  }
-                  | EXPRESION punto id igual EXPRESION                     {$$ = []; console.log("asignacion valor de instancia"); }
+                //  | EXPRESION punto id igual EXPRESION                     {$$ = []; console.log("asignacion valor de instancia"); }
                   | id corizq EXPRESION cordec igual EXPRESION             { $$ = []; $$.push(new AsignacionArray($1,$3,$6,@1.first_line,@1.first_column)); }
                   ;
 

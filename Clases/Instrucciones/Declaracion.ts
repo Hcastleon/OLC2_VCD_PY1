@@ -6,6 +6,7 @@ import { Simbolos } from "../TablaSimbolos/Simbolos";
 import { TablaSim } from "../TablaSimbolos/TablaSim";
 import { tipo, Tipo } from "../TablaSimbolos/Tipo";
 import { Primitivo } from "../Expresiones/Primitivo";
+import { Arreglo } from "../Expresiones/Arreglo";
 
 export class Declaracion implements Instruccion {
 
@@ -30,35 +31,40 @@ export class Declaracion implements Instruccion {
             // Se verifica que la varaible no exista en la tabla de simbolos actual
             if (ts.existeEnActual(variable.identificador)) {
                 let error = new Errores('Semantico', `La variable ${variable.identificador}, ya se declaro anteriormente`, this.linea, this.columna);
-                controlador.errores.push(error)
-                controlador.append(`**Error Sematnico -> La variable ${variable.identificador},  ya se declaro anteriormente en la linea ${this.linea}, y columna ${this.columna} **`)
+                controlador.errores.push(error);
                 continue;
             }
 
             if (variable.valor != null) {
-                let valor = variable.valor.getValor(controlador, ts,ts_u);
-                let tipo_valor = variable.valor.getTipo(controlador, ts,ts_u);
-                
-
-                if (tipo_valor == this.tipo.tipo || ((tipo_valor == tipo.DOUBLE||tipo_valor == tipo.ENTERO) && (this.tipo.tipo == tipo.ENTERO||this.tipo.tipo == tipo.DOUBLE)) || (tipo_valor == tipo.CADENA && this.tipo.tipo == tipo.CARACTER) )  {
-                    let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, valor);
-                    ts.agregar(variable.identificador, nuevo_sim);
-                    ts_u.agregar(variable.identificador,nuevo_sim)
-                        
+                if( variable.valor instanceof Arreglo){
+                    let valor = variable.valor.getValor(controlador, ts,ts_u);
+                    let tipo_valor = variable.valor.getTipoArreglo(controlador, ts,ts_u,this.tipo);
+                    if (tipo_valor == this.tipo.tipo)  {
+                        let nuevo_sim = new Simbolos(variable.simbolo, new Tipo("ARRAY"), variable.identificador, valor);
+                        ts.agregar(variable.identificador, nuevo_sim);
+                        ts_u.agregar(variable.identificador,nuevo_sim)
+                    }else{
+                        let error = new Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                    }
                 }else{
-                    let error = new Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
-                    controlador.errores.push(error)
-                    controlador.append(`**Error Sematnico -> Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo, en la linea ${this.linea}, y columna ${this.columna} **` )
+                    let valor = variable.valor.getValor(controlador, ts,ts_u);
+                    let tipo_valor = variable.valor.getTipo(controlador, ts,ts_u);
+                    if (tipo_valor == this.tipo.tipo || ((tipo_valor == tipo.DOUBLE||tipo_valor == tipo.ENTERO) && (this.tipo.tipo == tipo.ENTERO||this.tipo.tipo == tipo.DOUBLE)) || (tipo_valor == tipo.CADENA && this.tipo.tipo == tipo.CARACTER) )  {
+                        let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, valor);
+                        ts.agregar(variable.identificador, nuevo_sim);
+                        ts_u.agregar(variable.identificador,nuevo_sim)
+                    }else{
+                        let error = new Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                    }
                 }
-
-
             } else {
                 let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, null);
                 ts.agregar(variable.identificador, nuevo_sim);
                 ts_u.agregar(variable.identificador, nuevo_sim);
             }
         }
-
 
     }
     recorrer(): Nodo {

@@ -25,7 +25,7 @@ class AsignacionArray {
                 let dimension = this.niveles.getValor(controlador, ts, ts_u);
                 let valor = this.valor.getValor(controlador, ts, ts_u);
                 let array = simbolo.getValor();
-                array.valores = array.setValor(dimension, array.valores, valor, this.linea, this.column);
+                // array.valores = array.setValor(dimension, array.valores, valor, this.linea, this.column);
                 simbolo.valor = array;
                 (_a = ts.getSimbolo(this.identificador)) === null || _a === void 0 ? void 0 : _a.setValor(simbolo);
             }

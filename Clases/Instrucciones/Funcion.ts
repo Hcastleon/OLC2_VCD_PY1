@@ -7,6 +7,7 @@ import { Simbolos } from "../TablaSimbolos/Simbolos";
 import { TablaSim } from "../TablaSimbolos/TablaSim";
 import { tipo, Tipo } from "../TablaSimbolos/Tipo";
 import { Break } from "./Transferencia/Break";
+import { Continue } from "./Transferencia/Continue";
 import { Return } from "./Transferencia/Return";
 
 export class Funcion extends Simbolos implements Instruccion {
@@ -56,25 +57,35 @@ export class Funcion extends Simbolos implements Instruccion {
     for (let ins of this.lista_ints) {
       let result = ins.ejecutar(controlador, ts_local, ts_u);
       if (result != null) {
-        if (ins instanceof Break || result instanceof Break) {
-          continue;
-        }
-        if (ins instanceof Return) {
+        if (result instanceof Errores) {
           return result;
-        }
-        if (tipo_aux == "VOID") {
-          return;
         } else {
-          if (typeof result == tipo_aux) {
-            return result;
-          } else {
+          if (ins instanceof Break || result instanceof Continue) {
             let error = new Errores(
               "Semantico",
-              ` La variable no concuerda con el tipo`,
+              ` No se acepta el tipo en el entorno`,
               this.linea,
               this.column
             );
             controlador.errores.push(error);
+          }
+          if (ins instanceof Return) {
+            return result;
+          }
+          if (tipo_aux == "VOID") {
+            return;
+          } else {
+            if (typeof result == tipo_aux) {
+              return result;
+            } else {
+              let error = new Errores(
+                "Semantico",
+                ` La funcion no concuerda con el tipo`,
+                this.linea,
+                this.column
+              );
+              controlador.errores.push(error);
+            }
           }
         }
       }
@@ -86,7 +97,7 @@ export class Funcion extends Simbolos implements Instruccion {
     this.lista_ints.forEach(element => {
       padre.addHijo(element.recorrer());
     });
-    
+
     return padre;
   }
 }

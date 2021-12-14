@@ -180,8 +180,6 @@ function graficando_ast_d(contenido){
        nodes: parsedData.nodes,
        edges: parsedData.edges
        }
-       console.log(dataDOT);
-
    var options = {
    autoResize: true,
    physics:{
@@ -230,45 +228,49 @@ const Controller_1 = require("./Controller");
 const Funcion_1 = require("./Instrucciones/Funcion");
 const Declaracion_1 = require("./Instrucciones/Declaracion");
 const Asignacion_1 = require("./Instrucciones/Asignacion");
+const Struct_1 = require("./Expresiones/Struct");
 const Nodo_1 = require("./AST/Nodo");
 const Arbol_1 = require("./AST/Arbol");
 const gramatica = require("./Gramar/gramar");
 //import * as gramatica from "../Gramar/gramar";
 function ejecutarCodigo(entrada) {
-    //traigo todas las raices
-    const instrucciones = gramatica.parse(entrada);
-    let controlador = new Controller_1.Controller();
-    const entornoGlobal = new TablaSim_1.TablaSim(null, "Global");
-    let entornoU = new TablaSim_1.TablaSim(null, "Global");
-    const ast = new Ast_1.AST(instrucciones);
-    //recorro todas las raices  RECURSIVA
-    /*
-    for (let element of instrucciones) {
-      element.ejecutar(controlador, entornoGlobal, entornoU);
-    }*/
-    instrucciones.forEach((ins) => {
-        if (ins instanceof Funcion_1.Funcion) {
-            let funcion = ins;
-            funcion.agregarSimboloFunc(controlador, entornoGlobal, entornoU);
-        }
-        if (ins instanceof Declaracion_1.Declaracion || ins instanceof Asignacion_1.Asignacion) {
-            ins.ejecutar(controlador, entornoGlobal, entornoU);
-        }
-    });
-    instrucciones.forEach((element) => {
-        if (element instanceof Funcion_1.Funcion) {
-            let funcion = element;
-            if (funcion.getIdentificador() == "main") {
-                element.ejecutar(controlador, entornoGlobal, entornoU);
-            }
-        }
-    });
-    let raiz = new Nodo_1.Nodo("Inicio", "");
-    instrucciones.forEach((element) => {
-        raiz.addHijo(element.recorrer());
-    });
-    let grafo = new Arbol_1.Arbol();
-    let res = grafo.tour(raiz);
-
-    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res };
+  //traigo todas las raices
+  const salida = gramatica.parse(entrada);
+  const instrucciones = salida.arbol;
+  let listaErrores = salida.errores;
+  let controlador = new Controller_1.Controller();
+  const entornoGlobal = new TablaSim_1.TablaSim(null, "Global");
+  let entornoU = new TablaSim_1.TablaSim(null, "Global");
+  controlador.errores = listaErrores.slice();
+  const ast = new Ast_1.AST(instrucciones);
+  instrucciones.forEach((ins) => {
+      if (ins instanceof Funcion_1.Funcion) {
+          let funcion = ins;
+          funcion.agregarSimboloFunc(controlador, entornoGlobal, entornoU);
+      }
+    if (ins instanceof Struct_1.Struct) {
+      let funcion = ins;
+      funcion.agregarSimboloStruct(controlador, entornoGlobal, entornoU);
+     // funcion.ejecutar(controlador, entornoGlobal, entornoU);
+    }
+      if (ins instanceof Declaracion_1.Declaracion || ins instanceof Asignacion_1.Asignacion) {
+          ins.ejecutar(controlador, entornoGlobal, entornoU);
+      }
+  });
+  instrucciones.forEach((element) => {
+      if (element instanceof Funcion_1.Funcion) {
+          let funcion = element;
+          if (funcion.getIdentificador() == "main") {
+              element.ejecutar(controlador, entornoGlobal, entornoU);
+          }
+      }
+  });
+  let raiz = new Nodo_1.Nodo("Inicio", "");
+  instrucciones.forEach((element) => {
+      raiz.addHijo(element.recorrer());
+  });
+  let grafo = new Arbol_1.Arbol();
+  let res = grafo.tour(raiz);
+  console.log(entornoGlobal);
+  return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res };
 }

@@ -18,7 +18,6 @@ class Declaracion {
             if (ts.existeEnActual(variable.identificador)) {
                 let error = new Errores_1.Errores('Semantico', `La variable ${variable.identificador}, ya se declaro anteriormente`, this.linea, this.columna);
                 controlador.errores.push(error);
-                controlador.append(`**Error Sematnico -> La variable ${variable.identificador},  ya se declaro anteriormente en la linea ${this.linea}, y columna ${this.columna} **`);
                 continue;
             }
             if (variable.valor != null) {
@@ -30,14 +29,9 @@ class Declaracion {
                     if (tipo_valor != this.tipo.tipo || (tipo_valor != Tipo_1.tipo.DOUBLE && this.tipo.tipo != Tipo_1.tipo.ENTERO) || (tipo_valor != Tipo_1.tipo.CADENA && this.tipo.tipo != Tipo_1.tipo.CARACTER)) {
                         let error = new Errores_1.Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
                         controlador.errores.push(error);
-                        controlador.append(`**Error Sematnico -> Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo, en la linea ${this.linea}, y columna ${this.columna} **`);
                     }
                 });
-            } /*else {
-                let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, null);
-                ts.agregar(variable.identificador, nuevo_sim);
-                ts_u.agregar(variable.identificador, nuevo_sim);
-            }*/
+            }
         }
     }
     recorrer() {

@@ -1,3 +1,29 @@
+void main(){
+    int[] arr = [8,2,3,12];
+    println("Hola bla bla bal");
+    println(arr[1]); //2
+    println(arr[begin:2]); //8,2,3
+    println(arr[2:3]); //3,12
+    println(arr[1:end]); // 2,3,12
+    println(arr[begin:end]); //8,2,3,12
+}
+
+
+
+
+struct Estructura{
+    int x,
+    int e
+}
+
+
+void main(){
+
+    int a = 0;
+    Estructura asdf = Estructura(1,10);
+}
+
+
 int var1 = 10;
 int var2 = 20;
 

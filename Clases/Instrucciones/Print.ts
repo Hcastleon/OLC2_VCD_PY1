@@ -23,7 +23,7 @@ export class Print implements Instruccion{
         let valor = this.expresion.getValor(controlador, ts,ts_u);
         controlador.append(valor);
 
-        return null
+        return null;
 
     }
     recorrer(): Nodo {

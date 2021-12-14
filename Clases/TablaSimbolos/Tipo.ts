@@ -7,7 +7,8 @@ export enum tipo{
     NULO,
     VOID,
     ARRAY,
-    MAIN
+    MAIN,
+    STRUCT
 }
 
 export class Tipo{
@@ -36,6 +37,8 @@ export class Tipo{
             return tipo.VOID
         } else if (stype == "ARRAY") {
             return tipo.ARRAY
+        } else if (stype == "STRUCT") {
+            return tipo.STRUCT
         }
         return tipo.CADENA
     }

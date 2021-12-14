@@ -15,7 +15,8 @@ export class TablaSim {
     }
 
     agregar(id: string, simbolo : Simbolos){
-        this.tabla.set(id.toLowerCase(), simbolo); //convertimos a minuscula ya que nuestro lenguaje es caseinsitive ej. prueba = PRUeba
+        this.tabla.set(id, simbolo); //convertimos a minuscula ya que nuestro lenguaje es caseinsitive ej. prueba = PRUeba
+     //   this.tabla.set(id.toLowerCase(), simbolo);
     }
 
     setSiguiente(tablita: TablaSim){
@@ -26,8 +27,8 @@ export class TablaSim {
         let ts : TablaSim = this;
 
         while(ts != null){
-            let existe = ts.tabla.get(id.toLowerCase());
-           // let existe = ts.tabla.get(id);
+           // let existe = ts.tabla.get(id.toLowerCase());
+           let existe = ts.tabla.get(id);
             if(existe != null){
                 return true;
             }
@@ -38,7 +39,8 @@ export class TablaSim {
     existeEnActual(id: string): boolean{
         let ts : TablaSim = this;
 
-        let existe = ts.tabla.get(id.toLowerCase());
+        //let existe = ts.tabla.get(id.toLowerCase());
+        let existe = ts.tabla.get(id);
 
         if(existe != null){
             return true;
@@ -50,7 +52,8 @@ export class TablaSim {
         let ts : TablaSim = this; 
 
         while(ts != null){
-            let existe = ts.tabla.get(id.toLowerCase());
+            //let existe = ts.tabla.get(id.toLowerCase());
+            let existe = ts.tabla.get(id);
 
             if(existe != null){
                 return existe;
