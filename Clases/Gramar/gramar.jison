@@ -53,6 +53,7 @@
 ";"                                             return 'ptcoma'
 ","                                             return 'coma'
 "="                                             return 'igual'
+"#"                                             return 'oparr'
 
 
 [\'\‘\’].[\'\’\‘]                               { yytext = yytext.substr(1,yyleng-2); return 'caracter'; }
@@ -100,6 +101,9 @@
 "for"                                           return 'for'
 "in"                                            return 'in'
 
+"push"                                          return 'push'
+"pop"                                           return 'pop'
+
 "length"                                        return 'length'
 "subString"                                     return 'substring'
 "caracterOfPosition"                            return 'caracterposition'
@@ -126,6 +130,7 @@
     const {Print} = require("../Instrucciones/Print");
     const {Println} = require("../Instrucciones/Println");
     const {Aritmetica} = require("../Expresiones/Operaciones/Aritmetica");
+    const {AritArreglo} = require("../Expresiones/Operaciones/AritArreglo");
     const {Nativa} = require("../Expresiones/Operaciones/Nativa");
     const {Conversion} = require("../Expresiones/Operaciones/Conversion");
     const {Cadenas} = require("../Expresiones/Operaciones/Cadenas");
@@ -150,6 +155,7 @@
     const {Llamada} = require("../Instrucciones/Llamada");
     const {Return} = require("../Instrucciones/Transferencia/Return");
     const {AsignacionArray} = require("../Instrucciones/AsignacionArray");
+    const {ManejoArray} = require("../Instrucciones/ManejoArray");
     const {AsignacionStruct} = require("../Instrucciones/AsignacionStruct");
     const {Arreglo} = require("../Expresiones/Arreglo");
     const {Errores} = require("../AST/Errores");
@@ -175,6 +181,8 @@
 
 %left                               concat
 %left                               repit
+
+%left                               oparr
 
 %right                              incremento
 %right                              decremento
@@ -230,7 +238,7 @@ LISTPARAMETROS: LISTPARAMETROS coma PARAMETRO                                  {
 
 PARAMETRO: TIPO id                                      { $$ = new Simbolos(6,$1, $2, null); }
          | TIPO corizq cordec id                        { $$ = $1; console.log("Parametro"); }
-         | id id                                        { $$ = $1; console.log("Parametro"); }
+         | id id                                        {  $$ = new Simbolos(6,new Tipo($1), $2, null);  }
          | id corizq cordec id                          { $$ = $1; console.log("Parametro"); }
          ;
 
@@ -258,6 +266,7 @@ INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; }
             | UNARIA ptcoma                         { $$ = $1; }
             | SENTENCIA_RETURN ptcoma               { $$ = $1; }
             | LLAMADA ptcoma                        { $$ = $1; }
+            | NAT_ARREGLO ptcoma                    { $$ = $1; }
             | error                                 { $$=null; listaErrores.push(new Errores('Sintactico', `No se esperaba el token ${yytext}`, this._$.first_line, this._$.first_column)); }
             ;
 
@@ -277,7 +286,6 @@ EXPRESION : ARITMETICA                                          { $$ = $1; }
           | NATIVAS                                             { $$ = $1; }
           | NAT_CAD                                             { $$ = $1; }
           | NAT_FUN                                             { $$ = $1; }
-          //| arreglo_statement                                   { $$ = $1; }
           | UNARIA                                              { $$ = $1; }
           | parizq EXPRESION pardec                             { $$ = $2; }
           | PRIMITIVO                                           { $$ = $1; }
@@ -288,7 +296,10 @@ EXPRESION : ARITMETICA                                          { $$ = $1; }
           | ACCESO_STRUCT                                       { $$ = $1; }
           | corizq LISTAARRAY cordec                            { $$ = new Arreglo($2); }
           | ACCESO_ARREGLO                                      { $$ = $1; }
+          | ARITMETICA_ARREGLO                                  { $$ = $1; }
           ;
+
+/* ARREGLOS Y STRUCTS */
 /*
 LISTEXPRESIONES: LISTEXPRESIONES coma EXPRESION                 { $$ = $1; $$.push($3); }
                 | EXPRESION                                     { $$ = []; $$.push($1); }
@@ -303,12 +314,22 @@ ACCESO_ARREGLO : EXPRESION corizq EXPRESION cordec                            {$
                | EXPRESION corizq begin dspuntos EXPRESION cordec             {$$= new AccesoArreglo($1,null,$5,true,$3,null,@1.first_line,@1.last_column); }
                | EXPRESION corizq begin dspuntos end cordec                   {$$= new AccesoArreglo($1,null,null,true,$3,$5,@1.first_line,@1.last_column); }
                ;
+
+ARITMETICA_ARREGLO : oparr EXPRESION                                          { $$ = new AritArreglo($2, null, true ,'oparr', @1.first_line,@1.last_column);}
+                   | EXPRESION oparr mas EXPRESION                            { $$ = new AritArreglo($1, $4, false ,'+', @1.first_line,@1.last_column);}
+                   | EXPRESION oparr menos EXPRESION                          { $$ = new AritArreglo($1, $4, false ,'-', @1.first_line,@1.last_column);}
+                   | EXPRESION oparr multiplicacion EXPRESION                 { $$ = new AritArreglo($1, $4, false ,'*', @1.first_line,@1.last_column);}
+                   | EXPRESION oparr division EXPRESION                       { $$ = new AritArreglo($1, $4, false ,'/', @1.first_line,@1.last_column);}
+                   | EXPRESION oparr modulo EXPRESION                         { $$ = new AritArreglo($1, $4, false ,'%', @1.first_line,@1.last_column);}
+                   | EXPRESION oparr concat EXPRESION                         { $$ = new AritArreglo($1, $4, false ,'&', @1.first_line,@1.last_column);}
+                   | EXPRESION oparr repit EXPRESION                          { $$ = new AritArreglo($1, $4, false ,'^', @1.first_line,@1.last_column);}
+                   ;
 /*
 ACCESOS       : ACCESOS punto id                                { $$ = $1; $$.push($3); }
               | id                                             { $$ = []; $$.push($1); }
               ;*/
 
-
+/* GRAMATICA BASICA */
 ARITMETICA : EXPRESION mas EXPRESION                            { $$ = new Aritmetica($1, $3, false ,'+', @1.first_line,@1.last_column);}
            | EXPRESION menos EXPRESION                          { $$ = new Aritmetica($1, $3, false ,'-', @1.first_line,@1.last_column); }
            | EXPRESION multiplicacion EXPRESION                 { $$ = new Aritmetica($1, $3, false ,'*', @1.first_line,@1.last_column);}
@@ -326,6 +347,10 @@ NAT_CAD : EXPRESION punto caracterposition parizq EXPRESION pardec              
         | EXPRESION punto touppercase parizq pardec                                { $$ = new Cadenas($1, null, null ,'touppercase', @1.first_line,@1.last_column);}
         | EXPRESION punto tolowercase parizq pardec                                { $$ = new Cadenas($1, null, null ,'tolowercase', @1.first_line,@1.last_column);}
         ;
+
+NAT_ARREGLO : id punto push parizq EXPRESION pardec                                { $$ = new ManejoArray($1, $5,'push', @1.first_line,@1.last_column);}
+            | id punto pop parizq pardec                                           { $$ = new ManejoArray($1, null,'pop', @1.first_line,@1.last_column);}
+            ;
 
 NAT_FUN : TIPO punto parse parizq EXPRESION pardec                                 { $$ = new Conversion($1, $5,'parse', @1.first_line,@1.last_column); }
         | toint parizq EXPRESION pardec                                            { $$ = new Conversion(null, $3,'toint', @1.first_line,@1.last_column); }
@@ -377,7 +402,7 @@ PRIMITIVO : entero                  {$$ = new Primitivo(Number($1), @1.first_lin
 
 DECLARACIONVARIABLE : TIPO LISTAIDS                                          { $$ = new Declaracion($1, $2, @1.first_line, @1.last_column);  }
                     | TIPO id igual EXPRESION                                { $$ = new Declaracion($1, [new Simbolos(1,null, $2, $4)], @1.first_line, @1.last_column); }
-                    | TIPO corizq cordec id igual corizq LISTAARRAY cordec   { $$ = new Declaracion($1, [new Simbolos(1,null, $4, new Arreglo($7))],@1.first_line,@1.first_column);}
+                    | TIPO corizq cordec id igual EXPRESION                  { $$ = new Declaracion($1, [new Simbolos(1,null, $4, $6)],@1.first_line,@1.first_column); }
                     | id id igual id parizq LISTAARRAY pardec                { $$ = new DeclaracionStruct($1,$2,$4,$6,@1.first_line,@1.first_column);}
                     ;
 
@@ -389,9 +414,9 @@ LISTAIDS : LISTAIDS coma id                               {$1.push(new Simbolos(
          | id                                             { $$ = [new Simbolos(1,null, $1, null)]; }
          ;
 
-ASIGNACION_BLOQUE : id igual EXPRESION                                     {$$ = new Asignacion($1, $3, @1.first_line, @1.last_column);  }
-                  | id punto id igual EXPRESION                     {$$ = new AsignacionStruct(new Identificador($1, @1.first_line, @1.last_column), new Identificador($3, @1.first_line, @1.last_column),$5, @1.first_line, @1.last_column); }
-                  | id corizq EXPRESION cordec igual EXPRESION             { $$ = []; $$.push(new AsignacionArray($1,$3,$6,@1.first_line,@1.first_column)); }
+ASIGNACION_BLOQUE : id igual EXPRESION                                     { $$ = new Asignacion($1, $3, @1.first_line, @1.last_column);  }
+                  | id punto id igual EXPRESION                            { $$ = new AsignacionStruct(new Identificador($1, @1.first_line, @1.last_column), new Identificador($3, @1.first_line, @1.last_column),$5, @1.first_line, @1.last_column); }
+                  | id corizq EXPRESION cordec igual EXPRESION             { $$ = new AsignacionArray($1,$3,$6,@1.first_line,@1.first_column); }
                   ;
 
 SENTENCIA_IF: if parizq EXPRESION pardec llaveizq INSTRUCCIONES llavedec                                      { $$ = new If( $3, $6, [], @1.first_line, @1.last_column ); }

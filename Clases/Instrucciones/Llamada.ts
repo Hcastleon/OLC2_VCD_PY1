@@ -105,6 +105,8 @@ export class Llamada implements Instruccion, Expresion {
       let valor_aux;
 
       for (let i = 0; i < para_llama.length; i++) {
+        console.log(para_func[i]);
+        console.log(para_llama[i]);
         aux = para_func[i] as Simbolos;
         id_aux = aux.identificador;
         tipo_axu = aux.tipo.tipo;

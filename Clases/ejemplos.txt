@@ -8,6 +8,32 @@ void main(){
     println(arr[begin:end]); //8,2,3,12
 }
 
+void main(){
+    int[] arr = [1,2,3,4,5,6];
+    int[] arr2 = #arr;
+
+    arr[2] = 0;
+
+    println(arr); //[1,0,3,4,5,6]
+    println(arr2); //[1,2,3,4,5,6]
+
+    for animal in ["perro", "gato", "tortuga"]
+    {
+        println(animal &" animal es mi favorito");
+    }
+}
+
+void main(){
+    int[] arr = [1,2,3,4,5,6];
+    println(arr); //[1,0,3,4,5,6]
+    arr.pop(); // retorna 6, arr = [1,2,3,4,5]
+    println(arr); //[1,0,3,4,5]
+    println(arr.length()); //5
+    arr.push(8);
+    println(arr); //[1,0,3,4,5,8]
+    println(arr.length()); //6
+}
+
 
 
 
@@ -21,6 +47,11 @@ void main(){
 
     int a = 0;
     Estructura asdf = Estructura(1,10);
+  llamada(asdf);
+}
+
+void llamada(Estructura a){
+println(a.x);
 }
 
 

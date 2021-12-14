@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Tipo = exports.tipo = void 0;
+exports.Tipo = exports.Localizacion = exports.tipo = void 0;
 var tipo;
 (function (tipo) {
     tipo[tipo["ENTERO"] = 0] = "ENTERO";
@@ -14,6 +14,11 @@ var tipo;
     tipo[tipo["MAIN"] = 8] = "MAIN";
     tipo[tipo["STRUCT"] = 9] = "STRUCT";
 })(tipo = exports.tipo || (exports.tipo = {}));
+var Localizacion;
+(function (Localizacion) {
+    Localizacion[Localizacion["HEAP"] = 0] = "HEAP";
+    Localizacion[Localizacion["STACK"] = 1] = "STACK";
+})(Localizacion = exports.Localizacion || (exports.Localizacion = {}));
 class Tipo {
     constructor(stype) {
         this.stype = stype;

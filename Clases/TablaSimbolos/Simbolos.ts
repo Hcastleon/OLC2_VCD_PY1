@@ -44,6 +44,10 @@ export class Simbolos{
         return this.tipo
     }
 
+    getTipoArreglo(){
+        return this.tipo.tipo
+    }
+
     setValor(valor:any){
         this.valor = valor
     }

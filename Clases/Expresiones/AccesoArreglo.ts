@@ -6,7 +6,6 @@ import { Expresion } from "../Interfaces/Expresion";
 import { Instruccion } from "../Interfaces/Instruccion";
 import { TablaSim } from "../TablaSimbolos/TablaSim";
 import { Tipo, tipo } from '../TablaSimbolos/Tipo'
-import { Arreglo } from '../Expresiones/Arreglo'
 import { Identificador } from "./Identificador";
 
 export class AccesoArreglo implements Expresion {

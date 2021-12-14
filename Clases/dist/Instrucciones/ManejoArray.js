@@ -1,16 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AsignacionArray = void 0;
+exports.ManejoArray = void 0;
 const Errores_1 = require("../AST/Errores");
 const Nodo_1 = require("../AST/Nodo");
 const Tipo_1 = require("../TablaSimbolos/Tipo");
-class AsignacionArray {
-    constructor(identificador, posicion, valor, linea, column) {
+class ManejoArray {
+    constructor(identificador, expre2, operador, linea, column) {
         this.identificador = identificador;
-        this.posicion = posicion;
-        this.valor = valor;
+        this.expre2 = expre2;
         this.linea = linea;
         this.column = column;
+        this.operador = operador;
     }
     ejecutar(controlador, ts, ts_u) {
         if (ts.existe(this.identificador)) {
@@ -20,27 +20,42 @@ class AsignacionArray {
                 controlador.errores.push(error);
             }
             else {
-                let posi = this.posicion.getValor(controlador, ts, ts_u);
-                let valor = this.valor.getValor(controlador, ts, ts_u);
-                let valor_U = simbolo.getValor();
-                if (typeof posi == "number") {
-                    if (this.isInt(Number(posi))) {
-                        if (this.getTipoArray(valor_U) == this.getTipo(valor)) {
-                            valor_U[posi] = valor;
-                        }
-                        else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor}, es un tipo de dato incorrecto`, this.linea, this.column);
-                            controlador.errores.push(error);
-                        }
-                    }
-                    else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
-                        controlador.errores.push(error);
-                    }
+                let valor_expre1;
+                let valor_expre2;
+                if (this.expre2 === null) {
+                    valor_expre1 = simbolo.getValor();
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
-                    controlador.errores.push(error);
+                    valor_expre1 = simbolo.getValor();
+                    valor_expre2 = this.expre2.getValor(controlador, ts, ts_u);
+                }
+                switch (this.operador) {
+                    case "push":
+                        if (typeof valor_expre1 === "object") {
+                            if (this.getTipoArray(valor_expre1) == this.getTipo(valor_expre2)) {
+                                valor_expre1.push(valor_expre2);
+                            }
+                            else {
+                                let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                                controlador.errores.push(error);
+                            }
+                        }
+                        else {
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                            controlador.errores.push(error);
+                        }
+                        break;
+                    case "pop":
+                        if (typeof valor_expre1 === "object") {
+                            valor_expre1.pop();
+                        }
+                        else {
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                            controlador.errores.push(error);
+                        }
+                        break;
+                    default:
+                        break;
                 }
             }
         }
@@ -96,4 +111,4 @@ class AsignacionArray {
         return n.length === 1 && n.match(/[a-zA-Z]/i);
     }
 }
-exports.AsignacionArray = AsignacionArray;
+exports.ManejoArray = ManejoArray;

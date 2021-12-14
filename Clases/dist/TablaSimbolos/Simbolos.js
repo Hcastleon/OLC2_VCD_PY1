@@ -28,6 +28,9 @@ class Simbolos {
     getTipo() {
         return this.tipo;
     }
+    getTipoArreglo() {
+        return this.tipo.tipo;
+    }
     setValor(valor) {
         this.valor = valor;
     }

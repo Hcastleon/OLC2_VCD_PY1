@@ -11,6 +11,11 @@ export enum tipo{
     STRUCT
 }
 
+export enum Localizacion {
+    HEAP,
+    STACK
+}
+
 export class Tipo{
 
     public tipo : tipo;

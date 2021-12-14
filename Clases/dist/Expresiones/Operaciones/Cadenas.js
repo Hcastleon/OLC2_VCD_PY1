@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Cadenas = void 0;
 const Errores_1 = require("../../AST/Errores");
 const Nodo_1 = require("../../AST/Nodo");
+const Tipo_1 = require("../../TablaSimbolos/Tipo");
 class Cadenas {
     constructor(expre1, expre2, expre3, operador, linea, column) {
         this.expre1 = expre1;
@@ -90,6 +91,9 @@ class Cadenas {
                 if (typeof valor_expre1 === "string") {
                     return valor_expre1.length;
                 }
+                else if (typeof valor_expre1 === "object") {
+                    return valor_expre1.length;
+                }
                 else {
                     let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
@@ -138,6 +142,46 @@ class Cadenas {
     }
     isChar(n) {
         return n.length === 1 && n.match(/[a-zA-Z]/i);
+    }
+    getTipoArray(lista) {
+        if (typeof lista[0] == "number") {
+            if (this.isInt(Number(lista[0]))) {
+                return Tipo_1.tipo.ENTERO;
+            }
+            return Tipo_1.tipo.DOUBLE;
+        }
+        else if (typeof lista[0] == "string") {
+            if (this.isChar(String(lista[0]))) {
+                return Tipo_1.tipo.CARACTER;
+            }
+            return Tipo_1.tipo.CADENA;
+        }
+        else if (typeof lista[0] == "boolean") {
+            return Tipo_1.tipo.BOOLEAN;
+        }
+        else if (lista[0] === null) {
+            return Tipo_1.tipo.NULO;
+        }
+    }
+    getTipoDato(dato) {
+        if (typeof dato == "number") {
+            if (this.isInt(Number(dato))) {
+                return Tipo_1.tipo.ENTERO;
+            }
+            return Tipo_1.tipo.DOUBLE;
+        }
+        else if (typeof dato == "string") {
+            if (this.isChar(String(dato))) {
+                return Tipo_1.tipo.CARACTER;
+            }
+            return Tipo_1.tipo.CADENA;
+        }
+        else if (typeof dato == "boolean") {
+            return Tipo_1.tipo.BOOLEAN;
+        }
+        else if (dato === null) {
+            return Tipo_1.tipo.NULO;
+        }
     }
 }
 exports.Cadenas = Cadenas;

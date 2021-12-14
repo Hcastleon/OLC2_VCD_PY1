@@ -6,6 +6,7 @@ const Nodo_1 = require("../AST/Nodo");
 const Simbolos_1 = require("../TablaSimbolos/Simbolos");
 const Tipo_1 = require("../TablaSimbolos/Tipo");
 const Arreglo_1 = require("../Expresiones/Arreglo");
+const AritArreglo_1 = require("../Expresiones/Operaciones/AritArreglo");
 class Declaracion {
     constructor(tipo, lista_simbolos, linea, columna) {
         this.tipo = tipo;
@@ -36,6 +37,18 @@ class Declaracion {
                         controlador.errores.push(error);
                     }
                 }
+                else if (variable.valor instanceof AritArreglo_1.AritArreglo) {
+                    let valor = variable.valor.getValor(controlador, ts, ts_u);
+                    if (this.getTipo(valor) == this.tipo.tipo) {
+                        let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, new Tipo_1.Tipo("ARRAY"), variable.identificador, valor);
+                        ts.agregar(variable.identificador, nuevo_sim);
+                        ts_u.agregar(variable.identificador, nuevo_sim);
+                    }
+                    else {
+                        let error = new Errores_1.Errores('Semantico', `Las variables ${this.getTipo(valor)} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                    }
+                }
                 else {
                     let valor = variable.valor.getValor(controlador, ts, ts_u);
                     let tipo_valor = variable.valor.getTipo(controlador, ts, ts_u);
@@ -57,6 +70,26 @@ class Declaracion {
             }
         }
     }
+    getTipo(lista) {
+        if (typeof lista[0] == "number") {
+            if (this.isInt(Number(lista[0]))) {
+                return Tipo_1.tipo.ENTERO;
+            }
+            return Tipo_1.tipo.DOUBLE;
+        }
+        else if (typeof lista[0] == "string") {
+            if (this.isChar(String(lista[0]))) {
+                return Tipo_1.tipo.CARACTER;
+            }
+            return Tipo_1.tipo.CADENA;
+        }
+        else if (typeof lista[0] == "boolean") {
+            return Tipo_1.tipo.BOOLEAN;
+        }
+        else if (lista[0] === null) {
+            return Tipo_1.tipo.NULO;
+        }
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo("=", "");
         // let hijo_sim = new Nodo("Simbolos", "")
@@ -71,6 +104,12 @@ class Declaracion {
             }
         }
         return padre;
+    }
+    isInt(n) {
+        return Number(n) === n && n % 1 === 0;
+    }
+    isChar(n) {
+        return n.length === 1 && n.match(/[a-zA-Z]/i);
     }
 }
 exports.Declaracion = Declaracion;

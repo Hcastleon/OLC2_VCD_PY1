@@ -3,6 +3,7 @@ import { Nodo } from "../../AST/Nodo";
 import { Controller } from "../../Controller";
 import { Expresion } from "../../Interfaces/Expresion";
 import { TablaSim } from "../../TablaSimbolos/TablaSim";
+import { tipo } from '../../TablaSimbolos/Tipo';
 
 export class Cadenas implements Expresion {
   public expre1: Expresion;
@@ -28,7 +29,7 @@ export class Cadenas implements Expresion {
     this.operador = operador;
   }
 
-  getTipo(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {}
+  getTipo(controlador: Controller, ts: TablaSim, ts_u: TablaSim) { }
   getValor(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     let valor_expre1;
     let valor_expre2;
@@ -137,6 +138,8 @@ export class Cadenas implements Expresion {
       case "length":
         if (typeof valor_expre1 === "string") {
           return valor_expre1.length;
+        } else if (typeof valor_expre1 === "object") {
+          return valor_expre1.length;
         } else {
           let error = new Errores(
             "Semantico",
@@ -200,5 +203,41 @@ export class Cadenas implements Expresion {
 
   isChar(n: string) {
     return n.length === 1 && n.match(/[a-zA-Z]/i);
+  }
+
+  getTipoArray(lista: any) {
+    if (typeof lista[0] == "number") {
+      if (this.isInt(Number(lista[0]))) {
+        return tipo.ENTERO;
+      }
+      return tipo.DOUBLE;
+    } else if (typeof lista[0] == "string") {
+      if (this.isChar(String(lista[0]))) {
+        return tipo.CARACTER;
+      }
+      return tipo.CADENA;
+    } else if (typeof lista[0] == "boolean") {
+      return tipo.BOOLEAN;
+    } else if (lista[0] === null) {
+      return tipo.NULO;
+    }
+  }
+
+  getTipoDato(dato: any) {
+    if (typeof dato == "number") {
+      if (this.isInt(Number(dato))) {
+        return tipo.ENTERO;
+      }
+      return tipo.DOUBLE;
+    } else if (typeof dato == "string") {
+      if (this.isChar(String(dato))) {
+        return tipo.CARACTER;
+      }
+      return tipo.CADENA;
+    } else if (typeof dato == "boolean") {
+      return tipo.BOOLEAN;
+    } else if (dato === null) {
+      return tipo.NULO;
+    }
   }
 }
