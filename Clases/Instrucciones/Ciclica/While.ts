@@ -6,6 +6,7 @@ import { TablaSim } from "../../TablaSimbolos/TablaSim";
 import { Break } from "../Transferencia/Break";
 import { Continue } from "../Transferencia/Continue";
 import { Return } from "../Transferencia/Return";
+import { Temporales } from "../../AST/Temporales";
 
 
 export class While implements Instruccion{
@@ -57,4 +58,7 @@ export class While implements Instruccion{
         return padre
     }
     
+    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+      
+    }
 }

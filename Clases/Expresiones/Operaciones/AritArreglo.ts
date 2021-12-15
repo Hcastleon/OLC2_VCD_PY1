@@ -5,6 +5,7 @@ import { Expresion } from "../../Interfaces/Expresion";
 import { TablaSim } from "../../TablaSimbolos/TablaSim";
 import { Identificador } from "../Identificador";
 import { Tipo, tipo } from "../../TablaSimbolos/Tipo";
+import { Temporales } from "../../AST/Temporales";
 
 export class AritArreglo implements Expresion {
     public identificador: Identificador;
@@ -423,6 +424,10 @@ export class AritArreglo implements Expresion {
         }
 
         return padre;
+    }
+
+    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+        
     }
 
     isInt(n: number) {

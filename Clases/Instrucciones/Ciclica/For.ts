@@ -1,4 +1,5 @@
 import { Nodo } from "../../AST/Nodo";
+import { Temporales } from "../../AST/Temporales";
 import { Controller } from "../../Controller";
 import { Expresion } from "../../Interfaces/Expresion";
 import { Instruccion } from "../../Interfaces/Instruccion";
@@ -76,5 +77,9 @@ export class For implements Instruccion {
     //padre.addHijo(hijo_ins);
     //padre.addHijo(new Nodo("}", ""));
     return padre;
+  }
+
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+      
   }
 }

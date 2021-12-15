@@ -6,6 +6,7 @@ import { TablaSim } from "../../TablaSimbolos/TablaSim";
 import { Break } from "../Transferencia/Break";
 import { Continue } from "../Transferencia/Continue";
 import { Return } from "../Transferencia/Return";
+import { Temporales } from "../../AST/Temporales";
 
 
 export class DoWhile implements Instruccion{
@@ -77,5 +78,9 @@ export class DoWhile implements Instruccion{
         padre.addHijo(this.condicion.recorrer())
         //padre.addHijo(new Nodo(")", ""))
         return padre
+    }
+
+    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+        
     }
 }

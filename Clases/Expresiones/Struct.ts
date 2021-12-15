@@ -1,5 +1,6 @@
 import { Errores } from "../AST/Errores";
 import { Nodo } from "../AST/Nodo";
+import { Temporales } from "../AST/Temporales";
 import { Controller } from "../Controller";
 import { Primitivo } from "../Expresiones/Primitivo";
 import { Instruccion } from "../Interfaces/Instruccion";
@@ -54,5 +55,9 @@ export class Struct extends Simbolos implements Instruccion {
         
 
         return padre;
+    }
+
+    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+        
     }
 }

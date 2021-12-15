@@ -9,6 +9,7 @@ import { Simbolos } from "../../TablaSimbolos/Simbolos";
 import { Continue } from "../Transferencia/Continue";
 import { Return } from "../Transferencia/Return";
 import { Tipo } from '../../TablaSimbolos/Tipo';
+import { Temporales } from "../../AST/Temporales";
 
 export class ForEsp implements Instruccion {
   public asig_decla: Simbolos;
@@ -161,4 +162,9 @@ export class ForEsp implements Instruccion {
   isChar(n: string) {
     return n.length === 1 && n.match(/[a-zA-Z]/i);
   }
+
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+      
+  }
+
 }

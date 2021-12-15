@@ -1,4 +1,5 @@
 import { Nodo } from "../../AST/Nodo";
+import { Temporales } from "../../AST/Temporales";
 import { Controller } from "../../Controller";
 import { Instruccion } from "../../Interfaces/Instruccion";
 import { TablaSim } from "../../TablaSimbolos/TablaSim";
@@ -39,5 +40,10 @@ export class Default implements Instruccion{
         }
         return padre
     }
+
+    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+        
+    }
+
 
 }

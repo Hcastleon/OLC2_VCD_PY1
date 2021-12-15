@@ -9,6 +9,7 @@ import { Primitivo } from "../Expresiones/Primitivo";
 import { Arreglo } from "../Expresiones/Arreglo";
 import { Struct } from "../Expresiones/Struct";
 import { Expresion } from "../Interfaces/Expresion";
+import { Temporales } from "../AST/Temporales";
 
 export class DeclaracionStruct implements Instruccion {
   public id1: string;
@@ -121,5 +122,9 @@ export class DeclaracionStruct implements Instruccion {
     // let hijo_sim = new Nodo("Simbolos", "")
 
     return padre;
+  }
+
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+      
   }
 }

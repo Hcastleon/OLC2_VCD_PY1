@@ -1,4 +1,5 @@
 import  {Nodo } from "../../AST/Nodo";
+import { Temporales } from "../../AST/Temporales";
 import {Controller} from "../../Controller";
 import { Expresion } from "../../Interfaces/Expresion";
 import  {TablaSim}  from "../../TablaSimbolos/TablaSim";
@@ -122,6 +123,10 @@ export class Operacion implements Expresion{
         }
 
         return padre
+    }
+
+    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+        
     }
 
 }

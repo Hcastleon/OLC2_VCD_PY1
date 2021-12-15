@@ -1,5 +1,6 @@
 import { Errores } from "../../AST/Errores";
 import { Nodo } from "../../AST/Nodo";
+import { Temporales } from "../../AST/Temporales";
 import { Controller } from "../../Controller";
 import { Expresion } from "../../Interfaces/Expresion";
 import { TablaSim } from "../../TablaSimbolos/TablaSim";
@@ -239,5 +240,9 @@ export class Cadenas implements Expresion {
     } else if (dato === null) {
       return tipo.NULO;
     }
+  }
+
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+      
   }
 }

@@ -1,6 +1,7 @@
 
 import { Errores } from "../AST/Errores";
 import { Nodo } from "../AST/Nodo";
+import { Temporales } from "../AST/Temporales";
 import { Controller } from "../Controller";
 import { Expresion } from "../Interfaces/Expresion";
 import { Instruccion } from "../Interfaces/Instruccion";
@@ -148,6 +149,10 @@ export class AccesoArreglo implements Expresion {
     recorrer(): Nodo {
         let padre = new Nodo("ID", "");
         return padre
+    }
+
+    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+        
     }
 
     isInt(n: number) {

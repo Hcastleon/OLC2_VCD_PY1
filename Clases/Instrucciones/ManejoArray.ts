@@ -7,6 +7,7 @@ import { TablaSim } from "../TablaSimbolos/TablaSim";
 import { tipo } from '../TablaSimbolos/Tipo';
 import { Arreglo } from '../Expresiones/Arreglo';
 import { Identificador } from "../Expresiones/Identificador";
+import { Temporales } from "../AST/Temporales";
 
 export class ManejoArray implements Instruccion {
 
@@ -127,6 +128,10 @@ export class ManejoArray implements Instruccion {
         } else if (dato === null) {
             return tipo.NULO;
         }
+    }
+
+    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+        
     }
 
     recorrer(): Nodo {

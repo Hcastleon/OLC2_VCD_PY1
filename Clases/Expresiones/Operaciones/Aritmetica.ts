@@ -5,6 +5,7 @@ import { Expresion } from "../../Interfaces/Expresion";
 import { TablaSim } from "../../TablaSimbolos/TablaSim";
 import { tipo } from "../../TablaSimbolos/Tipo";
 import { Operacion, Operador } from "./Operaciones";
+import { Temporales,Temporal,Resultado3D } from "../../AST/Temporales";
 
 export class Aritmetica extends Operacion implements Expresion {
   constructor(
@@ -311,6 +312,62 @@ export class Aritmetica extends Operacion implements Expresion {
         break;
     }
   }
+
+  validarLados(recursivo:number,controlador: Controller, ts: TablaSim, ts_u: TablaSim){
+    if(recursivo ==0 && this.expre1.getTipo(controlador, ts, ts_u) == tipo.ENTERO ){
+      return true
+    }
+    return false
+  }
+
+  generarOperacionBinario(Temp: Temporales, controlador: Controller, ts: TablaSim, signo:any, recursivo: any){
+    let valor1 = this.expre1.traducir(Temp,controlador,ts);
+    let valor2 = this.expre2.traducir(Temp,controlador,ts);
+
+    if(valor1 == (null || undefined) || valor2 == (null || undefined)) return null
+
+    let resultado = valor1.codigo3D;
+    if(resultado != "" && valor2.codigo3D){
+        resultado = resultado + "\n" + valor2.codigo3D;
+    }else{
+      resultado += valor2.codigo3D;
+    }
+
+    if(resultado !=""){
+      resultado = resultado + "\n";
+    }
+
+    let result = new Resultado3D();
+    result.tipo = tipo.DOUBLE
+    if(recursivo==0){
+      let temporal = new Temporal(valor1.temporal.utilizar() + " "+ signo+ " "+valor2.temporal.utilizar());
+      result.codigo3D = resultado;
+      result.temporal = temporal;
+      return result;
+    }
+    let temporal = Temp.nuevoTemporal();
+    let op = temporal.obtener() + '=' + valor1.temporal.utilizar()+" "+ signo+" "+valor1.temporal.utilizar()+";";
+      resultado += op
+      result.codigo3D = resultado;
+      result.temporal = temporal;
+      return result;
+
+  }
+
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+      if(this.operador == Operador.SUMA){
+        return this.generarOperacionBinario(Temp, controlador,ts,"+",0);
+      }else if(this.operador == Operador.RESTA){
+        return this.generarOperacionBinario(Temp, controlador,ts,"-",0);
+      }else if(this.operador == Operador.MULT){
+        return this.generarOperacionBinario(Temp, controlador,ts,"*",0);
+      }else if(this.operador == Operador.DIV){
+        return this.generarOperacionBinario(Temp, controlador,ts,"/",0);
+      }
+      return "Holiwis"
+  }
+
+
 
   recorrer(): Nodo {
     let padre = new Nodo(this.op_string, "");

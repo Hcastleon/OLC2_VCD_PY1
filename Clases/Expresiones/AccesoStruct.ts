@@ -9,6 +9,7 @@ import { Simbolos } from "../TablaSimbolos/Simbolos";
 import { Arreglo } from "../Expresiones/Arreglo";
 import { Struct } from "../Expresiones/Struct";
 import { Identificador } from "../Expresiones/Identificador";
+import { Temporales } from "../AST/Temporales";
 
 export class AccesoStruct implements Expresion {
   //public accesos: Array<string>;
@@ -110,5 +111,9 @@ export class AccesoStruct implements Expresion {
     let padre = new Nodo("accesoStruct", "");
 
     return padre;
+  }
+
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+      
   }
 }

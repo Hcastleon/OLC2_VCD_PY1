@@ -3,6 +3,7 @@ import { Controller } from "../../Controller";
 import { Expresion } from "../../Interfaces/Expresion";
 import { tipo, Tipo } from "../../TablaSimbolos/Tipo";
 import { TablaSim } from "../../TablaSimbolos/TablaSim";
+import { Temporales } from "../../AST/Temporales";
 
 export class Conversion implements Expresion {
   public tipo: Tipo;
@@ -76,6 +77,10 @@ export class Conversion implements Expresion {
     padre.addHijo(this.expre2.recorrer());
 
     return padre;
+  }
+
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+      
   }
 
   isInt(n: number) {

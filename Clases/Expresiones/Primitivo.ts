@@ -1,8 +1,10 @@
 import { Nodo } from "../AST/Nodo";
+import { NodoT } from "../AST/NodoT";
 import { Controller } from "../Controller";
 import { Expresion } from "../Interfaces/Expresion";
 import  { TablaSim }  from "../TablaSimbolos/TablaSim";
-import { tipo } from "../TablaSimbolos/Tipo";
+import { Tipo,tipo } from "../TablaSimbolos/Tipo";
+import { Temporales,Temporal,Resultado3D } from "../AST/Temporales";
 
 
 export class Primitivo implements Expresion{
@@ -36,6 +38,22 @@ export class Primitivo implements Expresion{
         }
 
     }
+
+    getTipoTraduc() {
+        if(typeof this.primitivo == 'number'){
+            if(this.isInt(Number(this.primitivo))){
+                return tipo.ENTERO;
+            }
+            return tipo.DOUBLE
+        }else if (typeof this.primitivo =='string'){
+            return tipo.CADENA
+        }else if (typeof this.primitivo =='boolean'){
+            return tipo.BOOLEAN
+        }else if (this.primitivo === null){
+            return tipo.NULO
+        }
+
+    }
     getValor(controlador: Controller, ts: TablaSim,ts_u: TablaSim) {
         return this.primitivo;
     }
@@ -53,6 +71,28 @@ export class Primitivo implements Expresion{
 
     isInt(n: number) {
         return Number(n) === n && n % 1 === 0;
+    }
+
+    traducir(Temp:Temporales, controlador: Controller, ts: TablaSim) {
+        let resultado3D = new Resultado3D();
+        resultado3D.codigo3D="";
+
+        if(typeof this.primitivo == 'number'){
+            if(this.isInt(Number(this.primitivo))){
+                resultado3D.tipo = tipo.ENTERO;
+            }
+            resultado3D.tipo = tipo.DOUBLE
+        }else if (typeof this.primitivo =='string'){
+            resultado3D.tipo = tipo.CADENA
+        }else if (typeof this.primitivo =='boolean'){
+            resultado3D.tipo = tipo.BOOLEAN
+        }else if (this.primitivo === null){
+            resultado3D.tipo = tipo.NULO
+        }
+
+        resultado3D.temporal = new Temporal(this.primitivo.toString())
+
+        return resultado3D;
     }
 
 }

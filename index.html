@@ -19,7 +19,7 @@
   <div>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">OLC2-PY1</a>
+        <a class="navbar-brand" href="#">Quetzal</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavDropdown"
           aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
@@ -63,20 +63,25 @@
             <div class="col">
               <div style="margin-top: 20px; margin-left: 0px; margin-right: 0px;">
                 <div class="card">
+                  <div class="card-header">
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                      <button type="button" class="btn btn-outline-secondary" id="prueba"
+                        name="prueba">Analizar</button>
+                      <button type="button" class="btn btn-outline-secondary" id="codigo3d"
+                        name="prueba">Traducir</button>
+                    </div>
+                  </div>
                   <div class="card-body text-dark bg-light">
                     <!--  **INPUT CONSOLE**  -->
                     <label for="textInput-Blank" class="form-label">Input:</label>
-
                     <textarea class="form-control" id="textInput-Blank" rows="10" cols="50"></textarea>
                     <!-- **OUTPUT CONSOLE** -->
                     <label for="textOutput-Blank" class="form-label" style="margin-top: 10px;">Output:</label>
-
                     <textarea class="form-control" id="textOutput-Blank" rows="5" cols="50"></textarea>
                   </div>
                   <div class="card-footer">
-                    <div class="btn-group" role="group" aria-label="Basic example">
-                      <button type="button" class="btn btn-primary" id="prueba" name="prueba">Analizar</button>
-                    </div>
+                    <label for="textOutput-Blank" class="form-label" style="margin-top: 10px;">Translate:</label>
+                    <textarea class="form-control" id="textOutputTrans-Blank" rows="5" cols="50"></textarea>
                   </div>
                 </div>
               </div>
@@ -95,7 +100,6 @@
                             <th scope="col">Row</th>
                             <th scope="col">Column</th>
                             <th scope="col">Description</th>
-                            <th scope="col">scope</th>
                           </tr>
                         </thead>
                         <tbody id="tabla_e-Blank">

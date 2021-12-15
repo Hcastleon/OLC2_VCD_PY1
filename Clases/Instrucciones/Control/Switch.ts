@@ -7,6 +7,7 @@ import { Break } from "../Transferencia/Break";
 import { Return } from "../Transferencia/Return";
 import { If } from "./If";
 import { Case } from "./Case";
+import { Temporales } from "../../AST/Temporales";
 
 export class Switch implements Instruccion {
   public valor: Expresion;
@@ -74,4 +75,6 @@ export class Switch implements Instruccion {
 
     return padre;
   }
+
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {}
 }

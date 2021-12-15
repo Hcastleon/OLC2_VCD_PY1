@@ -263,6 +263,7 @@ function ejecutarCodigo(entrada) {
           if (funcion.getIdentificador() == "main") {
               element.ejecutar(controlador, entornoGlobal, entornoU);
           }
+          
       }
   });
   let raiz = new Nodo_1.Nodo("Inicio", "");

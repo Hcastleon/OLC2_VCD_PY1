@@ -5,10 +5,12 @@ import { TablaSim } from "./TablaSimbolos/TablaSim";
 export class Controller {
   public errores: Array<Errores>;
   public consola: string;
+  public texto: string;
 
   constructor() {
     this.errores = new Array<Errores>();
     this.consola = "";
+    this.texto = "";
   }
 
   public append(aux: string) {
@@ -109,4 +111,5 @@ export class Controller {
       return "...";
     }
   }
+
 }
