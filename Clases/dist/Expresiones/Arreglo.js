@@ -72,6 +72,8 @@ class Arreglo {
             return -1;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo("ID", "");
         return padre;

@@ -43,5 +43,5 @@ export class Case implements Instruccion {
     return padre;
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {}
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {}
 }

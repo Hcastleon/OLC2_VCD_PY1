@@ -1,11 +1,11 @@
 import { Errores } from "../../AST/Errores";
 import { Nodo } from "../../AST/Nodo";
-import { Temporales } from "../../AST/Temporales";
 import { Controller } from "../../Controller";
 import { Expresion } from "../../Interfaces/Expresion";
 import { TablaSim } from "../../TablaSimbolos/TablaSim";
 import { tipo } from "../../TablaSimbolos/Tipo";
 import { Operacion, Operador } from "./Operaciones";
+import { Temporales, Temporal, Resultado3D } from "../../AST/Temporales";
 
 export class Relacionales extends Operacion implements Expresion {
   public constructor(
@@ -63,7 +63,7 @@ export class Relacionales extends Operacion implements Expresion {
                 this.column
               );
               controlador.errores.push(error);
-            //  return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
+              //  return `**Error Sematnico ->No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
             }
           } else if (typeof valor_exp2 == "boolean") {
             //Segundo BOOLEAN
@@ -74,7 +74,7 @@ export class Relacionales extends Operacion implements Expresion {
               this.column
             );
             controlador.errores.push(error);
-           // return `**Error Sematnico -> No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
+            // return `**Error Sematnico -> No se puede realizar la operacion ${valor_exp1} < ${valor_exp2} En la linea ${this.linea}, y columna ${this.column} **`;
           }
         } else if (typeof valor_exp1 == "string") {
           if (valor_exp1.length == 1) {
@@ -955,23 +955,155 @@ export class Relacionales extends Operacion implements Expresion {
     }
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim): void {
-      
+  traducir(
+    Temp: Temporales,
+    controlador: Controller,
+    ts: TablaSim,
+    ts_u: TablaSim
+  ) {
+    let valor1;
+    let valor2;
+    if (this.expreU === false) {
+      valor1 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+      valor2 = this.expre2.traducir(Temp, controlador, ts, ts_u);
+    } else {
+      valor1 = new Resultado3D();
+      valor1.codigo3D = "";
+      valor1.temporal = new Temporal("0");
+      valor1.tipo = tipo.ENTERO;
+      valor2 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+    }
+
+    if (valor1 == (null || undefined) || valor2 == (null || undefined))
+      return null;
+
+    let result = new Resultado3D();
+    result.tipo = tipo.BOOLEAN;
+
+    if (valor1.tipo != tipo.BOOLEAN) result.codigo3D += valor1.codigo3D;
+    if (valor2.tipo != tipo.BOOLEAN) result.codigo3D += valor2.codigo3D;
+
+    switch (this.operador) {
+      case Operador.MAYORQUE:
+        return this.comparacion(
+          result,
+          valor1,
+          valor2,
+          ">",
+          Temp,
+          controlador,
+          ts,
+          ts_u
+        );
+      case Operador.MENORQUE:
+        return this.comparacion(
+          result,
+          valor1,
+          valor2,
+          "<",
+          Temp,
+          controlador,
+          ts,
+          ts_u
+        );
+      case Operador.MENORIGUAL:
+        return this.comparacion(
+          result,
+          valor1,
+          valor2,
+          "<=",
+          Temp,
+          controlador,
+          ts,
+          ts_u
+        );
+      case Operador.MAYORIGUAL:
+        return this.comparacion(
+          result,
+          valor1,
+          valor2,
+          ">=",
+          Temp,
+          controlador,
+          ts,
+          ts_u
+        );
+      case Operador.DIFERENCIACION:
+        return this.comparacion(
+          result,
+          valor1,
+          valor2,
+          "!=",
+          Temp,
+          controlador,
+          ts,
+          ts_u
+        );
+      case Operador.IGUALIGUAL:
+        return this.comparacion(
+          result,
+          valor1,
+          valor2,
+          "==",
+          Temp,
+          controlador,
+          ts,
+          ts_u
+        );
+      default:
+        return;
+    }
   }
 
   recorrer(): Nodo {
     let padre = new Nodo(this.op_string, "");
 
     if (this.expreU) {
-     // padre.addHijo(new Nodo(this.op_string, ""));
+      // padre.addHijo(new Nodo(this.op_string, ""));
       padre.addHijo(this.expre1.recorrer());
     } else {
       padre.addHijo(this.expre1.recorrer());
-    //  padre.addHijo(new Nodo(this.op_string, ""));
+      //  padre.addHijo(new Nodo(this.op_string, ""));
       padre.addHijo(this.expre2.recorrer());
     }
 
     return padre;
+  }
+
+  comparacion(
+    nodo: Resultado3D,
+    nodoIzq: Resultado3D,
+    nodoDer: Resultado3D,
+    signo: string,
+    Temp: Temporales,
+    controlador: Controller,
+    ts: TablaSim,
+    ts_u: TablaSim
+  ) {
+    nodo.tipo = tipo.BOOLEAN;
+    let v: string = Temp.etiqueta();
+    let f: string = Temp.etiqueta();
+    nodo.codigo3D += Temp.crearLinea(
+      "if (" +
+        nodoIzq.temporal.nombre +
+        " " +
+        signo +
+        " " +
+        nodoDer.temporal.nombre +
+        ") goto " +
+        v,
+      "Si es verdadero salta a " + v
+    );
+
+    nodo.codigo3D += Temp.crearLinea(
+      "goto " + f,
+      "si no se cumple salta a: " + f
+    );
+    nodo.etiquetasV = [];
+    nodo.etiquetasV.push(v);
+    nodo.etiquetasF = [];
+    nodo.etiquetasF.push(f);
+    return nodo;
   }
 
   codigoAscii(cadena: string): number {

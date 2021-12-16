@@ -100,6 +100,8 @@ class ManejoArray {
             return Tipo_1.tipo.NULO;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo("Asignacion", "");
         return padre;

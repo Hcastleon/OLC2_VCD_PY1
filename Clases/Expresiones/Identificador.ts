@@ -37,7 +37,7 @@ export class Identificador implements Expresion {
         return padre
     }
 
-    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
         
     }
 

@@ -320,9 +320,20 @@ export class Aritmetica extends Operacion implements Expresion {
     return false
   }
 
-  generarOperacionBinario(Temp: Temporales, controlador: Controller, ts: TablaSim, signo:any, recursivo: any){
-    let valor1 = this.expre1.traducir(Temp,controlador,ts);
-    let valor2 = this.expre2.traducir(Temp,controlador,ts);
+  generarOperacionBinario(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim, signo:any, recursivo: any){
+    let valor1;
+    let valor2;
+    let valor_U;
+    if (this.expreU === false) {
+      valor1 = this.expre1.traducir(Temp,controlador,ts,ts_u);
+      valor2 = this.expre2.traducir(Temp,controlador,ts,ts_u);
+    } else {
+      valor1 = new Resultado3D();
+      valor1.codigo3D="";
+      valor1.temporal = new Temporal("0");
+      valor1.tipo = tipo.ENTERO;
+      valor2 = this.expre1.traducir(Temp,controlador,ts,ts_u);
+    }
 
     if(valor1 == (null || undefined) || valor2 == (null || undefined)) return null
 
@@ -339,14 +350,20 @@ export class Aritmetica extends Operacion implements Expresion {
 
     let result = new Resultado3D();
     result.tipo = tipo.DOUBLE
-    if(recursivo==0){
+    /*if(recursivo==0){
       let temporal = new Temporal(valor1.temporal.utilizar() + " "+ signo+ " "+valor2.temporal.utilizar());
       result.codigo3D = resultado;
       result.temporal = temporal;
       return result;
-    }
+    }*/
     let temporal = Temp.nuevoTemporal();
-    let op = temporal.obtener() + '=' + valor1.temporal.utilizar()+" "+ signo+" "+valor1.temporal.utilizar()+";";
+    let op;
+    if(signo == "%"){
+     op = temporal.obtener() + '= fmod(' + valor1.temporal.utilizar()+","+valor2.temporal.utilizar()+");";
+    }else{
+       op = temporal.obtener() + '=' + valor1.temporal.utilizar()+" "+ signo+" "+valor2.temporal.utilizar()+";";
+    }
+    
       resultado += op
       result.codigo3D = resultado;
       result.temporal = temporal;
@@ -354,16 +371,21 @@ export class Aritmetica extends Operacion implements Expresion {
 
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
       if(this.operador == Operador.SUMA){
-        return this.generarOperacionBinario(Temp, controlador,ts,"+",0);
+        return this.generarOperacionBinario(Temp, controlador,ts,ts_u,"+",0);
       }else if(this.operador == Operador.RESTA){
-        return this.generarOperacionBinario(Temp, controlador,ts,"-",0);
+        return this.generarOperacionBinario(Temp, controlador,ts,ts_u,"-",0);
       }else if(this.operador == Operador.MULT){
-        return this.generarOperacionBinario(Temp, controlador,ts,"*",0);
+        return this.generarOperacionBinario(Temp, controlador,ts,ts_u,"*",0);
       }else if(this.operador == Operador.DIV){
-        return this.generarOperacionBinario(Temp, controlador,ts,"/",0);
+        return this.generarOperacionBinario(Temp, controlador,ts,ts_u,"/",0);
+      }else if(this.operador == Operador.MODULO){
+        return this.generarOperacionBinario(Temp, controlador,ts,ts_u,"%",0);
+      }else if(this.operador == Operador.UNARIO){
+        return this.generarOperacionBinario(Temp, controlador,ts,ts_u,"-",0);
       }
+      //modulo unario concatenar0  repetir
       return "Holiwis"
   }
 

@@ -17,6 +17,10 @@ export class Controller {
     this.consola += aux;
   }
 
+   public appendT(aux: string) {
+    this.texto += aux;
+  }
+
   recursivo_tablita(entornito: TablaSim, cuerpotabla: string, contador: number) {
        
         let auxS = cuerpotabla;

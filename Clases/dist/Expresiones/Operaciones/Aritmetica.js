@@ -5,6 +5,7 @@ const Errores_1 = require("../../AST/Errores");
 const Nodo_1 = require("../../AST/Nodo");
 const Tipo_1 = require("../../TablaSimbolos/Tipo");
 const Operaciones_1 = require("./Operaciones");
+const Temporales_1 = require("../../AST/Temporales");
 class Aritmetica extends Operaciones_1.Operacion {
     constructor(expre1, expre2, expreU, operador, linea, column) {
         super(expre1, expre2, expreU, operador, linea, column);
@@ -358,6 +359,82 @@ class Aritmetica extends Operaciones_1.Operacion {
             default:
                 break;
         }
+    }
+    validarLados(recursivo, controlador, ts, ts_u) {
+        if (recursivo == 0 && this.expre1.getTipo(controlador, ts, ts_u) == Tipo_1.tipo.ENTERO) {
+            return true;
+        }
+        return false;
+    }
+    generarOperacionBinario(Temp, controlador, ts, ts_u, signo, recursivo) {
+        let valor1;
+        let valor2;
+        let valor_U;
+        if (this.expreU === false) {
+            valor1 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+            valor2 = this.expre2.traducir(Temp, controlador, ts, ts_u);
+        }
+        else {
+            valor1 = new Temporales_1.Resultado3D();
+            valor1.codigo3D = "";
+            valor1.temporal = new Temporales_1.Temporal("0");
+            valor1.tipo = Tipo_1.tipo.ENTERO;
+            valor2 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+        }
+        if (valor1 == (null || undefined) || valor2 == (null || undefined))
+            return null;
+        let resultado = valor1.codigo3D;
+        if (resultado != "" && valor2.codigo3D) {
+            resultado = resultado + "\n" + valor2.codigo3D;
+        }
+        else {
+            resultado += valor2.codigo3D;
+        }
+        if (resultado != "") {
+            resultado = resultado + "\n";
+        }
+        let result = new Temporales_1.Resultado3D();
+        result.tipo = Tipo_1.tipo.DOUBLE;
+        /*if(recursivo==0){
+          let temporal = new Temporal(valor1.temporal.utilizar() + " "+ signo+ " "+valor2.temporal.utilizar());
+          result.codigo3D = resultado;
+          result.temporal = temporal;
+          return result;
+        }*/
+        let temporal = Temp.nuevoTemporal();
+        let op;
+        if (signo == "%") {
+            op = temporal.obtener() + '= fmod(' + valor1.temporal.utilizar() + "," + valor2.temporal.utilizar() + ");";
+        }
+        else {
+            op = temporal.obtener() + '=' + valor1.temporal.utilizar() + " " + signo + " " + valor2.temporal.utilizar() + ";";
+        }
+        resultado += op;
+        result.codigo3D = resultado;
+        result.temporal = temporal;
+        return result;
+    }
+    traducir(Temp, controlador, ts, ts_u) {
+        if (this.operador == Operaciones_1.Operador.SUMA) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "+", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.RESTA) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "-", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.MULT) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "*", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.DIV) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "/", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.MODULO) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "%", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.UNARIO) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "-", 0);
+        }
+        //modulo unario concatenar0  repetir
+        return "Holiwis";
     }
     recorrer() {
         let padre = new Nodo_1.Nodo(this.op_string, "");

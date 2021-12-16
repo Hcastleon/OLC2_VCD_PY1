@@ -163,7 +163,7 @@ export class ForEsp implements Instruccion {
     return n.length === 1 && n.match(/[a-zA-Z]/i);
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
       
   }
 

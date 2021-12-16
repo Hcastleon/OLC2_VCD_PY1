@@ -69,5 +69,7 @@ class DeclaracionStruct {
         // let hijo_sim = new Nodo("Simbolos", "")
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.DeclaracionStruct = DeclaracionStruct;

@@ -465,6 +465,8 @@ class AritArreglo {
         }
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
     }

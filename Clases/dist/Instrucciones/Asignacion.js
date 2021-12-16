@@ -17,7 +17,7 @@ class Asignacion {
             (_a = ts.getSimbolo(this.identificador)) === null || _a === void 0 ? void 0 : _a.setValor(valor);
         }
         else {
-            let error = new Errores_1.Errores('Semantico', `La variable ${this.valor.getValor(controlador, ts, ts_u)}, no existe en el entorno`, this.linea, this.column);
+            let error = new Errores_1.Errores("Semantico", `La variable ${this.valor.getValor(controlador, ts, ts_u)}, no existe en el entorno`, this.linea, this.column);
             controlador.errores.push(error);
         }
     }
@@ -28,5 +28,6 @@ class Asignacion {
         padre.addHijo(this.valor.recorrer());
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) { }
 }
 exports.Asignacion = Asignacion;

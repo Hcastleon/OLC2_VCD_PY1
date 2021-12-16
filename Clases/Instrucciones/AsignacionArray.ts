@@ -116,7 +116,7 @@ export class AsignacionArray implements Instruccion {
     }
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {}
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {}
   recorrer(): Nodo {
     let padre = new Nodo("Asignacion", "");
     return padre;

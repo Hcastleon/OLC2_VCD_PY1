@@ -146,6 +146,8 @@ class AccesoArreglo {
         let padre = new Nodo_1.Nodo("ID", "");
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
     }

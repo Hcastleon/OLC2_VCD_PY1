@@ -12,5 +12,7 @@ class Continue {
         let pader = new Nodo_1.Nodo("Continue", "");
         return pader;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Continue = Continue;

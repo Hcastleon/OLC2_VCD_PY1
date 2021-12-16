@@ -32,5 +32,7 @@ class Struct extends Simbolos_1.Simbolos {
         let padre = new Nodo_1.Nodo(this.identificador, "");
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Struct = Struct;

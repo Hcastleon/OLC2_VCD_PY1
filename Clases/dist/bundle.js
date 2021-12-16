@@ -800,14 +800,97 @@ exports.Nodo = Nodo;
 },{}],8:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Temporales = exports.Resultado3D = exports.Temporal = void 0;
+const Tipo_1 = require("../TablaSimbolos/Tipo");
+class Temporal {
+    constructor(nombre) {
+        this.nombre = nombre;
+        this.utilizado = false;
+    }
+    obtener() {
+        return this.nombre;
+    }
+    utilizar() {
+        this.utilizado = true;
+        return this.nombre;
+    }
+}
+exports.Temporal = Temporal;
+class Resultado3D {
+    constructor() {
+        this.etiquetasV = [];
+        this.etiquetasF = [];
+        this.codigo3D = "";
+        this.temporal = null;
+        this.tipo = Tipo_1.tipo.NULO;
+    }
+}
+exports.Resultado3D = Resultado3D;
+class Temporales {
+    constructor() {
+        this.lista_temporales = [];
+        this.contador_temporales = -1;
+        this.contador_parametro = -1;
+        this.contador_etiquetas = -1;
+        this.etiquetaV = "";
+        this.etiquetaF = "";
+        this.etiquetasV = [];
+        this.etiquetasF = [];
+    }
+    nuevoTemporal() {
+        let temp = new Temporal(this.temporal());
+        this.lista_temporales.push(temp);
+        return temp;
+    }
+    temporal() {
+        this.contador_temporales = this.contador_temporales + 1;
+        return "t" + this.contador_temporales;
+    }
+    parametro() {
+        this.contador_parametro = this.contador_parametro + 1;
+        return "a" + this.contador_parametro;
+    }
+    etiqueta() {
+        this.contador_etiquetas = this.contador_etiquetas + 1;
+        return "L" + this.contador_etiquetas;
+    }
+    escribirEtiquetas(etiquetas) {
+        let res = "";
+        etiquetas.forEach((element) => {
+            res += element + ":";
+        });
+        return res + "\n";
+    }
+    ultimaEtiqueta() {
+        return "L" + this.contador_etiquetas;
+    }
+    saltoCondicional(condicion, etiqueta) {
+        return "if " + condicion + " goto " + etiqueta + ";\n";
+    }
+    saltoIncondicional(etiqueta) {
+        return "goto " + etiqueta + ";\n";
+    }
+    crearLinea(linea, comentario) {
+        return linea + "; //" + comentario + "\n";
+    }
+}
+exports.Temporales = Temporales;
+
+},{"../TablaSimbolos/Tipo":49}],9:[function(require,module,exports){
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 exports.Controller = void 0;
 class Controller {
     constructor() {
         this.errores = new Array();
         this.consola = "";
+        this.texto = "";
     }
     append(aux) {
         this.consola += aux;
+    }
+    appendT(aux) {
+        this.texto += aux;
     }
     recursivo_tablita(entornito, cuerpotabla, contador) {
         let auxS = cuerpotabla;
@@ -898,7 +981,7 @@ class Controller {
 }
 exports.Controller = Controller;
 
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AccesoArreglo = void 0;
@@ -1047,13 +1130,15 @@ class AccesoArreglo {
         let padre = new Nodo_1.Nodo("ID", "");
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
     }
 }
 exports.AccesoArreglo = AccesoArreglo;
 
-},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Tipo":48}],10:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Tipo":49}],11:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AccesoStruct = void 0;
@@ -1133,10 +1218,12 @@ class AccesoStruct {
         let padre = new Nodo_1.Nodo("accesoStruct", "");
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.AccesoStruct = AccesoStruct;
 
-},{"../AST/Nodo":7}],11:[function(require,module,exports){
+},{"../AST/Nodo":7}],12:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Arreglo = void 0;
@@ -1211,6 +1298,8 @@ class Arreglo {
             return -1;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo("ID", "");
         return padre;
@@ -1224,7 +1313,7 @@ class Arreglo {
 }
 exports.Arreglo = Arreglo;
 
-},{"../AST/Nodo":7,"../TablaSimbolos/Tipo":48}],12:[function(require,module,exports){
+},{"../AST/Nodo":7,"../TablaSimbolos/Tipo":49}],13:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Identificador = void 0;
@@ -1252,10 +1341,12 @@ class Identificador {
         // padre.addHijo(new Nodo(this.identificador, ""))
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Identificador = Identificador;
 
-},{"../AST/Nodo":7}],13:[function(require,module,exports){
+},{"../AST/Nodo":7}],14:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AritArreglo = void 0;
@@ -1723,6 +1814,8 @@ class AritArreglo {
         }
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
     }
@@ -1732,7 +1825,7 @@ class AritArreglo {
 }
 exports.AritArreglo = AritArreglo;
 
-},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":48}],14:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":49}],15:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Aritmetica = void 0;
@@ -1740,6 +1833,7 @@ const Errores_1 = require("../../AST/Errores");
 const Nodo_1 = require("../../AST/Nodo");
 const Tipo_1 = require("../../TablaSimbolos/Tipo");
 const Operaciones_1 = require("./Operaciones");
+const Temporales_1 = require("../../AST/Temporales");
 class Aritmetica extends Operaciones_1.Operacion {
     constructor(expre1, expre2, expreU, operador, linea, column) {
         super(expre1, expre2, expreU, operador, linea, column);
@@ -2094,6 +2188,82 @@ class Aritmetica extends Operaciones_1.Operacion {
                 break;
         }
     }
+    validarLados(recursivo, controlador, ts, ts_u) {
+        if (recursivo == 0 && this.expre1.getTipo(controlador, ts, ts_u) == Tipo_1.tipo.ENTERO) {
+            return true;
+        }
+        return false;
+    }
+    generarOperacionBinario(Temp, controlador, ts, ts_u, signo, recursivo) {
+        let valor1;
+        let valor2;
+        let valor_U;
+        if (this.expreU === false) {
+            valor1 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+            valor2 = this.expre2.traducir(Temp, controlador, ts, ts_u);
+        }
+        else {
+            valor1 = new Temporales_1.Resultado3D();
+            valor1.codigo3D = "";
+            valor1.temporal = new Temporales_1.Temporal("0");
+            valor1.tipo = Tipo_1.tipo.ENTERO;
+            valor2 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+        }
+        if (valor1 == (null || undefined) || valor2 == (null || undefined))
+            return null;
+        let resultado = valor1.codigo3D;
+        if (resultado != "" && valor2.codigo3D) {
+            resultado = resultado + "\n" + valor2.codigo3D;
+        }
+        else {
+            resultado += valor2.codigo3D;
+        }
+        if (resultado != "") {
+            resultado = resultado + "\n";
+        }
+        let result = new Temporales_1.Resultado3D();
+        result.tipo = Tipo_1.tipo.DOUBLE;
+        /*if(recursivo==0){
+          let temporal = new Temporal(valor1.temporal.utilizar() + " "+ signo+ " "+valor2.temporal.utilizar());
+          result.codigo3D = resultado;
+          result.temporal = temporal;
+          return result;
+        }*/
+        let temporal = Temp.nuevoTemporal();
+        let op;
+        if (signo == "%") {
+            op = temporal.obtener() + '= fmod(' + valor1.temporal.utilizar() + "," + valor2.temporal.utilizar() + ");";
+        }
+        else {
+            op = temporal.obtener() + '=' + valor1.temporal.utilizar() + " " + signo + " " + valor2.temporal.utilizar() + ";";
+        }
+        resultado += op;
+        result.codigo3D = resultado;
+        result.temporal = temporal;
+        return result;
+    }
+    traducir(Temp, controlador, ts, ts_u) {
+        if (this.operador == Operaciones_1.Operador.SUMA) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "+", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.RESTA) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "-", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.MULT) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "*", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.DIV) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "/", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.MODULO) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "%", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.UNARIO) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "-", 0);
+        }
+        //modulo unario concatenar0  repetir
+        return "Holiwis";
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo(this.op_string, "");
         if (this.expreU) {
@@ -2116,7 +2286,7 @@ class Aritmetica extends Operaciones_1.Operacion {
 }
 exports.Aritmetica = Aritmetica;
 
-},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":48,"./Operaciones":19}],15:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../AST/Temporales":8,"../../TablaSimbolos/Tipo":49,"./Operaciones":20}],16:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Cadenas = void 0;
@@ -2302,10 +2472,12 @@ class Cadenas {
             return Tipo_1.tipo.NULO;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Cadenas = Cadenas;
 
-},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":48}],16:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":49}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Conversion = void 0;
@@ -2368,6 +2540,8 @@ class Conversion {
         padre.addHijo(this.expre2.recorrer());
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
     }
@@ -2380,26 +2554,27 @@ class Conversion {
 }
 exports.Conversion = Conversion;
 
-},{"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":48}],17:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":49}],18:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Logicas = void 0;
 const Nodo_1 = require("../../AST/Nodo");
 const Tipo_1 = require("../../TablaSimbolos/Tipo");
 const Operaciones_1 = require("./Operaciones");
+const Temporales_1 = require("../../AST/Temporales");
 class Logicas extends Operaciones_1.Operacion {
     constructor(expre1, expre2, expreU, operador, linea, column) {
         super(expre1, expre2, expreU, operador, linea, column);
     }
     getTipo(controlador, ts, ts_u) {
         let valor = this.getValor(controlador, ts, ts_u);
-        if (typeof valor == 'number') {
+        if (typeof valor == "number") {
             return Tipo_1.tipo.DOUBLE;
         }
-        else if (typeof valor == 'string') {
+        else if (typeof valor == "string") {
             return Tipo_1.tipo.CADENA;
         }
-        else if (typeof valor == 'boolean') {
+        else if (typeof valor == "boolean") {
             return Tipo_1.tipo.BOOLEAN;
         }
     }
@@ -2416,21 +2591,21 @@ class Logicas extends Operaciones_1.Operacion {
         }
         switch (this.operador) {
             case Operaciones_1.Operador.AND:
-                if (typeof valor_exp1 == 'boolean') {
-                    if (typeof valor_exp2 == 'boolean') {
+                if (typeof valor_exp1 == "boolean") {
+                    if (typeof valor_exp2 == "boolean") {
                         return valor_exp1 && valor_exp2;
                     }
                 }
                 break;
             case Operaciones_1.Operador.OR:
-                if (typeof valor_exp1 == 'boolean') {
-                    if (typeof valor_exp2 == 'boolean') {
+                if (typeof valor_exp1 == "boolean") {
+                    if (typeof valor_exp2 == "boolean") {
                         return valor_exp1 || valor_exp2;
                     }
                 }
                 break;
             case Operaciones_1.Operador.NOT:
-                if (typeof valor_expU == 'boolean') {
+                if (typeof valor_expU == "boolean") {
                     return !valor_expU;
                 }
                 break;
@@ -2451,10 +2626,105 @@ class Logicas extends Operaciones_1.Operacion {
         }
         return padre;
     }
+    generarOperacionBinario(Temp, controlador, ts, ts_u, signo, recursivo) {
+        let valor1;
+        let valor2;
+        if (this.expreU === false) {
+            valor1 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+            valor2 = this.expre2.traducir(Temp, controlador, ts, ts_u);
+        }
+        else {
+            valor1 = new Temporales_1.Resultado3D();
+            valor1.codigo3D = "";
+            valor1.temporal = new Temporales_1.Temporal("0");
+            valor1.tipo = Tipo_1.tipo.ENTERO;
+            valor2 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+        }
+        if (valor1 == (null || undefined) || valor2 == (null || undefined))
+            return null;
+        //-------
+        //let resultado = "";
+        let result = new Temporales_1.Resultado3D();
+        result.tipo = Tipo_1.tipo.BOOLEAN;
+        if (this.operador == Operaciones_1.Operador.OR) {
+            result.codigo3D += valor1.codigo3D;
+            //
+            valor1 = this.arreglarBoolean(valor1, result, Temp);
+            //
+            result.codigo3D += Temp.escribirEtiquetas(valor1.etiquetasF);
+            result.codigo3D += valor2.codigo3D;
+            valor2 = this.arreglarBoolean(valor2, result, Temp);
+            result.etiquetasV = valor1.etiquetasV;
+            result.etiquetasV = result.etiquetasV.concat(valor2.etiquetasV);
+            result.etiquetasF = valor2.etiquetasF;
+            //result.codigo3D = resultado;
+            if (this.getValor(controlador, ts, ts_u) === true) {
+                result.temporal = new Temporales_1.Temporal("true");
+            }
+            else {
+                result.temporal = new Temporales_1.Temporal("false");
+            }
+            return result;
+        }
+        else if (this.operador == Operaciones_1.Operador.AND) {
+            result.codigo3D += valor1.codigo3D;
+            //
+            valor1 = this.arreglarBoolean(valor1, result, Temp);
+            //
+            result.codigo3D += Temp.escribirEtiquetas(valor1.etiquetasV);
+            result.codigo3D += valor2.codigo3D;
+            valor2 = this.arreglarBoolean(valor2, result, Temp);
+            result.etiquetasV = valor2.etiquetasV;
+            result.etiquetasF = valor1.etiquetasF;
+            result.etiquetasF = result.etiquetasF.concat(valor2.etiquetasF);
+            //result.codigo3D = resultado;
+            if (this.getValor(controlador, ts, ts_u) === true) {
+                result.temporal = new Temporales_1.Temporal("true");
+            }
+            else {
+                result.temporal = new Temporales_1.Temporal("false");
+            }
+            return result;
+        }
+        else {
+            result.codigo3D += valor2.codigo3D;
+            valor2 = this.arreglarBoolean(valor2, result, Temp);
+            let v = valor2.etiquetasV;
+            let f = valor2.etiquetasF;
+            result.etiquetasF = v;
+            result.etiquetasV = f;
+            return result;
+        }
+    }
+    traducir(Temp, controlador, ts, ts_u) {
+        if (this.operador == Operaciones_1.Operador.AND) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "&&", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.OR) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "||", 0);
+        }
+        else if (this.operador == Operaciones_1.Operador.NOT) {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "!", 0);
+        }
+        //modulo unario concatenar repetir
+        return "Holiwis";
+    }
+    arreglarBoolean(nodo, salida, Temp) {
+        if (nodo.etiquetasV.length == 0) {
+            let v = Temp.etiqueta();
+            let f = Temp.etiqueta();
+            salida.codigo3D += Temp.saltoCondicional("(" + nodo.temporal.nombre + "== 1 )", v);
+            salida.codigo3D += Temp.saltoIncondicional(f);
+            console.log("2" + salida);
+            nodo.etiquetasV = [v];
+            nodo.etiquetasF = [f];
+        }
+        return nodo;
+    }
 }
 exports.Logicas = Logicas;
 
-},{"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":48,"./Operaciones":19}],18:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../AST/Temporales":8,"../../TablaSimbolos/Tipo":49,"./Operaciones":20}],19:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Nativa = void 0;
@@ -2562,6 +2832,8 @@ class Nativa extends Operaciones_1.Operacion {
                 break;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo(this.operador.toString(), "");
         if (this.operador == Operaciones_1.Operador.POTENCIA) {
@@ -2583,7 +2855,7 @@ class Nativa extends Operaciones_1.Operacion {
 }
 exports.Nativa = Nativa;
 
-},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":48,"./Operaciones":19}],19:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":49,"./Operaciones":20}],20:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Operacion = exports.Operador = void 0;
@@ -2715,10 +2987,12 @@ class Operacion {
         }
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Operacion = Operacion;
 
-},{"../../AST/Nodo":7}],20:[function(require,module,exports){
+},{"../../AST/Nodo":7}],21:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Relacionales = void 0;
@@ -2726,6 +3000,7 @@ const Errores_1 = require("../../AST/Errores");
 const Nodo_1 = require("../../AST/Nodo");
 const Tipo_1 = require("../../TablaSimbolos/Tipo");
 const Operaciones_1 = require("./Operaciones");
+const Temporales_1 = require("../../AST/Temporales");
 class Relacionales extends Operaciones_1.Operacion {
     constructor(expre1, expre2, expreU, op, linea, columna) {
         super(expre1, expre2, expreU, op, linea, columna);
@@ -3484,6 +3759,45 @@ class Relacionales extends Operaciones_1.Operacion {
                 break;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) {
+        let valor1;
+        let valor2;
+        if (this.expreU === false) {
+            valor1 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+            valor2 = this.expre2.traducir(Temp, controlador, ts, ts_u);
+        }
+        else {
+            valor1 = new Temporales_1.Resultado3D();
+            valor1.codigo3D = "";
+            valor1.temporal = new Temporales_1.Temporal("0");
+            valor1.tipo = Tipo_1.tipo.ENTERO;
+            valor2 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+        }
+        if (valor1 == (null || undefined) || valor2 == (null || undefined))
+            return null;
+        let result = new Temporales_1.Resultado3D();
+        result.tipo = Tipo_1.tipo.BOOLEAN;
+        if (valor1.tipo != Tipo_1.tipo.BOOLEAN)
+            result.codigo3D += valor1.codigo3D;
+        if (valor2.tipo != Tipo_1.tipo.BOOLEAN)
+            result.codigo3D += valor2.codigo3D;
+        switch (this.operador) {
+            case Operaciones_1.Operador.MAYORQUE:
+                return this.comparacion(result, valor1, valor2, ">", Temp, controlador, ts, ts_u);
+            case Operaciones_1.Operador.MENORQUE:
+                return this.comparacion(result, valor1, valor2, "<", Temp, controlador, ts, ts_u);
+            case Operaciones_1.Operador.MENORIGUAL:
+                return this.comparacion(result, valor1, valor2, "<=", Temp, controlador, ts, ts_u);
+            case Operaciones_1.Operador.MAYORIGUAL:
+                return this.comparacion(result, valor1, valor2, ">=", Temp, controlador, ts, ts_u);
+            case Operaciones_1.Operador.DIFERENCIACION:
+                return this.comparacion(result, valor1, valor2, "!=", Temp, controlador, ts, ts_u);
+            case Operaciones_1.Operador.IGUALIGUAL:
+                return this.comparacion(result, valor1, valor2, "==", Temp, controlador, ts, ts_u);
+            default:
+                return;
+        }
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo(this.op_string, "");
         if (this.expreU) {
@@ -3497,6 +3811,25 @@ class Relacionales extends Operaciones_1.Operacion {
         }
         return padre;
     }
+    comparacion(nodo, nodoIzq, nodoDer, signo, Temp, controlador, ts, ts_u) {
+        nodo.tipo = Tipo_1.tipo.BOOLEAN;
+        let v = Temp.etiqueta();
+        let f = Temp.etiqueta();
+        nodo.codigo3D += Temp.crearLinea("if (" +
+            nodoIzq.temporal.nombre +
+            " " +
+            signo +
+            " " +
+            nodoDer.temporal.nombre +
+            ") goto " +
+            v, "Si es verdadero salta a " + v);
+        nodo.codigo3D += Temp.crearLinea("goto " + f, "si no se cumple salta a: " + f);
+        nodo.etiquetasV = [];
+        nodo.etiquetasV.push(v);
+        nodo.etiquetasF = [];
+        nodo.etiquetasF.push(f);
+        return nodo;
+    }
     codigoAscii(cadena) {
         let aux = 0;
         for (let index = 0; index < cadena.length; index++) {
@@ -3507,12 +3840,13 @@ class Relacionales extends Operaciones_1.Operacion {
 }
 exports.Relacionales = Relacionales;
 
-},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":48,"./Operaciones":19}],21:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../AST/Temporales":8,"../../TablaSimbolos/Tipo":49,"./Operaciones":20}],22:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Primitivo = void 0;
 const Nodo_1 = require("../AST/Nodo");
 const Tipo_1 = require("../TablaSimbolos/Tipo");
+const Temporales_1 = require("../AST/Temporales");
 class Primitivo {
     constructor(primitivo, linea, columna) {
         this.columna = columna;
@@ -3521,19 +3855,36 @@ class Primitivo {
     }
     getTipo(controlador, ts, ts_u) {
         let valor = this.getValor(controlador, ts, ts_u);
-        if (typeof valor == 'number') {
+        if (typeof valor == "number") {
             if (this.isInt(Number(valor))) {
                 return Tipo_1.tipo.ENTERO;
             }
             return Tipo_1.tipo.DOUBLE;
         }
-        else if (typeof valor == 'string') {
+        else if (typeof valor == "string") {
             return Tipo_1.tipo.CADENA;
         }
-        else if (typeof valor == 'boolean') {
+        else if (typeof valor == "boolean") {
             return Tipo_1.tipo.BOOLEAN;
         }
         else if (valor === null) {
+            return Tipo_1.tipo.NULO;
+        }
+    }
+    getTipoTraduc() {
+        if (typeof this.primitivo == "number") {
+            if (this.isInt(Number(this.primitivo))) {
+                return Tipo_1.tipo.ENTERO;
+            }
+            return Tipo_1.tipo.DOUBLE;
+        }
+        else if (typeof this.primitivo == "string") {
+            return Tipo_1.tipo.CADENA;
+        }
+        else if (typeof this.primitivo == "boolean") {
+            return Tipo_1.tipo.BOOLEAN;
+        }
+        else if (this.primitivo === null) {
             return Tipo_1.tipo.NULO;
         }
     }
@@ -3554,10 +3905,39 @@ class Primitivo {
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+        let resultado3D = new Temporales_1.Resultado3D();
+        resultado3D.codigo3D = "";
+        if (typeof this.primitivo == "number") {
+            if (this.isInt(Number(this.primitivo))) {
+                resultado3D.tipo = Tipo_1.tipo.ENTERO;
+            }
+            resultado3D.tipo = Tipo_1.tipo.DOUBLE;
+        }
+        else if (typeof this.primitivo == "string") {
+            resultado3D.tipo = Tipo_1.tipo.CADENA;
+        }
+        else if (typeof this.primitivo == "boolean") {
+            resultado3D.tipo = Tipo_1.tipo.BOOLEAN;
+        }
+        else if (this.primitivo === null) {
+            resultado3D.tipo = Tipo_1.tipo.NULO;
+        }
+        if (this.primitivo == true && typeof this.primitivo == "boolean") {
+            resultado3D.temporal = new Temporales_1.Temporal("1");
+        }
+        else if (this.primitivo == false && typeof this.primitivo == "boolean") {
+            resultado3D.temporal = new Temporales_1.Temporal("0");
+        }
+        else {
+            resultado3D.temporal = new Temporales_1.Temporal(this.primitivo.toString());
+        }
+        return resultado3D;
+    }
 }
 exports.Primitivo = Primitivo;
 
-},{"../AST/Nodo":7,"../TablaSimbolos/Tipo":48}],22:[function(require,module,exports){
+},{"../AST/Nodo":7,"../AST/Temporales":8,"../TablaSimbolos/Tipo":49}],23:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Struct = void 0;
@@ -3592,10 +3972,12 @@ class Struct extends Simbolos_1.Simbolos {
         let padre = new Nodo_1.Nodo(this.identificador, "");
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Struct = Struct;
 
-},{"../AST/Nodo":7,"../TablaSimbolos/Simbolos":46}],23:[function(require,module,exports){
+},{"../AST/Nodo":7,"../TablaSimbolos/Simbolos":47}],24:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Ternario = void 0;
@@ -3641,10 +4023,12 @@ class Ternario {
         padre.addHijo(this.falso.recorrer());
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Ternario = Ternario;
 
-},{"../AST/Errores":6,"../AST/Nodo":7}],24:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7}],25:[function(require,module,exports){
 (function (process){(function (){
 /* parser generated by jison 0.4.18 */
 /*
@@ -4909,7 +5293,7 @@ var gramar = (function(){
     }
     }
 }).call(this)}).call(this,require('_process'))
-},{"../AST/Errores":6,"../Expresiones/AccesoArreglo":9,"../Expresiones/AccesoStruct":10,"../Expresiones/Arreglo":11,"../Expresiones/Identificador":12,"../Expresiones/Operaciones/AritArreglo":13,"../Expresiones/Operaciones/Aritmetica":14,"../Expresiones/Operaciones/Cadenas":15,"../Expresiones/Operaciones/Conversion":16,"../Expresiones/Operaciones/Logicas":17,"../Expresiones/Operaciones/Nativa":18,"../Expresiones/Operaciones/Relacionales":20,"../Expresiones/Primitivo":21,"../Expresiones/Struct":22,"../Expresiones/Ternario":23,"../Instrucciones/Asignacion":25,"../Instrucciones/AsignacionArray":26,"../Instrucciones/AsignacionStruct":27,"../Instrucciones/Ciclica/DoWhile":28,"../Instrucciones/Ciclica/For":29,"../Instrucciones/Ciclica/ForEsp":30,"../Instrucciones/Ciclica/While":31,"../Instrucciones/Control/Case":32,"../Instrucciones/Control/Default":33,"../Instrucciones/Control/If":34,"../Instrucciones/Control/Switch":35,"../Instrucciones/Declaracion":36,"../Instrucciones/DeclaracionStruct":37,"../Instrucciones/Funcion":38,"../Instrucciones/Llamada":39,"../Instrucciones/ManejoArray":40,"../Instrucciones/Print":41,"../Instrucciones/Println":42,"../Instrucciones/Transferencia/Break":43,"../Instrucciones/Transferencia/Return":45,"../TablaSimbolos/Simbolos":46,"../TablaSimbolos/Tipo":48,"_process":3,"fs":1,"path":2}],25:[function(require,module,exports){
+},{"../AST/Errores":6,"../Expresiones/AccesoArreglo":10,"../Expresiones/AccesoStruct":11,"../Expresiones/Arreglo":12,"../Expresiones/Identificador":13,"../Expresiones/Operaciones/AritArreglo":14,"../Expresiones/Operaciones/Aritmetica":15,"../Expresiones/Operaciones/Cadenas":16,"../Expresiones/Operaciones/Conversion":17,"../Expresiones/Operaciones/Logicas":18,"../Expresiones/Operaciones/Nativa":19,"../Expresiones/Operaciones/Relacionales":21,"../Expresiones/Primitivo":22,"../Expresiones/Struct":23,"../Expresiones/Ternario":24,"../Instrucciones/Asignacion":26,"../Instrucciones/AsignacionArray":27,"../Instrucciones/AsignacionStruct":28,"../Instrucciones/Ciclica/DoWhile":29,"../Instrucciones/Ciclica/For":30,"../Instrucciones/Ciclica/ForEsp":31,"../Instrucciones/Ciclica/While":32,"../Instrucciones/Control/Case":33,"../Instrucciones/Control/Default":34,"../Instrucciones/Control/If":35,"../Instrucciones/Control/Switch":36,"../Instrucciones/Declaracion":37,"../Instrucciones/DeclaracionStruct":38,"../Instrucciones/Funcion":39,"../Instrucciones/Llamada":40,"../Instrucciones/ManejoArray":41,"../Instrucciones/Print":42,"../Instrucciones/Println":43,"../Instrucciones/Transferencia/Break":44,"../Instrucciones/Transferencia/Return":46,"../TablaSimbolos/Simbolos":47,"../TablaSimbolos/Tipo":49,"_process":3,"fs":1,"path":2}],26:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Asignacion = void 0;
@@ -4929,7 +5313,7 @@ class Asignacion {
             (_a = ts.getSimbolo(this.identificador)) === null || _a === void 0 ? void 0 : _a.setValor(valor);
         }
         else {
-            let error = new Errores_1.Errores('Semantico', `La variable ${this.valor.getValor(controlador, ts, ts_u)}, no existe en el entorno`, this.linea, this.column);
+            let error = new Errores_1.Errores("Semantico", `La variable ${this.valor.getValor(controlador, ts, ts_u)}, no existe en el entorno`, this.linea, this.column);
             controlador.errores.push(error);
         }
     }
@@ -4940,10 +5324,11 @@ class Asignacion {
         padre.addHijo(this.valor.recorrer());
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) { }
 }
 exports.Asignacion = Asignacion;
 
-},{"../AST/Errores":6,"../AST/Nodo":7}],26:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AsignacionArray = void 0;
@@ -4962,7 +5347,7 @@ class AsignacionArray {
         if (ts.existe(this.identificador)) {
             let simbolo = ts.getSimbolo(this.identificador);
             if ((simbolo === null || simbolo === void 0 ? void 0 : simbolo.getTipo().tipo) != Tipo_1.tipo.ARRAY) {
-                let error = new Errores_1.Errores('Semantico', `La variable ${this.identificador}, no es un Array`, this.linea, this.column);
+                let error = new Errores_1.Errores("Semantico", `La variable ${this.identificador}, no es un Array`, this.linea, this.column);
                 controlador.errores.push(error);
             }
             else {
@@ -4975,17 +5360,17 @@ class AsignacionArray {
                             valor_U[posi] = valor;
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor}, es un tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor}, es un tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
             }
@@ -5031,6 +5416,7 @@ class AsignacionArray {
             return Tipo_1.tipo.NULO;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) { }
     recorrer() {
         let padre = new Nodo_1.Nodo("Asignacion", "");
         return padre;
@@ -5044,7 +5430,7 @@ class AsignacionArray {
 }
 exports.AsignacionArray = AsignacionArray;
 
-},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Tipo":48}],27:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Tipo":49}],28:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AsignacionStruct = void 0;
@@ -5060,13 +5446,14 @@ class AsignacionStruct {
     ejecutar(controlador, ts, ts_u) {
         let entornos = ts.sig;
         if (entornos instanceof Array) {
-            entornos.forEach(entorno => {
+            entornos.forEach((entorno) => {
                 var _a;
                 if (entorno.nombre == this.identificador1.identificador) {
                     // let valor = entorno.getSimbolo(this.identificador2);
                     let valor = this.valor.getValor(controlador, ts, ts_u);
                     // let valor = vara.getValor();
-                    (_a = entorno.getSimbolo(this.identificador2.identificador)) === null || _a === void 0 ? void 0 : _a.setValor(valor);
+                    (_a = entorno
+                        .getSimbolo(this.identificador2.identificador)) === null || _a === void 0 ? void 0 : _a.setValor(valor);
                 }
             });
         }
@@ -5078,10 +5465,11 @@ class AsignacionStruct {
         padre.addHijo(this.valor.recorrer());
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) { }
 }
 exports.AsignacionStruct = AsignacionStruct;
 
-},{"../AST/Nodo":7}],28:[function(require,module,exports){
+},{"../AST/Nodo":7}],29:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DoWhile = void 0;
@@ -5147,10 +5535,12 @@ class DoWhile {
         //padre.addHijo(new Nodo(")", ""))
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.DoWhile = DoWhile;
 
-},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":47,"../Transferencia/Break":43,"../Transferencia/Continue":44,"../Transferencia/Return":45}],29:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":48,"../Transferencia/Break":44,"../Transferencia/Continue":45,"../Transferencia/Return":46}],30:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.For = void 0;
@@ -5213,10 +5603,12 @@ class For {
         //padre.addHijo(new Nodo("}", ""));
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.For = For;
 
-},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":47,"../Transferencia/Break":43,"../Transferencia/Continue":44,"../Transferencia/Return":45}],30:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":48,"../Transferencia/Break":44,"../Transferencia/Continue":45,"../Transferencia/Return":46}],31:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ForEsp = void 0;
@@ -5366,10 +5758,12 @@ class ForEsp {
     isChar(n) {
         return n.length === 1 && n.match(/[a-zA-Z]/i);
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.ForEsp = ForEsp;
 
-},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Simbolos":46,"../../TablaSimbolos/TablaSim":47,"../../TablaSimbolos/Tipo":48,"../Transferencia/Break":43,"../Transferencia/Continue":44,"../Transferencia/Return":45}],31:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Simbolos":47,"../../TablaSimbolos/TablaSim":48,"../../TablaSimbolos/Tipo":49,"../Transferencia/Break":44,"../Transferencia/Continue":45,"../Transferencia/Return":46}],32:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.While = void 0;
@@ -5417,10 +5811,12 @@ class While {
         }
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.While = While;
 
-},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":47,"../Transferencia/Break":43,"../Transferencia/Continue":44,"../Transferencia/Return":45}],32:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":48,"../Transferencia/Break":44,"../Transferencia/Continue":45,"../Transferencia/Return":46}],33:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Case = void 0;
@@ -5456,10 +5852,11 @@ class Case {
         }
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) { }
 }
 exports.Case = Case;
 
-},{"../../AST/Nodo":7,"../Transferencia/Break":43,"../Transferencia/Return":45}],33:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../Transferencia/Break":44,"../Transferencia/Return":46}],34:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Default = void 0;
@@ -5493,10 +5890,12 @@ class Default {
         }
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Default = Default;
 
-},{"../../AST/Nodo":7,"../Transferencia/Break":43,"../Transferencia/Return":45}],34:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../Transferencia/Break":44,"../Transferencia/Return":46}],35:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.If = void 0;
@@ -5562,10 +5961,12 @@ class If {
         padre.addHijo(elses);
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.If = If;
 
-},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":47,"../../TablaSimbolos/Tipo":48,"../Transferencia/Break":43,"../Transferencia/Continue":44,"../Transferencia/Return":45}],35:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":48,"../../TablaSimbolos/Tipo":49,"../Transferencia/Break":44,"../Transferencia/Continue":45,"../Transferencia/Return":46}],36:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Switch = void 0;
@@ -5627,10 +6028,11 @@ class Switch {
         }
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) { }
 }
 exports.Switch = Switch;
 
-},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":47,"../Transferencia/Break":43,"../Transferencia/Return":45}],36:[function(require,module,exports){
+},{"../../AST/Nodo":7,"../../TablaSimbolos/TablaSim":48,"../Transferencia/Break":44,"../Transferencia/Return":46}],37:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Declaracion = void 0;
@@ -5652,7 +6054,7 @@ class Declaracion {
             let variable = simbolo;
             // Se verifica que la varaible no exista en la tabla de simbolos actual
             if (ts.existeEnActual(variable.identificador)) {
-                let error = new Errores_1.Errores('Semantico', `La variable ${variable.identificador}, ya se declaro anteriormente`, this.linea, this.columna);
+                let error = new Errores_1.Errores("Semantico", `La variable ${variable.identificador}, ya se declaro anteriormente`, this.linea, this.columna);
                 controlador.errores.push(error);
                 continue;
             }
@@ -5666,7 +6068,7 @@ class Declaracion {
                         ts_u.agregar(variable.identificador, nuevo_sim);
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        let error = new Errores_1.Errores("Semantico", `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
                         controlador.errores.push(error);
                     }
                 }
@@ -5678,20 +6080,24 @@ class Declaracion {
                         ts_u.agregar(variable.identificador, nuevo_sim);
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `Las variables ${this.getTipo(valor)} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        let error = new Errores_1.Errores("Semantico", `Las variables ${this.getTipo(valor)} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
                         controlador.errores.push(error);
                     }
                 }
                 else {
                     let valor = variable.valor.getValor(controlador, ts, ts_u);
                     let tipo_valor = variable.valor.getTipo(controlador, ts, ts_u);
-                    if (tipo_valor == this.tipo.tipo || ((tipo_valor == Tipo_1.tipo.DOUBLE || tipo_valor == Tipo_1.tipo.ENTERO) && (this.tipo.tipo == Tipo_1.tipo.ENTERO || this.tipo.tipo == Tipo_1.tipo.DOUBLE)) || (tipo_valor == Tipo_1.tipo.CADENA && this.tipo.tipo == Tipo_1.tipo.CARACTER)) {
+                    if (tipo_valor == this.tipo.tipo ||
+                        ((tipo_valor == Tipo_1.tipo.DOUBLE || tipo_valor == Tipo_1.tipo.ENTERO) &&
+                            (this.tipo.tipo == Tipo_1.tipo.ENTERO ||
+                                this.tipo.tipo == Tipo_1.tipo.DOUBLE)) ||
+                        (tipo_valor == Tipo_1.tipo.CADENA && this.tipo.tipo == Tipo_1.tipo.CARACTER)) {
                         let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, this.tipo, variable.identificador, valor);
                         ts.agregar(variable.identificador, nuevo_sim);
                         ts_u.agregar(variable.identificador, nuevo_sim);
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        let error = new Errores_1.Errores("Semantico", `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
                         controlador.errores.push(error);
                     }
                 }
@@ -5723,6 +6129,8 @@ class Declaracion {
             return Tipo_1.tipo.NULO;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo("=", "");
         // let hijo_sim = new Nodo("Simbolos", "")
@@ -5747,7 +6155,7 @@ class Declaracion {
 }
 exports.Declaracion = Declaracion;
 
-},{"../AST/Errores":6,"../AST/Nodo":7,"../Expresiones/Arreglo":11,"../Expresiones/Operaciones/AritArreglo":13,"../TablaSimbolos/Simbolos":46,"../TablaSimbolos/Tipo":48}],37:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../Expresiones/Arreglo":12,"../Expresiones/Operaciones/AritArreglo":14,"../TablaSimbolos/Simbolos":47,"../TablaSimbolos/Tipo":49}],38:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeclaracionStruct = void 0;
@@ -5819,10 +6227,12 @@ class DeclaracionStruct {
         // let hijo_sim = new Nodo("Simbolos", "")
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.DeclaracionStruct = DeclaracionStruct;
 
-},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Simbolos":46,"../TablaSimbolos/TablaSim":47,"../TablaSimbolos/Tipo":48}],38:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Simbolos":47,"../TablaSimbolos/TablaSim":48,"../TablaSimbolos/Tipo":49}],39:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Funcion = void 0;
@@ -5839,6 +6249,7 @@ class Funcion extends Simbolos_1.Simbolos {
         this.lista_ints = lista_ints;
         this.linea = linea;
         this.column = columna;
+        this.etiqueta = "";
     }
     agregarSimboloFunc(controlador, ts, ts_u) {
         if (!ts.existe(this.identificador)) {
@@ -5900,10 +6311,18 @@ class Funcion extends Simbolos_1.Simbolos {
         });
         return padre;
     }
+    inicializar() {
+    }
+    traducir(Temp, controlador, ts, ts_u) {
+        controlador.appendT("\n" + this.etiqueta + ":" + "#" + this.identificador);
+        for (let ins of this.lista_ints) {
+            ins.traducir(Temp, controlador, ts, ts_u);
+        }
+    }
 }
 exports.Funcion = Funcion;
 
-},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Simbolos":46,"../TablaSimbolos/TablaSim":47,"./Transferencia/Break":43,"./Transferencia/Continue":44,"./Transferencia/Return":45}],39:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Simbolos":47,"../TablaSimbolos/TablaSim":48,"./Transferencia/Break":44,"./Transferencia/Continue":45,"./Transferencia/Return":46}],40:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Llamada = void 0;
@@ -5965,6 +6384,8 @@ class Llamada {
         //  padre.addHijo(new Nodo(")", ""));
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     verificarParams(para_llama, para_func, controlador, ts, ts_local, ts_u) {
         if (para_llama.length == (para_func === null || para_func === void 0 ? void 0 : para_func.length)) {
             let aux;
@@ -6002,7 +6423,7 @@ class Llamada {
 }
 exports.Llamada = Llamada;
 
-},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Simbolos":46,"../TablaSimbolos/TablaSim":47,"../TablaSimbolos/Tipo":48}],40:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Simbolos":47,"../TablaSimbolos/TablaSim":48,"../TablaSimbolos/Tipo":49}],41:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ManejoArray = void 0;
@@ -6105,6 +6526,8 @@ class ManejoArray {
             return Tipo_1.tipo.NULO;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo("Asignacion", "");
         return padre;
@@ -6118,11 +6541,13 @@ class ManejoArray {
 }
 exports.ManejoArray = ManejoArray;
 
-},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Tipo":48}],41:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../TablaSimbolos/Tipo":49}],42:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Print = void 0;
 const Nodo_1 = require("../AST/Nodo");
+const Temporales_1 = require("../AST/Temporales");
+const Tipo_1 = require("../TablaSimbolos/Tipo");
 class Print {
     constructor(expresion, linea, columna) {
         this.expresion = expresion;
@@ -6139,14 +6564,56 @@ class Print {
         padre.addHijo(this.expresion.recorrer());
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+        let valorfinal = 'print("';
+        let salida = new Temporales_1.Resultado3D();
+        // cadena = cadena.temporal.utilizar();
+        //cadena = cadena[1:-1];
+        let exp_3D = this.expresion.traducir(Temp, controlador, ts, ts_u);
+        console.log(exp_3D);
+        if (exp_3D.tipo == Tipo_1.tipo.ENTERO || exp_3D.tipo == Tipo_1.tipo.DOUBLE) {
+            controlador.appendT("\n" + exp_3D.codigo3D);
+            controlador.appendT("\n" + 'printf("%f", (double)' + exp_3D.temporal.nombre + ");");
+        }
+        else if (exp_3D.tipo == Tipo_1.tipo.BOOLEAN) {
+            console.log(exp_3D.etiquetasV.length + "LAROG DE VERDADERs");
+            controlador.appendT("\n" + exp_3D.codigo3D);
+            if (exp_3D.etiquetasV.length == 0) {
+                let verdadera = Temp.etiqueta();
+                let salto = Temp.etiqueta();
+                salida.codigo3D += Temp.crearLinea(Temp.saltoCondicional("(" + exp_3D.temporal.nombre + "== 0)", verdadera), "Si es un false");
+                salida.codigo3D +=
+                    'printf("%c", (char)116); \n printf("%c", (char)114); \n printf("%c", (char)117); \n printf("%c", (char)101); \n'; // true
+                salida.codigo3D += Temp.saltoIncondicional(salto);
+                salida.codigo3D += verdadera + ":";
+                salida.codigo3D +=
+                    'printf("%c", (char)102); \n printf("%c", (char)97); \n printf("%c", (char)108); \n printf("%c", (char)115); \n printf("%c", (char)101); \n'; //false
+                salida.codigo3D += salto + ":";
+            }
+            else {
+                let salto = Temp.etiqueta();
+                salida.codigo3D += Temp.escribirEtiquetas(exp_3D.etiquetasV);
+                salida.codigo3D +=
+                    'printf("%c", (char)116); \n printf("%c", (char)114); \n printf("%c", (char)117); \n printf("%c", (char)101); \n'; // true
+                salida.codigo3D += Temp.saltoIncondicional(salto);
+                salida.codigo3D += Temp.escribirEtiquetas(exp_3D.etiquetasF);
+                salida.codigo3D +=
+                    'printf("%c", (char)102); \n printf("%c", (char)97); \n printf("%c", (char)108); \n printf("%c", (char)115); \n printf("%c", (char)101); \n'; //false
+                salida.codigo3D += salto + ":";
+            }
+            controlador.appendT("\n" + salida.codigo3D);
+        }
+    }
 }
 exports.Print = Print;
 
-},{"../AST/Nodo":7}],42:[function(require,module,exports){
+},{"../AST/Nodo":7,"../AST/Temporales":8,"../TablaSimbolos/Tipo":49}],43:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Println = void 0;
 const Nodo_1 = require("../AST/Nodo");
+const Temporales_1 = require("../AST/Temporales");
+const Tipo_1 = require("../TablaSimbolos/Tipo");
 class Println {
     constructor(expresion, linea, columna) {
         this.expresion = expresion;
@@ -6155,7 +6622,7 @@ class Println {
     }
     ejecutar(controlador, ts, ts_u) {
         let valor = this.expresion.getValor(controlador, ts, ts_u);
-        controlador.append(valor + '\n');
+        controlador.append(valor + "\n");
         return null;
     }
     recorrer() {
@@ -6168,10 +6635,52 @@ class Println {
         //padre.addHijo(new Nodo(")",""));
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+        let valorfinal = 'print("';
+        let salida = new Temporales_1.Resultado3D();
+        // cadena = cadena.temporal.utilizar();
+        //cadena = cadena[1:-1];
+        let exp_3D = this.expresion.traducir(Temp, controlador, ts, ts_u);
+        console.log(exp_3D);
+        if (exp_3D.tipo == Tipo_1.tipo.ENTERO || exp_3D.tipo == Tipo_1.tipo.DOUBLE) {
+            salida.codigo3D += "\n" + exp_3D.codigo3D;
+            salida.codigo3D +=
+                "\n" + 'printf("%f", (double)' + exp_3D.temporal.nombre + ");";
+        }
+        else if (exp_3D.tipo == Tipo_1.tipo.BOOLEAN) {
+            console.log(exp_3D.etiquetasV.length + "LAROG DE VERDADERs");
+            controlador.appendT("\n" + exp_3D.codigo3D);
+            if (exp_3D.etiquetasV.length == 0) {
+                let verdadera = Temp.etiqueta();
+                let salto = Temp.etiqueta();
+                salida.codigo3D += Temp.crearLinea(Temp.saltoCondicional("(" + exp_3D.temporal.nombre + "== 0)", verdadera), "Si es un false");
+                salida.codigo3D +=
+                    'printf("%c", (char)116); \n printf("%c", (char)114); \n printf("%c", (char)117); \n printf("%c", (char)101); \n'; // true
+                salida.codigo3D += Temp.saltoIncondicional(salto);
+                salida.codigo3D += verdadera + ":";
+                salida.codigo3D +=
+                    'printf("%c", (char)102); \n printf("%c", (char)97); \n printf("%c", (char)108); \n printf("%c", (char)115); \n printf("%c", (char)101); \n'; //false
+                salida.codigo3D += salto + ":";
+            }
+            else {
+                let salto = Temp.etiqueta();
+                salida.codigo3D += Temp.escribirEtiquetas(exp_3D.etiquetasV);
+                salida.codigo3D +=
+                    'printf("%c", (char)116); \n printf("%c", (char)114); \n printf("%c", (char)117); \n printf("%c", (char)101); \n'; // true
+                salida.codigo3D += Temp.saltoIncondicional(salto);
+                salida.codigo3D += Temp.escribirEtiquetas(exp_3D.etiquetasF);
+                salida.codigo3D +=
+                    'printf("%c", (char)102); \n printf("%c", (char)97); \n printf("%c", (char)108); \n printf("%c", (char)115); \n printf("%c", (char)101); \n'; //false
+                salida.codigo3D += salto + ":";
+            }
+        }
+        salida.codigo3D += '\n printf("%c", (char)10);';
+        controlador.appendT("\n" + salida.codigo3D);
+    }
 }
 exports.Println = Println;
 
-},{"../AST/Nodo":7}],43:[function(require,module,exports){
+},{"../AST/Nodo":7,"../AST/Temporales":8,"../TablaSimbolos/Tipo":49}],44:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Break = void 0;
@@ -6186,10 +6695,12 @@ class Break {
         let padre = new Nodo_1.Nodo("Break", "");
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Break = Break;
 
-},{"../../AST/Nodo":7}],44:[function(require,module,exports){
+},{"../../AST/Nodo":7}],45:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Continue = void 0;
@@ -6204,10 +6715,12 @@ class Continue {
         let pader = new Nodo_1.Nodo("Continue", "");
         return pader;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Continue = Continue;
 
-},{"../../AST/Nodo":7}],45:[function(require,module,exports){
+},{"../../AST/Nodo":7}],46:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Return = void 0;
@@ -6231,10 +6744,12 @@ class Return {
         }
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Return = Return;
 
-},{"../../AST/Nodo":7}],46:[function(require,module,exports){
+},{"../../AST/Nodo":7}],47:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Simbolos = void 0;
@@ -6277,7 +6792,7 @@ class Simbolos {
 }
 exports.Simbolos = Simbolos;
 
-},{}],47:[function(require,module,exports){
+},{}],48:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.TablaSim = void 0;
@@ -6331,7 +6846,7 @@ class TablaSim {
 }
 exports.TablaSim = TablaSim;
 
-},{}],48:[function(require,module,exports){
+},{}],49:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Tipo = exports.Localizacion = exports.tipo = void 0;
@@ -6391,11 +6906,12 @@ class Tipo {
 }
 exports.Tipo = Tipo;
 
-},{}],49:[function(require,module,exports){
+},{}],50:[function(require,module,exports){
 // ------------------- global ---------------------------------------
 var TabId = 0;
 var ListaTab= [];
 var TabActual = null;
+let ejecucion = null;
 // ------------------- reload ----------------------------------------
 function loadPage(){
   let cm = new CodeMirror.fromTextArea(document.getElementById(`textInput-Blank`), {
@@ -6570,10 +7086,12 @@ function graficando_ast_d(contenido){
   
   var container = document.getElementById('arbol_ast');
   var parsedData = vis.network.convertDot(DOTstring);
+  
   var dataDOT = {
        nodes: parsedData.nodes,
        edges: parsedData.edges
        }
+       // OPTIONs
    var options = {
    autoResize: true,
    physics:{
@@ -6605,15 +7123,21 @@ function obtener_arbol_ast_(contenido){
 
 
 document.getElementById("prueba").onclick = function() {ej()};
+document.getElementById("codigo3d").onclick = function() {ej2()};
 
 
 function ej(){
-  let ejecucion = ejecutarCodigo(TabActual.editor.getValue());
+  ejecucion = ejecutarCodigo(TabActual.editor.getValue());
   document.getElementById(`textOutput-Blank`).value = ejecucion.salida;
   document.getElementById(`tabla_e-Blank`).innerHTML = ejecucion.tabla_e;
   document.getElementById(`tabla_s-Blank`).innerHTML = ejecucion.tabla_s;
   graficando_ast_d(ejecucion.ast);
 }
+
+function ej2(){
+  document.getElementById(`textOutputTrans-Blank`).innerHTML = ejecucion.tradu;
+}
+
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const Ast_1 = require("./AST/Ast");
@@ -6625,6 +7149,7 @@ const Asignacion_1 = require("./Instrucciones/Asignacion");
 const Struct_1 = require("./Expresiones/Struct");
 const Nodo_1 = require("./AST/Nodo");
 const Arbol_1 = require("./AST/Arbol");
+const Temporales_1 = require("./AST/Temporales");
 const gramatica = require("./Gramar/gramar");
 //import * as gramatica from "../Gramar/gramar";
 function ejecutarCodigo(entrada) {
@@ -6636,6 +7161,8 @@ function ejecutarCodigo(entrada) {
   const entornoGlobal = new TablaSim_1.TablaSim(null, "Global");
   let entornoU = new TablaSim_1.TablaSim(null, "Global");
   controlador.errores = listaErrores.slice();
+let Temp = new Temporales_1.Temporales();
+
   const ast = new Ast_1.AST(instrucciones);
   instrucciones.forEach((ins) => {
       if (ins instanceof Funcion_1.Funcion) {
@@ -6656,7 +7183,9 @@ function ejecutarCodigo(entrada) {
           let funcion = element;
           if (funcion.getIdentificador() == "main") {
               element.ejecutar(controlador, entornoGlobal, entornoU);
+              element.traducir(Temp, controlador, entornoGlobal,entornoU);
           }
+          
       }
   });
   let raiz = new Nodo_1.Nodo("Inicio", "");
@@ -6665,7 +7194,9 @@ function ejecutarCodigo(entrada) {
   });
   let grafo = new Arbol_1.Arbol();
   let res = grafo.tour(raiz);
+
   console.log(entornoGlobal);
-  return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res };
+  console.log(controlador.texto);
+  return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res, tradu:controlador.texto };
 }
-},{"./AST/Arbol":4,"./AST/Ast":5,"./AST/Nodo":7,"./Controller":8,"./Expresiones/Struct":22,"./Gramar/gramar":24,"./Instrucciones/Asignacion":25,"./Instrucciones/Declaracion":36,"./Instrucciones/Funcion":38,"./TablaSimbolos/TablaSim":47}]},{},[49]);
+},{"./AST/Arbol":4,"./AST/Ast":5,"./AST/Nodo":7,"./AST/Temporales":8,"./Controller":9,"./Expresiones/Struct":23,"./Gramar/gramar":25,"./Instrucciones/Asignacion":26,"./Instrucciones/Declaracion":37,"./Instrucciones/Funcion":39,"./TablaSimbolos/TablaSim":48}]},{},[50]);

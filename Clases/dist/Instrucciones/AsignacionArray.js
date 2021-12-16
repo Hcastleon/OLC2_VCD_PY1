@@ -16,7 +16,7 @@ class AsignacionArray {
         if (ts.existe(this.identificador)) {
             let simbolo = ts.getSimbolo(this.identificador);
             if ((simbolo === null || simbolo === void 0 ? void 0 : simbolo.getTipo().tipo) != Tipo_1.tipo.ARRAY) {
-                let error = new Errores_1.Errores('Semantico', `La variable ${this.identificador}, no es un Array`, this.linea, this.column);
+                let error = new Errores_1.Errores("Semantico", `La variable ${this.identificador}, no es un Array`, this.linea, this.column);
                 controlador.errores.push(error);
             }
             else {
@@ -29,17 +29,17 @@ class AsignacionArray {
                             valor_U[posi] = valor;
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor}, es un tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor}, es un tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
             }
@@ -85,6 +85,7 @@ class AsignacionArray {
             return Tipo_1.tipo.NULO;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) { }
     recorrer() {
         let padre = new Nodo_1.Nodo("Asignacion", "");
         return padre;

@@ -130,7 +130,7 @@ export class ManejoArray implements Instruccion {
         }
     }
 
-    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+    traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
         
     }
 

@@ -147,5 +147,7 @@ class ForEsp {
     isChar(n) {
         return n.length === 1 && n.match(/[a-zA-Z]/i);
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.ForEsp = ForEsp;

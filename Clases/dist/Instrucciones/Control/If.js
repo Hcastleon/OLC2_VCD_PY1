@@ -63,5 +63,7 @@ class If {
         padre.addHijo(elses);
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.If = If;

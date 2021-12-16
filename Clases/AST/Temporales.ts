@@ -24,6 +24,9 @@ export class Resultado3D {
   public temporal: any;
   public tipo: tipo;
 
+  public etiquetasV: Array<string> = [];
+  public etiquetasF: Array<string> = [];
+
   constructor() {
     this.codigo3D = "";
     this.temporal = null;
@@ -33,9 +36,14 @@ export class Resultado3D {
 
 export class Temporales {
   public lista_temporales: Array<Temporal> = [];
-  public contador_temporales: number = 0;
-  public contador_parametro: number = 0;
-  public contador_etiquetas: number = 0;
+  public contador_temporales: number = -1;
+  public contador_parametro: number = -1;
+  public contador_etiquetas: number = -1;
+  public etiquetaV: string = "";
+  public etiquetaF: string = "";
+
+  public etiquetasV: Array<string> = [];
+  public etiquetasF: Array<string> = [];
 
   nuevoTemporal() {
     let temp = new Temporal(this.temporal());
@@ -45,16 +53,41 @@ export class Temporales {
 
   temporal() {
     this.contador_temporales = this.contador_temporales + 1;
-    return "$t" + this.contador_temporales;
+    return "t" + this.contador_temporales;
   }
 
   parametro() {
     this.contador_parametro = this.contador_parametro + 1;
-    return "$a" + this.contador_parametro;
+    return "a" + this.contador_parametro;
   }
 
   etiqueta() {
     this.contador_etiquetas = this.contador_etiquetas + 1;
     return "L" + this.contador_etiquetas;
+  }
+
+  escribirEtiquetas(etiquetas: Array<String>): string {
+    let res: string = "";
+
+    etiquetas.forEach((element) => {
+      res += element + ":";
+    });
+
+    return res + "\n";
+  }
+
+  ultimaEtiqueta() {
+    return "L" + this.contador_etiquetas;
+  }
+
+  saltoCondicional(condicion: string, etiqueta: string): string {
+    return "if " + condicion + " goto " + etiqueta + ";\n";
+  }
+
+  saltoIncondicional(etiqueta: string) {
+    return "goto " + etiqueta + ";\n";
+  }
+  crearLinea(linea: string, comentario: string): string {
+    return linea + "; //" + comentario + "\n";
   }
 }

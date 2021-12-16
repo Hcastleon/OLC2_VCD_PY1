@@ -147,7 +147,7 @@ export class Declaracion implements Instruccion {
     }
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
       
   }
   recorrer(): Nodo {

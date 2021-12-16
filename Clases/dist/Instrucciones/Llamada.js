@@ -59,6 +59,8 @@ class Llamada {
         //  padre.addHijo(new Nodo(")", ""));
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     verificarParams(para_llama, para_func, controlador, ts, ts_local, ts_u) {
         if (para_llama.length == (para_func === null || para_func === void 0 ? void 0 : para_func.length)) {
             let aux;

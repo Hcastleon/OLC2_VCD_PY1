@@ -5,9 +5,13 @@ class Controller {
     constructor() {
         this.errores = new Array();
         this.consola = "";
+        this.texto = "";
     }
     append(aux) {
         this.consola += aux;
+    }
+    appendT(aux) {
+        this.texto += aux;
     }
     recursivo_tablita(entornito, cuerpotabla, contador) {
         let auxS = cuerpotabla;

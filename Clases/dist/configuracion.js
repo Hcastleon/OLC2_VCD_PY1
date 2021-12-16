@@ -2,6 +2,7 @@
 var TabId = 0;
 var ListaTab= [];
 var TabActual = null;
+let ejecucion = null;
 // ------------------- reload ----------------------------------------
 function loadPage(){
   let cm = new CodeMirror.fromTextArea(document.getElementById(`textInput-Blank`), {
@@ -176,10 +177,12 @@ function graficando_ast_d(contenido){
   
   var container = document.getElementById('arbol_ast');
   var parsedData = vis.network.convertDot(DOTstring);
+  
   var dataDOT = {
        nodes: parsedData.nodes,
        edges: parsedData.edges
        }
+       // OPTIONs
    var options = {
    autoResize: true,
    physics:{
@@ -211,15 +214,21 @@ function obtener_arbol_ast_(contenido){
 
 
 document.getElementById("prueba").onclick = function() {ej()};
+document.getElementById("codigo3d").onclick = function() {ej2()};
 
 
 function ej(){
-  let ejecucion = ejecutarCodigo(TabActual.editor.getValue());
+  ejecucion = ejecutarCodigo(TabActual.editor.getValue());
   document.getElementById(`textOutput-Blank`).value = ejecucion.salida;
   document.getElementById(`tabla_e-Blank`).innerHTML = ejecucion.tabla_e;
   document.getElementById(`tabla_s-Blank`).innerHTML = ejecucion.tabla_s;
   graficando_ast_d(ejecucion.ast);
 }
+
+function ej2(){
+  document.getElementById(`textOutputTrans-Blank`).innerHTML = ejecucion.tradu;
+}
+
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const Ast_1 = require("./AST/Ast");
@@ -231,6 +240,7 @@ const Asignacion_1 = require("./Instrucciones/Asignacion");
 const Struct_1 = require("./Expresiones/Struct");
 const Nodo_1 = require("./AST/Nodo");
 const Arbol_1 = require("./AST/Arbol");
+const Temporales_1 = require("./AST/Temporales");
 const gramatica = require("./Gramar/gramar");
 //import * as gramatica from "../Gramar/gramar";
 function ejecutarCodigo(entrada) {
@@ -242,6 +252,8 @@ function ejecutarCodigo(entrada) {
   const entornoGlobal = new TablaSim_1.TablaSim(null, "Global");
   let entornoU = new TablaSim_1.TablaSim(null, "Global");
   controlador.errores = listaErrores.slice();
+let Temp = new Temporales_1.Temporales();
+
   const ast = new Ast_1.AST(instrucciones);
   instrucciones.forEach((ins) => {
       if (ins instanceof Funcion_1.Funcion) {
@@ -262,6 +274,7 @@ function ejecutarCodigo(entrada) {
           let funcion = element;
           if (funcion.getIdentificador() == "main") {
               element.ejecutar(controlador, entornoGlobal, entornoU);
+              element.traducir(Temp, controlador, entornoGlobal,entornoU);
           }
           
       }
@@ -272,6 +285,8 @@ function ejecutarCodigo(entrada) {
   });
   let grafo = new Arbol_1.Arbol();
   let res = grafo.tour(raiz);
+
   console.log(entornoGlobal);
-  return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res };
+  console.log(controlador.texto);
+  return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res, tradu:controlador.texto };
 }

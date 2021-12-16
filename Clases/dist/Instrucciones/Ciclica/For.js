@@ -60,5 +60,7 @@ class For {
         //padre.addHijo(new Nodo("}", ""));
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.For = For;

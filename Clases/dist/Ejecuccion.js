@@ -8,6 +8,7 @@ const Declaracion_1 = require("./Instrucciones/Declaracion");
 const Asignacion_1 = require("./Instrucciones/Asignacion");
 const Nodo_1 = require("./AST/Nodo");
 const Arbol_1 = require("./AST/Arbol");
+const Temporales_1 = require("./AST/Temporales");
 const gramatica = require("./Gramar/gramar");
 //import * as gramatica from "../Gramar/gramar";
 function ejecutarCodigo(entrada) {
@@ -19,6 +20,7 @@ function ejecutarCodigo(entrada) {
     const entornoGlobal = new TablaSim_1.TablaSim(null, "Global");
     let entornoU = new TablaSim_1.TablaSim(null, "Global");
     controlador.errores = listaErrores.slice();
+    let Temp = new Temporales_1.Temporales();
     const ast = new Ast_1.AST(instrucciones);
     instrucciones.forEach((ins) => {
         if (ins instanceof Funcion_1.Funcion) {
@@ -34,6 +36,7 @@ function ejecutarCodigo(entrada) {
             let funcion = element;
             if (funcion.getIdentificador() == "main") {
                 element.ejecutar(controlador, entornoGlobal, entornoU);
+                element.traducir(Temp, controlador, entornoGlobal, entornoU);
             }
         }
     });
@@ -43,5 +46,5 @@ function ejecutarCodigo(entrada) {
     });
     let grafo = new Arbol_1.Arbol();
     let res = grafo.tour(raiz);
-    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res };
+    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res, tradu: controlador.texto };
 }

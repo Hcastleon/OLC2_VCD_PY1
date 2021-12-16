@@ -183,5 +183,7 @@ class Cadenas {
             return Tipo_1.tipo.NULO;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Cadenas = Cadenas;

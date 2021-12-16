@@ -25,5 +25,7 @@ class Identificador {
         // padre.addHijo(new Nodo(this.identificador, ""))
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Identificador = Identificador;

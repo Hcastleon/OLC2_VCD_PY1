@@ -11,5 +11,5 @@ export interface Instruccion{
 
     recorrer(): Nodo; 
 
-    traducir(Temp: Temporales, controlador : Controller, ts : TablaSim): any;
+    traducir(Temp: Temporales, controlador : Controller, ts : TablaSim, ts_u:TablaSim): any;
 }

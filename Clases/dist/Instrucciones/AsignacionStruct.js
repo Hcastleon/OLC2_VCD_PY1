@@ -13,13 +13,14 @@ class AsignacionStruct {
     ejecutar(controlador, ts, ts_u) {
         let entornos = ts.sig;
         if (entornos instanceof Array) {
-            entornos.forEach(entorno => {
+            entornos.forEach((entorno) => {
                 var _a;
                 if (entorno.nombre == this.identificador1.identificador) {
                     // let valor = entorno.getSimbolo(this.identificador2);
                     let valor = this.valor.getValor(controlador, ts, ts_u);
                     // let valor = vara.getValor();
-                    (_a = entorno.getSimbolo(this.identificador2.identificador)) === null || _a === void 0 ? void 0 : _a.setValor(valor);
+                    (_a = entorno
+                        .getSimbolo(this.identificador2.identificador)) === null || _a === void 0 ? void 0 : _a.setValor(valor);
                 }
             });
         }
@@ -31,5 +32,6 @@ class AsignacionStruct {
         padre.addHijo(this.valor.recorrer());
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) { }
 }
 exports.AsignacionStruct = AsignacionStruct;

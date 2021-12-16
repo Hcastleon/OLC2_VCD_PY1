@@ -19,7 +19,7 @@ class Declaracion {
             let variable = simbolo;
             // Se verifica que la varaible no exista en la tabla de simbolos actual
             if (ts.existeEnActual(variable.identificador)) {
-                let error = new Errores_1.Errores('Semantico', `La variable ${variable.identificador}, ya se declaro anteriormente`, this.linea, this.columna);
+                let error = new Errores_1.Errores("Semantico", `La variable ${variable.identificador}, ya se declaro anteriormente`, this.linea, this.columna);
                 controlador.errores.push(error);
                 continue;
             }
@@ -33,7 +33,7 @@ class Declaracion {
                         ts_u.agregar(variable.identificador, nuevo_sim);
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        let error = new Errores_1.Errores("Semantico", `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
                         controlador.errores.push(error);
                     }
                 }
@@ -45,20 +45,24 @@ class Declaracion {
                         ts_u.agregar(variable.identificador, nuevo_sim);
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `Las variables ${this.getTipo(valor)} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        let error = new Errores_1.Errores("Semantico", `Las variables ${this.getTipo(valor)} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
                         controlador.errores.push(error);
                     }
                 }
                 else {
                     let valor = variable.valor.getValor(controlador, ts, ts_u);
                     let tipo_valor = variable.valor.getTipo(controlador, ts, ts_u);
-                    if (tipo_valor == this.tipo.tipo || ((tipo_valor == Tipo_1.tipo.DOUBLE || tipo_valor == Tipo_1.tipo.ENTERO) && (this.tipo.tipo == Tipo_1.tipo.ENTERO || this.tipo.tipo == Tipo_1.tipo.DOUBLE)) || (tipo_valor == Tipo_1.tipo.CADENA && this.tipo.tipo == Tipo_1.tipo.CARACTER)) {
+                    if (tipo_valor == this.tipo.tipo ||
+                        ((tipo_valor == Tipo_1.tipo.DOUBLE || tipo_valor == Tipo_1.tipo.ENTERO) &&
+                            (this.tipo.tipo == Tipo_1.tipo.ENTERO ||
+                                this.tipo.tipo == Tipo_1.tipo.DOUBLE)) ||
+                        (tipo_valor == Tipo_1.tipo.CADENA && this.tipo.tipo == Tipo_1.tipo.CARACTER)) {
                         let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, this.tipo, variable.identificador, valor);
                         ts.agregar(variable.identificador, nuevo_sim);
                         ts_u.agregar(variable.identificador, nuevo_sim);
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        let error = new Errores_1.Errores("Semantico", `Las variables ${tipo_valor} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
                         controlador.errores.push(error);
                     }
                 }
@@ -89,6 +93,8 @@ class Declaracion {
         else if (lista[0] === null) {
             return Tipo_1.tipo.NULO;
         }
+    }
+    traducir(Temp, controlador, ts, ts_u) {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("=", "");

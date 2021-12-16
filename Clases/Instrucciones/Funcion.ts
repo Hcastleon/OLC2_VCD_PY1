@@ -15,6 +15,7 @@ export class Funcion extends Simbolos implements Instruccion {
   public lista_ints: Array<Instruccion>;
   public linea: number;
   public column: number;
+  public etiqueta:string;
 
   constructor(
     simbolo: number,
@@ -30,6 +31,7 @@ export class Funcion extends Simbolos implements Instruccion {
     this.lista_ints = lista_ints;
     this.linea = linea;
     this.column = columna;
+    this.etiqueta ="";
   }
 
   agregarSimboloFunc(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
@@ -102,7 +104,14 @@ export class Funcion extends Simbolos implements Instruccion {
     return padre;
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim) {
-      
+  inicializar(){
+
+  }
+
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
+      controlador.appendT("\n"+ this.etiqueta + ":"+"#"+this.identificador);
+      for (let ins of this.lista_ints) {
+        ins.traducir(Temp, controlador, ts,ts_u);
+      }
   }
 }

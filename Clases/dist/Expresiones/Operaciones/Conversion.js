@@ -60,6 +60,8 @@ class Conversion {
         padre.addHijo(this.expre2.recorrer());
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
     }

@@ -14,6 +14,7 @@ class Funcion extends Simbolos_1.Simbolos {
         this.lista_ints = lista_ints;
         this.linea = linea;
         this.column = columna;
+        this.etiqueta = "";
     }
     agregarSimboloFunc(controlador, ts, ts_u) {
         if (!ts.existe(this.identificador)) {
@@ -74,6 +75,14 @@ class Funcion extends Simbolos_1.Simbolos {
             padre.addHijo(element.recorrer());
         });
         return padre;
+    }
+    inicializar() {
+    }
+    traducir(Temp, controlador, ts, ts_u) {
+        controlador.appendT("\n" + this.etiqueta + ":" + "#" + this.identificador);
+        for (let ins of this.lista_ints) {
+            ins.traducir(Temp, controlador, ts, ts_u);
+        }
     }
 }
 exports.Funcion = Funcion;

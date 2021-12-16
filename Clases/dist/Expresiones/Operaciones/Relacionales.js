@@ -5,6 +5,7 @@ const Errores_1 = require("../../AST/Errores");
 const Nodo_1 = require("../../AST/Nodo");
 const Tipo_1 = require("../../TablaSimbolos/Tipo");
 const Operaciones_1 = require("./Operaciones");
+const Temporales_1 = require("../../AST/Temporales");
 class Relacionales extends Operaciones_1.Operacion {
     constructor(expre1, expre2, expreU, op, linea, columna) {
         super(expre1, expre2, expreU, op, linea, columna);
@@ -763,6 +764,45 @@ class Relacionales extends Operaciones_1.Operacion {
                 break;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) {
+        let valor1;
+        let valor2;
+        if (this.expreU === false) {
+            valor1 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+            valor2 = this.expre2.traducir(Temp, controlador, ts, ts_u);
+        }
+        else {
+            valor1 = new Temporales_1.Resultado3D();
+            valor1.codigo3D = "";
+            valor1.temporal = new Temporales_1.Temporal("0");
+            valor1.tipo = Tipo_1.tipo.ENTERO;
+            valor2 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+        }
+        if (valor1 == (null || undefined) || valor2 == (null || undefined))
+            return null;
+        let result = new Temporales_1.Resultado3D();
+        result.tipo = Tipo_1.tipo.BOOLEAN;
+        if (valor1.tipo != Tipo_1.tipo.BOOLEAN)
+            result.codigo3D += valor1.codigo3D;
+        if (valor2.tipo != Tipo_1.tipo.BOOLEAN)
+            result.codigo3D += valor2.codigo3D;
+        switch (this.operador) {
+            case Operaciones_1.Operador.MAYORQUE:
+                return this.comparacion(result, valor1, valor2, ">", Temp, controlador, ts, ts_u);
+            case Operaciones_1.Operador.MENORQUE:
+                return this.comparacion(result, valor1, valor2, "<", Temp, controlador, ts, ts_u);
+            case Operaciones_1.Operador.MENORIGUAL:
+                return this.comparacion(result, valor1, valor2, "<=", Temp, controlador, ts, ts_u);
+            case Operaciones_1.Operador.MAYORIGUAL:
+                return this.comparacion(result, valor1, valor2, ">=", Temp, controlador, ts, ts_u);
+            case Operaciones_1.Operador.DIFERENCIACION:
+                return this.comparacion(result, valor1, valor2, "!=", Temp, controlador, ts, ts_u);
+            case Operaciones_1.Operador.IGUALIGUAL:
+                return this.comparacion(result, valor1, valor2, "==", Temp, controlador, ts, ts_u);
+            default:
+                return;
+        }
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo(this.op_string, "");
         if (this.expreU) {
@@ -775,6 +815,25 @@ class Relacionales extends Operaciones_1.Operacion {
             padre.addHijo(this.expre2.recorrer());
         }
         return padre;
+    }
+    comparacion(nodo, nodoIzq, nodoDer, signo, Temp, controlador, ts, ts_u) {
+        nodo.tipo = Tipo_1.tipo.BOOLEAN;
+        let v = Temp.etiqueta();
+        let f = Temp.etiqueta();
+        nodo.codigo3D += Temp.crearLinea("if (" +
+            nodoIzq.temporal.nombre +
+            " " +
+            signo +
+            " " +
+            nodoDer.temporal.nombre +
+            ") goto " +
+            v, "Si es verdadero salta a " + v);
+        nodo.codigo3D += Temp.crearLinea("goto " + f, "si no se cumple salta a: " + f);
+        nodo.etiquetasV = [];
+        nodo.etiquetasV.push(v);
+        nodo.etiquetasF = [];
+        nodo.etiquetasF.push(f);
+        return nodo;
     }
     codigoAscii(cadena) {
         let aux = 0;

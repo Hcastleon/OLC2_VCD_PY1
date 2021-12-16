@@ -8,6 +8,7 @@ import { Declaracion } from "./Instrucciones/Declaracion";
 import { Asignacion } from "./Instrucciones/Asignacion";
 import { Nodo } from "./AST/Nodo"
 import { Arbol } from "./AST/Arbol"
+import { Temporales } from "./AST/Temporales"
 
 const gramatica = require("./Gramar/gramar");
 //import * as gramatica from "../Gramar/gramar";
@@ -21,6 +22,9 @@ function ejecutarCodigo(entrada: string) {
   const entornoGlobal: TablaSim = new TablaSim(null, "Global");
   let entornoU = new TablaSim(null, "Global");
   controlador.errores = listaErrores.slice();
+
+  let Temp = new Temporales();
+
   const ast: AST = new AST(instrucciones);
   instrucciones.forEach((ins: Instruccion) => {
     if (ins instanceof Funcion) {
@@ -39,6 +43,7 @@ function ejecutarCodigo(entrada: string) {
       let funcion = element as Funcion;
       if(funcion.getIdentificador()== "main"){
           element.ejecutar(controlador, entornoGlobal, entornoU);
+          element.traducir(Temp, controlador, entornoGlobal,entornoU);
       }
     }
   });
@@ -53,5 +58,5 @@ function ejecutarCodigo(entrada: string) {
   let grafo: Arbol = new Arbol();
   let res = grafo.tour(raiz);
   
-  return {salida:controlador.consola,tabla_e:controlador.graficar_tErrores(),tabla_s: controlador.recursivo_tablita(entornoGlobal,"",0), ast: res};
+  return {salida:controlador.consola,tabla_e:controlador.graficar_tErrores(),tabla_s: controlador.recursivo_tablita(entornoGlobal,"",0), ast: res, tradu:controlador.texto};
 }

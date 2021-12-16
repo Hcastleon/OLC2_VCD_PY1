@@ -77,5 +77,7 @@ class AccesoStruct {
         let padre = new Nodo_1.Nodo("accesoStruct", "");
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.AccesoStruct = AccesoStruct;

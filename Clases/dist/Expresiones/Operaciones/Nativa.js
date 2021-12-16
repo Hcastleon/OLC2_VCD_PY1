@@ -105,6 +105,8 @@ class Nativa extends Operaciones_1.Operacion {
                 break;
         }
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo(this.operador.toString(), "");
         if (this.operador == Operaciones_1.Operador.POTENCIA) {

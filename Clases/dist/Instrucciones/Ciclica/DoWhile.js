@@ -63,5 +63,7 @@ class DoWhile {
         //padre.addHijo(new Nodo(")", ""))
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.DoWhile = DoWhile;

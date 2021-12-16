@@ -12,5 +12,7 @@ class Break {
         let padre = new Nodo_1.Nodo("Break", "");
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) {
+    }
 }
 exports.Break = Break;

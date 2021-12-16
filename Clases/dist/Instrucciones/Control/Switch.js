@@ -59,5 +59,6 @@ class Switch {
         }
         return padre;
     }
+    traducir(Temp, controlador, ts, ts_u) { }
 }
 exports.Switch = Switch;
