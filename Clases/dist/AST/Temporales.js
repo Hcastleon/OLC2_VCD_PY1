@@ -20,6 +20,8 @@ class Resultado3D {
     constructor() {
         this.etiquetasV = [];
         this.etiquetasF = [];
+        this.saltos = [];
+        this.breaks = [];
         this.codigo3D = "";
         this.temporal = null;
         this.tipo = Tipo_1.tipo.NULO;

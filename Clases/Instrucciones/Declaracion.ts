@@ -42,12 +42,7 @@ export class Declaracion implements Instruccion {
       if (variable.valor != null) {
         if (variable.valor instanceof Arreglo) {
           let valor = variable.valor.getValor(controlador, ts, ts_u);
-          let tipo_valor = variable.valor.getTipoArreglo(
-            controlador,
-            ts,
-            ts_u,
-            this.tipo
-          );
+          let tipo_valor = variable.valor.getTipoArreglo(controlador, ts, ts_u, this.tipo);
           if (tipo_valor == this.tipo.tipo) {
             let nuevo_sim = new Simbolos(
               variable.simbolo,
@@ -80,9 +75,7 @@ export class Declaracion implements Instruccion {
           } else {
             let error = new Errores(
               "Semantico",
-              `Las variables ${this.getTipo(valor)} y ${
-                this.tipo.tipo
-              } no son del mismo tipo`,
+              `Las variables ${this.getTipo(valor)} y ${this.tipo.tipo} no son del mismo tipo`,
               this.linea,
               this.columna
             );
@@ -94,8 +87,7 @@ export class Declaracion implements Instruccion {
           if (
             tipo_valor == this.tipo.tipo ||
             ((tipo_valor == tipo.DOUBLE || tipo_valor == tipo.ENTERO) &&
-              (this.tipo.tipo == tipo.ENTERO ||
-                this.tipo.tipo == tipo.DOUBLE)) ||
+              (this.tipo.tipo == tipo.ENTERO || this.tipo.tipo == tipo.DOUBLE)) ||
             (tipo_valor == tipo.CADENA && this.tipo.tipo == tipo.CARACTER)
           ) {
             let nuevo_sim = new Simbolos(
@@ -117,12 +109,7 @@ export class Declaracion implements Instruccion {
           }
         }
       } else {
-        let nuevo_sim = new Simbolos(
-          variable.simbolo,
-          this.tipo,
-          variable.identificador,
-          null
-        );
+        let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, null);
         ts.agregar(variable.identificador, nuevo_sim);
         ts_u.agregar(variable.identificador, nuevo_sim);
       }
@@ -147,9 +134,6 @@ export class Declaracion implements Instruccion {
     }
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
-      
-  }
   recorrer(): Nodo {
     let padre = new Nodo("=", "");
     // let hijo_sim = new Nodo("Simbolos", "")
@@ -173,4 +157,6 @@ export class Declaracion implements Instruccion {
   isChar(n: string) {
     return n.length === 1 && n.match(/[a-zA-Z]/i);
   }
+
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {}
 }

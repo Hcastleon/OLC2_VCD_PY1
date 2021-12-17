@@ -955,12 +955,7 @@ export class Relacionales extends Operacion implements Expresion {
     }
   }
 
-  traducir(
-    Temp: Temporales,
-    controlador: Controller,
-    ts: TablaSim,
-    ts_u: TablaSim
-  ) {
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     let valor1;
     let valor2;
     if (this.expreU === false) {
@@ -974,8 +969,7 @@ export class Relacionales extends Operacion implements Expresion {
       valor2 = this.expre1.traducir(Temp, controlador, ts, ts_u);
     }
 
-    if (valor1 == (null || undefined) || valor2 == (null || undefined))
-      return null;
+    if (valor1 == (null || undefined) || valor2 == (null || undefined)) return null;
 
     let result = new Resultado3D();
     result.tipo = tipo.BOOLEAN;
@@ -985,71 +979,17 @@ export class Relacionales extends Operacion implements Expresion {
 
     switch (this.operador) {
       case Operador.MAYORQUE:
-        return this.comparacion(
-          result,
-          valor1,
-          valor2,
-          ">",
-          Temp,
-          controlador,
-          ts,
-          ts_u
-        );
+        return this.comparacion(result, valor1, valor2, ">", Temp, controlador, ts, ts_u);
       case Operador.MENORQUE:
-        return this.comparacion(
-          result,
-          valor1,
-          valor2,
-          "<",
-          Temp,
-          controlador,
-          ts,
-          ts_u
-        );
+        return this.comparacion(result, valor1, valor2, "<", Temp, controlador, ts, ts_u);
       case Operador.MENORIGUAL:
-        return this.comparacion(
-          result,
-          valor1,
-          valor2,
-          "<=",
-          Temp,
-          controlador,
-          ts,
-          ts_u
-        );
+        return this.comparacion(result, valor1, valor2, "<=", Temp, controlador, ts, ts_u);
       case Operador.MAYORIGUAL:
-        return this.comparacion(
-          result,
-          valor1,
-          valor2,
-          ">=",
-          Temp,
-          controlador,
-          ts,
-          ts_u
-        );
+        return this.comparacion(result, valor1, valor2, ">=", Temp, controlador, ts, ts_u);
       case Operador.DIFERENCIACION:
-        return this.comparacion(
-          result,
-          valor1,
-          valor2,
-          "!=",
-          Temp,
-          controlador,
-          ts,
-          ts_u
-        );
+        return this.comparacion(result, valor1, valor2, "!=", Temp, controlador, ts, ts_u);
       case Operador.IGUALIGUAL:
-        return this.comparacion(
-          result,
-          valor1,
-          valor2,
-          "==",
-          Temp,
-          controlador,
-          ts,
-          ts_u
-        );
+        return this.comparacion(result, valor1, valor2, "==", Temp, controlador, ts, ts_u);
       default:
         return;
     }
@@ -1095,10 +1035,7 @@ export class Relacionales extends Operacion implements Expresion {
       "Si es verdadero salta a " + v
     );
 
-    nodo.codigo3D += Temp.crearLinea(
-      "goto " + f,
-      "si no se cumple salta a: " + f
-    );
+    nodo.codigo3D += Temp.crearLinea("goto " + f, "si no se cumple salta a: " + f);
     nodo.etiquetasV = [];
     nodo.etiquetasV.push(v);
     nodo.etiquetasF = [];

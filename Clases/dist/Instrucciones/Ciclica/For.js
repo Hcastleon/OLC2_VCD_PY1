@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.For = void 0;
 const Nodo_1 = require("../../AST/Nodo");
+const Temporales_1 = require("../../AST/Temporales");
 const TablaSim_1 = require("../../TablaSimbolos/TablaSim");
 const Break_1 = require("../Transferencia/Break");
 const Continue_1 = require("../Transferencia/Continue");
@@ -61,6 +62,9 @@ class For {
         return padre;
     }
     traducir(Temp, controlador, ts, ts_u) {
+        let salida = new Temporales_1.Resultado3D();
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%% FOR DECLA  %%%%%%%%%%%%%%%%%%%%%";
+        return salida;
     }
 }
 exports.For = For;

@@ -1,0 +1,82 @@
+void main(){
+    //SELECCION
+  //int[] arr = [1,2,3,4,5,6];
+  int[] matrix = [8,4,21,65,3,14,9];
+ int i, j, k, p, buffer, limit; 
+  i= matrix.length()-1;
+  j= matrix.length()-1;
+  k= matrix.length()-1;
+  p= matrix.length()-1;
+  buffer= matrix.length()-1;
+  limit= matrix.length()-1;
+  
+        for(k = 0; k < limit; k++){
+            p = k;
+            for(i = k+1; i < = limit; i++){
+                if(matrix[i] < matrix[p]) p = i;
+                if(p != k){
+                    buffer = matrix[p];
+                    matrix[p] = matrix[k];
+                    matrix[k] = buffer;
+                }
+            }
+        }
+  println(matrix);
+}
+
+
+void main(){
+    //INSERCION
+  //int[] arr = [1,2,3,4,5,6];
+  int[] vector = [8,4,21,65,3,14,9];
+  int aux;
+ for (int i=1; i < vector.length(); i++) {
+          aux = vector[i];
+         int j;
+         for (j=i-1; j >=0 && vector[j] > aux; j--){
+              vector[j+1] = vector[j];
+          }
+         vector[j+1] = aux;
+      }
+  println(vector);
+}
+
+
+void main(){
+    //BURBUJA
+  //int[] arr = [1,2,3,4,5,6];
+  int[] matrix = [8,4,21,65,3,14,9];
+ int temp;
+        for(int i=1;i < matrix.length();i++){
+            for (int j=0 ; j < matrix.length()- 1; j++){
+                if (matrix[j] > matrix[j+1]){
+                    temp = matrix[j];
+                    matrix[j] = matrix[j+1];
+                    matrix[j+1] = temp;
+                }
+            }
+        }
+  println(matrix);
+}
+
+
+void main(){
+    //BURBUJA
+  //int[] arr = [1,2,3,4,5,6];
+  	int[] matrix = [8,4,21,65,3,14,9];
+	burbuja(matrix);
+  	//println(matrix);
+}
+
+void burbuja(int[] matrix){
+ int temp;
+        for(int i=1;i < matrix.length();i++){
+            for (int j=0 ; j < matrix.length()- 1; j++){
+                if (matrix[j] > matrix[j+1]){
+                    temp = matrix[j];
+                    matrix[j] = matrix[j+1];
+                    matrix[j+1] = temp;
+                }
+            }
+        }
+}

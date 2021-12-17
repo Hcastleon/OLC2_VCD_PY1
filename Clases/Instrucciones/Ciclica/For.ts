@@ -1,5 +1,5 @@
 import { Nodo } from "../../AST/Nodo";
-import { Temporales } from "../../AST/Temporales";
+import { Temporales, Resultado3D } from "../../AST/Temporales";
 import { Controller } from "../../Controller";
 import { Expresion } from "../../Interfaces/Expresion";
 import { Instruccion } from "../../Interfaces/Instruccion";
@@ -16,14 +16,7 @@ export class For implements Instruccion {
   public linea: number;
   public columna: number;
 
-  constructor(
-    asi: any,
-    condi: any,
-    acuta: any,
-    list: any,
-    linea: any,
-    col: any
-  ) {
+  constructor(asi: any, condi: any, acuta: any, list: any, linea: any, col: any) {
     this.asig_decla = asi;
     this.condicion = condi;
     this.actualizacion = acuta;
@@ -62,15 +55,15 @@ export class For implements Instruccion {
   }
   recorrer(): Nodo {
     let padre = new Nodo("For", "");
-  //  padre.addHijo(new Nodo("for", ""));
-   // padre.addHijo(new Nodo("(", ""));
+    //  padre.addHijo(new Nodo("for", ""));
+    // padre.addHijo(new Nodo("(", ""));
     padre.addHijo(this.asig_decla.recorrer());
-   // padre.addHijo(new Nodo(";", ""));
+    // padre.addHijo(new Nodo(";", ""));
     padre.addHijo(this.condicion.recorrer());
-  //  padre.addHijo(new Nodo(";", ""));
+    //  padre.addHijo(new Nodo(";", ""));
     padre.addHijo(this.actualizacion.recorrer());
-  //  padre.addHijo(new Nodo("{", ""));
-   // let hijo_ins = new Nodo("Intrucciones", "");
+    //  padre.addHijo(new Nodo("{", ""));
+    // let hijo_ins = new Nodo("Intrucciones", "");
     for (let ins of this.lista_ins) {
       padre.addHijo(ins.recorrer());
     }
@@ -79,7 +72,10 @@ export class For implements Instruccion {
     return padre;
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
-      
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
+    let salida: Resultado3D = new Resultado3D();
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%% FOR DECLA  %%%%%%%%%%%%%%%%%%%%%";
+
+    return salida;
   }
 }

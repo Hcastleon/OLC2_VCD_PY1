@@ -31,11 +31,33 @@ class Println {
         // cadena = cadena.temporal.utilizar();
         //cadena = cadena[1:-1];
         let exp_3D = this.expresion.traducir(Temp, controlador, ts, ts_u);
+        if (exp_3D == undefined) {
+            return;
+        }
         console.log(exp_3D);
-        if (exp_3D.tipo == Tipo_1.tipo.ENTERO || exp_3D.tipo == Tipo_1.tipo.DOUBLE) {
+        if (this.expresion.getTipo(controlador, ts, ts_u) == Tipo_1.tipo.ENTERO) {
             salida.codigo3D += "\n" + exp_3D.codigo3D;
-            salida.codigo3D +=
-                "\n" + 'printf("%f", (double)' + exp_3D.temporal.nombre + ");";
+            salida.codigo3D += "\n" + 'printf("%d", (int)' + exp_3D.temporal.nombre + ");";
+        }
+        else if (this.expresion.getTipo(controlador, ts, ts_u) == Tipo_1.tipo.DOUBLE) {
+            salida.codigo3D += "\n" + exp_3D.codigo3D;
+            salida.codigo3D += "\n" + 'printf("%f", (double)' + exp_3D.temporal.nombre + ");";
+        }
+        else if (this.expresion.getTipo(controlador, ts, ts_u) == Tipo_1.tipo.CADENA) {
+            salida.codigo3D += "\n" + exp_3D.codigo3D;
+            let posicion = Temp.temporal();
+            let valor = Temp.temporal();
+            let v = Temp.etiqueta();
+            let f = Temp.etiqueta();
+            salida.codigo3D += Temp.crearLinea(posicion + " = " + exp_3D.temporal.nombre, "Posicion de inicio de la cadena");
+            salida.codigo3D += f + ":";
+            salida.codigo3D += Temp.crearLinea(valor + " = Heap[  (int)" + posicion + "]", "Primer caracter de la cadena");
+            (salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v)),
+                "Si esta vacio no imprimimos nada";
+            salida.codigo3D += Temp.crearLinea(posicion + " = " + posicion + " + 1", "Aumento de la posicion");
+            salida.codigo3D += Temp.crearLinea('printf( "%c", (char)' + valor + ")", "Se imprime el caracter");
+            salida.codigo3D += Temp.saltoIncondicional(f);
+            salida.codigo3D += v + ":";
         }
         else if (exp_3D.tipo == Tipo_1.tipo.BOOLEAN) {
             console.log(exp_3D.etiquetasV.length + "LAROG DE VERDADERs");
@@ -64,8 +86,8 @@ class Println {
                 salida.codigo3D += salto + ":";
             }
         }
-        salida.codigo3D += '\n printf("%c", (char)10);';
-        controlador.appendT("\n" + salida.codigo3D);
+        salida.codigo3D += '\n printf("%c", (char)10); \n';
+        return salida;
     }
 }
 exports.Println = Println;

@@ -66,12 +66,11 @@ export class Primitivo implements Expresion {
     return Number(n) === n && n % 1 === 0;
   }
 
-  traducir(
-    Temp: Temporales,
-    controlador: Controller,
-    ts: TablaSim,
-    ts_u: TablaSim
-  ) {
+  isChar(n: string) {
+    return n.length === 1 && n.match(/[a-zA-Z-*+/]/i);
+  }
+
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     let resultado3D = new Resultado3D();
     resultado3D.codigo3D = "";
 
@@ -81,21 +80,66 @@ export class Primitivo implements Expresion {
       }
       resultado3D.tipo = tipo.DOUBLE;
     } else if (typeof this.primitivo == "string") {
+      if (this.isChar(String(this.primitivo))) {
+        resultado3D.tipo = tipo.CARACTER;
+      }
       resultado3D.tipo = tipo.CADENA;
     } else if (typeof this.primitivo == "boolean") {
       resultado3D.tipo = tipo.BOOLEAN;
     } else if (this.primitivo === null) {
       resultado3D.tipo = tipo.NULO;
     }
+    //-------------------
 
     if (this.primitivo == true && typeof this.primitivo == "boolean") {
       resultado3D.temporal = new Temporal("1");
     } else if (this.primitivo == false && typeof this.primitivo == "boolean") {
       resultado3D.temporal = new Temporal("0");
+    } else if (typeof this.primitivo == "string") {
+      if (this.isChar(String(this.primitivo))) {
+        let ascii = this.primitivo.toString().charCodeAt(0);
+        let nodo: Resultado3D = new Resultado3D();
+        nodo.tipo = tipo.CARACTER;
+        nodo.temporal = new Temporal(ascii.toString());
+        resultado3D = nodo;
+        console.log("CHAR");
+      } else {
+        resultado3D = this.setCadena(this.primitivo.toString(), Temp);
+        console.log("NO CHAR");
+      }
     } else {
       resultado3D.temporal = new Temporal(this.primitivo.toString());
     }
 
     return resultado3D;
+  }
+
+  setCadena(cadena: string, Temp: Temporales) {
+    let nodo: Resultado3D = new Resultado3D();
+    nodo.tipo = tipo.CADENA;
+    let cadenatemp = cadena;
+    cadena = cadena.replace("\\n", "\n");
+    cadena = cadena.replace("\\t", "\t");
+    cadena = cadena.replace('\\"', '"');
+    cadena = cadena.replace("\\'", "'");
+
+    nodo.codigo3D +=
+      "//%%%%%%%%%%%%%%%%%%% GUARDAR CADENA " + cadenatemp + "%%%%%%%%%%%%%%%%%%%% \n";
+    for (let i = 0; i < cadena.length; i++) {
+      let temporal: string = Temp.temporal();
+      nodo.codigo3D += Temp.crearLinea(temporal + " = H ", "");
+      nodo.codigo3D += Temp.crearLinea(
+        "Heap[(int)" + temporal + "] = " + cadena.charCodeAt(i),
+        "Guardamos en el Heap el caracter: " + cadena.charAt(i)
+      );
+      nodo.codigo3D += Temp.crearLinea("H = H + 1", "Aumentamos el Heap");
+
+      if (i === 0) nodo.temporal = new Temporal(temporal);
+    }
+
+    nodo.codigo3D += Temp.crearLinea("Heap[(int) H] = 0", "Fin de la cadena");
+    nodo.codigo3D += Temp.crearLinea("H = H + 1", "Aumentamos el Heap");
+
+    return nodo;
   }
 }

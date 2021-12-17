@@ -35,28 +35,51 @@ export class Println implements Instruccion {
     return padre;
   }
 
-  traducir(
-    Temp: Temporales,
-    controlador: Controller,
-    ts: TablaSim,
-    ts_u: TablaSim
-  ) {
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     let valorfinal = 'print("';
     let salida = new Resultado3D();
     // cadena = cadena.temporal.utilizar();
     //cadena = cadena[1:-1];
 
-    let exp_3D: Resultado3D = this.expresion.traducir(
-      Temp,
-      controlador,
-      ts,
-      ts_u
-    );
+    let exp_3D: Resultado3D = this.expresion.traducir(Temp, controlador, ts, ts_u);
+    if (exp_3D == undefined) {
+      return;
+    }
     console.log(exp_3D);
-    if (exp_3D.tipo == tipo.ENTERO || exp_3D.tipo == tipo.DOUBLE) {
+    if (this.expresion.getTipo(controlador, ts, ts_u) == tipo.ENTERO) {
       salida.codigo3D += "\n" + exp_3D.codigo3D;
-      salida.codigo3D +=
-        "\n" + 'printf("%f", (double)' + exp_3D.temporal.nombre + ");";
+      salida.codigo3D += "\n" + 'printf("%d", (int)' + exp_3D.temporal.nombre + ");";
+    } else if (this.expresion.getTipo(controlador, ts, ts_u) == tipo.DOUBLE) {
+      salida.codigo3D += "\n" + exp_3D.codigo3D;
+      salida.codigo3D += "\n" + 'printf("%f", (double)' + exp_3D.temporal.nombre + ");";
+    } else if (this.expresion.getTipo(controlador, ts, ts_u) == tipo.CADENA) {
+      salida.codigo3D += "\n" + exp_3D.codigo3D;
+      let posicion: string = Temp.temporal();
+      let valor: string = Temp.temporal();
+      let v: string = Temp.etiqueta();
+      let f: string = Temp.etiqueta();
+
+      salida.codigo3D += Temp.crearLinea(
+        posicion + " = " + exp_3D.temporal.nombre,
+        "Posicion de inicio de la cadena"
+      );
+      salida.codigo3D += f + ":";
+      salida.codigo3D += Temp.crearLinea(
+        valor + " = Heap[  (int)" + posicion + "]",
+        "Primer caracter de la cadena"
+      );
+      (salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v)),
+        "Si esta vacio no imprimimos nada";
+      salida.codigo3D += Temp.crearLinea(
+        posicion + " = " + posicion + " + 1",
+        "Aumento de la posicion"
+      );
+      salida.codigo3D += Temp.crearLinea(
+        'printf( "%c", (char)' + valor + ")",
+        "Se imprime el caracter"
+      );
+      salida.codigo3D += Temp.saltoIncondicional(f);
+      salida.codigo3D += v + ":";
     } else if (exp_3D.tipo == tipo.BOOLEAN) {
       console.log(exp_3D.etiquetasV.length + "LAROG DE VERDADERs");
       controlador.appendT("\n" + exp_3D.codigo3D);
@@ -64,10 +87,7 @@ export class Println implements Instruccion {
         let verdadera: string = Temp.etiqueta();
         let salto: string = Temp.etiqueta();
         salida.codigo3D += Temp.crearLinea(
-          Temp.saltoCondicional(
-            "(" + exp_3D.temporal.nombre + "== 0)",
-            verdadera
-          ),
+          Temp.saltoCondicional("(" + exp_3D.temporal.nombre + "== 0)", verdadera),
           "Si es un false"
         );
         salida.codigo3D +=
@@ -89,7 +109,8 @@ export class Println implements Instruccion {
         salida.codigo3D += salto + ":";
       }
     }
-    salida.codigo3D += '\n printf("%c", (char)10);';
-    controlador.appendT("\n" + salida.codigo3D);
+    salida.codigo3D += '\n printf("%c", (char)10); \n';
+
+    return salida;
   }
 }

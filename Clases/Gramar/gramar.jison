@@ -237,9 +237,8 @@ LISTPARAMETROS: LISTPARAMETROS coma PARAMETRO                                  {
                ;
 
 PARAMETRO: TIPO id                                      { $$ = new Simbolos(6,$1, $2, null); }
-         | TIPO corizq cordec id                        { $$ = $1; console.log("Parametro"); }
-         | id id                                        {  $$ = new Simbolos(6,new Tipo($1), $2, null);  }
-         | id corizq cordec id                          { $$ = $1; console.log("Parametro"); }
+         | TIPO corizq cordec id                        { $$ = new Simbolos(6,new Tipo("ARRAY"), $4, null); }
+         | id id                                        { $$ = new Simbolos(6,new Tipo($1), $2, null);}
          ;
 
 TIPO : string                                       { $$ = new Tipo('STRING'); }

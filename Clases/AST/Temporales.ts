@@ -27,6 +27,9 @@ export class Resultado3D {
   public etiquetasV: Array<string> = [];
   public etiquetasF: Array<string> = [];
 
+  public saltos: Array<string> = [];
+  public breaks: Array<string> = [];
+
   constructor() {
     this.codigo3D = "";
     this.temporal = null;

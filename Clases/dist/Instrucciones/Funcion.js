@@ -71,17 +71,19 @@ class Funcion extends Simbolos_1.Simbolos {
     }
     recorrer() {
         let padre = new Nodo_1.Nodo(this.identificador, "");
-        this.lista_ints.forEach(element => {
+        this.lista_ints.forEach((element) => {
             padre.addHijo(element.recorrer());
         });
         return padre;
     }
-    inicializar() {
-    }
+    inicializar() { }
     traducir(Temp, controlador, ts, ts_u) {
-        controlador.appendT("\n" + this.etiqueta + ":" + "#" + this.identificador);
+        // controlador.appendT("\n"+ this.etiqueta + ":"+"#"+this.identificador);
         for (let ins of this.lista_ints) {
-            ins.traducir(Temp, controlador, ts, ts_u);
+            let a = ins.traducir(Temp, controlador, ts, ts_u);
+            if (a != undefined) {
+                controlador.appendT("\n" + a.codigo3D);
+            }
         }
     }
 }

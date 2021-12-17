@@ -15,7 +15,7 @@ export class Funcion extends Simbolos implements Instruccion {
   public lista_ints: Array<Instruccion>;
   public linea: number;
   public column: number;
-  public etiqueta:string;
+  public etiqueta: string;
 
   constructor(
     simbolo: number,
@@ -31,7 +31,7 @@ export class Funcion extends Simbolos implements Instruccion {
     this.lista_ints = lista_ints;
     this.linea = linea;
     this.column = columna;
-    this.etiqueta ="";
+    this.etiqueta = "";
   }
 
   agregarSimboloFunc(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
@@ -97,21 +97,22 @@ export class Funcion extends Simbolos implements Instruccion {
 
   recorrer(): Nodo {
     let padre = new Nodo(this.identificador, "");
-    this.lista_ints.forEach(element => {
+    this.lista_ints.forEach((element) => {
       padre.addHijo(element.recorrer());
     });
 
     return padre;
   }
 
-  inicializar(){
+  inicializar() {}
 
-  }
-
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
-      controlador.appendT("\n"+ this.etiqueta + ":"+"#"+this.identificador);
-      for (let ins of this.lista_ints) {
-        ins.traducir(Temp, controlador, ts,ts_u);
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
+    // controlador.appendT("\n"+ this.etiqueta + ":"+"#"+this.identificador);
+    for (let ins of this.lista_ints) {
+      let a = ins.traducir(Temp, controlador, ts, ts_u);
+      if (a != undefined) {
+        controlador.appendT("\n" + a.codigo3D);
       }
+    }
   }
 }
