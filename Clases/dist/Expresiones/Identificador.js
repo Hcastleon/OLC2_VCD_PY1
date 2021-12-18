@@ -26,6 +26,10 @@ class Identificador {
         return padre;
     }
     traducir(Temp, controlador, ts, ts_u) {
+        let id_exists = ts.getSimbolo(this.identificador);
+        if (id_exists != null) {
+            return id_exists;
+        }
     }
 }
 exports.Identificador = Identificador;

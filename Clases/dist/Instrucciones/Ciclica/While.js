@@ -50,7 +50,7 @@ class While {
         let salida = new Temporales_1.Resultado3D();
         let nodoCondicion = this.condicion.traducir(Temp, controlador, ts, ts_u);
         let ciclo = Temp.etiqueta();
-        salida.codigo3D += Temp.crearLinea(ciclo + ":", "Etiqueta para controlar el ciclado");
+        salida.codigo3D += ciclo + ": //Etiqueta para controlar el ciclado";
         salida.codigo3D += nodoCondicion.codigo3D;
         nodoCondicion = this.arreglarBoolean(nodoCondicion, salida, Temp);
         salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%% Verdadera %%%%%%%%%%%%%%%%%";

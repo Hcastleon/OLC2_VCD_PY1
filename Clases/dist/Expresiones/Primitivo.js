@@ -19,7 +19,12 @@ class Primitivo {
             return Tipo_1.tipo.DOUBLE;
         }
         else if (typeof valor == "string") {
-            return Tipo_1.tipo.CADENA;
+            if (this.isChar(String(this.primitivo))) {
+                return Tipo_1.tipo.CARACTER;
+            }
+            else {
+                return Tipo_1.tipo.CADENA;
+            }
         }
         else if (typeof valor == "boolean") {
             return Tipo_1.tipo.BOOLEAN;
@@ -36,7 +41,12 @@ class Primitivo {
             return Tipo_1.tipo.DOUBLE;
         }
         else if (typeof this.primitivo == "string") {
-            return Tipo_1.tipo.CADENA;
+            if (this.isChar(String(this.primitivo))) {
+                return Tipo_1.tipo.CARACTER;
+            }
+            else {
+                return Tipo_1.tipo.CADENA;
+            }
         }
         else if (typeof this.primitivo == "boolean") {
             return Tipo_1.tipo.BOOLEAN;
@@ -63,7 +73,7 @@ class Primitivo {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z-*+/]/i);
+        return n.length === 1 && n.match(/./i);
     }
     traducir(Temp, controlador, ts, ts_u) {
         let resultado3D = new Temporales_1.Resultado3D();
@@ -78,7 +88,9 @@ class Primitivo {
             if (this.isChar(String(this.primitivo))) {
                 resultado3D.tipo = Tipo_1.tipo.CARACTER;
             }
-            resultado3D.tipo = Tipo_1.tipo.CADENA;
+            else {
+                resultado3D.tipo = Tipo_1.tipo.CADENA;
+            }
         }
         else if (typeof this.primitivo == "boolean") {
             resultado3D.tipo = Tipo_1.tipo.BOOLEAN;
@@ -100,11 +112,9 @@ class Primitivo {
                 nodo.tipo = Tipo_1.tipo.CARACTER;
                 nodo.temporal = new Temporales_1.Temporal(ascii.toString());
                 resultado3D = nodo;
-                console.log("CHAR");
             }
             else {
                 resultado3D = this.setCadena(this.primitivo.toString(), Temp);
-                console.log("NO CHAR");
             }
         }
         else {
@@ -122,16 +132,17 @@ class Primitivo {
         cadena = cadena.replace("\\'", "'");
         nodo.codigo3D +=
             "//%%%%%%%%%%%%%%%%%%% GUARDAR CADENA " + cadenatemp + "%%%%%%%%%%%%%%%%%%%% \n";
+        let temporal = Temp.temporal();
+        nodo.codigo3D += temporal + " = H; \n ";
         for (let i = 0; i < cadena.length; i++) {
-            let temporal = Temp.temporal();
-            nodo.codigo3D += Temp.crearLinea(temporal + " = H ", "");
-            nodo.codigo3D += Temp.crearLinea("Heap[(int)" + temporal + "] = " + cadena.charCodeAt(i), "Guardamos en el Heap el caracter: " + cadena.charAt(i));
-            nodo.codigo3D += Temp.crearLinea("H = H + 1", "Aumentamos el Heap");
-            if (i === 0)
+            nodo.codigo3D += "heap[(int) H] = " + cadena.charCodeAt(i) + ";  //Guardamos en el Heap el caracter: " + cadena.charAt(i) + "\n";
+            nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
+            if (i === 0) {
                 nodo.temporal = new Temporales_1.Temporal(temporal);
+            }
         }
-        nodo.codigo3D += Temp.crearLinea("Heap[(int) H] = 0", "Fin de la cadena");
-        nodo.codigo3D += Temp.crearLinea("H = H + 1", "Aumentamos el Heap");
+        nodo.codigo3D += "heap[(int) H] = 0; //Fin de la cadena \n";
+        nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
         return nodo;
     }
 }

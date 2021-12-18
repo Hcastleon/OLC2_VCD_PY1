@@ -38,6 +38,7 @@ class Temporales {
         this.etiquetaF = "";
         this.etiquetasV = [];
         this.etiquetasF = [];
+        this.pointersG = 0;
     }
     nuevoTemporal() {
         let temp = new Temporal(this.temporal());
@@ -72,8 +73,8 @@ class Temporales {
     saltoIncondicional(etiqueta) {
         return "goto " + etiqueta + ";\n";
     }
-    crearLinea(linea, comentario) {
-        return linea + "; //" + comentario + "\n";
+    ultimoTemporal() {
+        return "t" + this.contador_temporales;
     }
 }
 exports.Temporales = Temporales;

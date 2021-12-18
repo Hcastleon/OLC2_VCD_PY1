@@ -141,7 +141,7 @@ class Cadenas {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
     getTipoArray(lista) {
         if (typeof lista[0] == "number") {

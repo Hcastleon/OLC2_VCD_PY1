@@ -10,20 +10,22 @@ export class Simbolos{
 
     public lista_params?: Array<Simbolos>;
     public metodo?: boolean;
+    public posicion: number;
 
     constructor(simbolo : number, tipo : Tipo, identificador : string, valor : any, lista_params?: Array<Simbolos>, metodo?: boolean) {
         this.simbolo = simbolo;
         this.tipo = tipo;
         this.identificador = identificador;
-        this.valor = valor; 
+        this.valor = valor;
         this.lista_params = lista_params;
         this.metodo = metodo;
+        this.posicion=0;
     }
 
     setSimbolo(simbolo: number){
         this.simbolo =  simbolo
     }
-    
+
     getSimbolo(){
         return this.simbolo
     }
@@ -55,7 +57,6 @@ export class Simbolos{
     getValor(){
         return this.valor
     }
-
 
     
 

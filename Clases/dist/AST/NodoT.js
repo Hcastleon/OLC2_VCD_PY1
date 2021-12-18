@@ -8,7 +8,7 @@ class NodoT {
         this.resultado = "";
         this.verdaderas = [];
         this.falsas = [];
-        this.localizacion = Tipo_1.Localizacion.HEAP;
+        this.localizacion = Tipo_1.Ubicacion.HEAP;
         this.posicion = "";
         this.saltos = [];
         this.breaks = [];

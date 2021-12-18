@@ -15,6 +15,7 @@ class Funcion extends Simbolos_1.Simbolos {
         this.linea = linea;
         this.column = columna;
         this.etiqueta = "";
+        this.entornoTrad = new TablaSim_1.TablaSim(null, "");
     }
     agregarSimboloFunc(controlador, ts, ts_u) {
         if (!ts.existe(this.identificador)) {
@@ -28,6 +29,7 @@ class Funcion extends Simbolos_1.Simbolos {
     ejecutar(controlador, ts, ts_u) {
         let ts_local = new TablaSim_1.TablaSim(ts, this.identificador);
         ts.setSiguiente(ts_local);
+        this.entornoTrad = ts_local;
         let valor_type = this.tipo.stype;
         let tipo_aux = "";
         if (valor_type == "ENTERO" || valor_type == "DECIMAL") {
@@ -80,7 +82,7 @@ class Funcion extends Simbolos_1.Simbolos {
     traducir(Temp, controlador, ts, ts_u) {
         // controlador.appendT("\n"+ this.etiqueta + ":"+"#"+this.identificador);
         for (let ins of this.lista_ints) {
-            let a = ins.traducir(Temp, controlador, ts, ts_u);
+            let a = ins.traducir(Temp, controlador, this.entornoTrad, ts_u);
             if (a != undefined) {
                 controlador.appendT("\n" + a.codigo3D);
             }

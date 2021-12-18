@@ -48,6 +48,10 @@ export class Temporales {
   public etiquetasV: Array<string> = [];
   public etiquetasF: Array<string> = [];
 
+  public pointersG: number = 0;
+
+
+
   nuevoTemporal() {
     let temp = new Temporal(this.temporal());
     this.lista_temporales.push(temp);
@@ -90,7 +94,9 @@ export class Temporales {
   saltoIncondicional(etiqueta: string) {
     return "goto " + etiqueta + ";\n";
   }
-  crearLinea(linea: string, comentario: string): string {
-    return linea + "; //" + comentario + "\n";
+
+   ultimoTemporal() {
+    return "t" + this.contador_temporales;
   }
+ 
 }

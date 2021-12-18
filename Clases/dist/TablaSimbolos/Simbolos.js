@@ -9,6 +9,7 @@ class Simbolos {
         this.valor = valor;
         this.lista_params = lista_params;
         this.metodo = metodo;
+        this.posicion = 0;
     }
     setSimbolo(simbolo) {
         this.simbolo = simbolo;

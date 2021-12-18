@@ -1,5 +1,5 @@
 import { Instruccion } from "../Interfaces/Instruccion";
-import { Tipo, Localizacion } from "./Tipo";
+import { Tipo, Ubicacion } from "./Tipo";
 
 export class Simbolo{
     identificador:string = "";
@@ -12,7 +12,7 @@ export class Simbolo{
     //dimensiones:number;
     //isParam : Boolean;
     //isNull : Boolean;
-    localizacion:Localizacion = Localizacion.HEAP;
+    localizacion:Ubicacion = Ubicacion.HEAP;
     instrucciones:Array<Instruccion> = [];
     //entorno:Entorno;
     verdaderas:Array<String> = [];
@@ -21,7 +21,7 @@ export class Simbolo{
 
     constructor()
     constructor(id:string,tam:number,atributo:Object,instrucciones:Array<Instruccion>)
-    constructor(id?:string,tam?:number,atributo?:Object,instrucciones?:Array<Instruccion>,localizacion?:Localizacion)
+    constructor(id?:string,tam?:number,atributo?:Object,instrucciones?:Array<Instruccion>,localizacion?:Ubicacion)
     {
         if(id != undefined && tam != undefined && atributo != undefined && instrucciones != undefined && localizacion != undefined){
 

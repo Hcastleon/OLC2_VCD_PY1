@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TablaSim = void 0;
 class TablaSim {
     constructor(ant, nombre) {
+        this.entorno = 0;
         this.ant = ant;
         this.sig = [];
         this.tabla = new Map();
@@ -47,6 +48,19 @@ class TablaSim {
             ts = ts.ant;
         }
         return null;
+    }
+    getEntornoStack() {
+        let ts = this;
+        let i = 0;
+        while (ts != null) {
+            ts.tabla.forEach(element => {
+                if (element.simbolo == 1 || element.simbolo == 4) {
+                    i++;
+                }
+            });
+            ts = ts.ant;
+        }
+        return i;
     }
 }
 exports.TablaSim = TablaSim;

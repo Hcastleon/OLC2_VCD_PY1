@@ -74,7 +74,7 @@ class Switch {
             comp = this.arreglarBoolean(comp, salida, Temp);
             v = comp.etiquetasV;
             f = comp.etiquetasF;
-            salida.codigo3D += "//#############3Verdaderas##################3 \n";
+            salida.codigo3D += "//%%%%%%%%%%%%%%%%Verdaderas%%%%%%%%%%%%%%%% \n";
             salida.codigo3D += Temp.escribirEtiquetas(v);
             //console.log(this.lista_ifs);
             caso.list_inst.forEach((element) => {
@@ -93,7 +93,7 @@ class Switch {
             let salto = Temp.etiqueta();
             salida.codigo3D += Temp.saltoIncondicional(salto);
             salida.saltos.push(salto);
-            salida.codigo3D += "//#####################Falssa###########3 \n";
+            salida.codigo3D += "//%%%%%%%%%%Falssa%%%%%%%%%%%%%%%%% \n";
             salida.codigo3D += Temp.escribirEtiquetas(f);
         });
         //--------------------Default
@@ -109,10 +109,10 @@ class Switch {
              salida.valor = temp.valor;
            }*/
         //----------------
-        salida.codigo3D += "//#################### Saltos de Salida############## \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%% Saltos de Salida%%%%%%%%%%%% \n";
         salida.codigo3D += Temp.escribirEtiquetas(salida.saltos);
         salida.saltos = [];
-        salida.codigo3D += "//#################### BREAKS############## \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%% BREAKS %%%%%%%%%%%%%%%% \n";
         salida.codigo3D += Temp.escribirEtiquetas(salida.breaks);
         salida.breaks = [];
         return salida;
@@ -133,15 +133,16 @@ class Switch {
         nodo.tipo = Tipo_1.tipo.BOOLEAN;
         let v = Temp.etiqueta();
         let f = Temp.etiqueta();
-        nodo.codigo3D += Temp.crearLinea("if (" +
+        nodo.codigo3D += "if (" +
             nodoIzq.temporal.nombre +
             " " +
             signo +
             " " +
             nodoDer.temporal.nombre +
             ") goto " +
-            v, "Si es verdadero salta a " + v);
-        nodo.codigo3D += Temp.crearLinea("goto " + f, "si no se cumple salta a: " + f);
+            v +
+            "; //Si es verdadero salta a " + v + "\n";
+        nodo.codigo3D += "goto " + f + "; //si no se cumple salta a: " + f + "\n";
         nodo.etiquetasV = [];
         nodo.etiquetasV.push(v);
         nodo.etiquetasF = [];

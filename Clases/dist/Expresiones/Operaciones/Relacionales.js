@@ -820,15 +820,17 @@ class Relacionales extends Operaciones_1.Operacion {
         nodo.tipo = Tipo_1.tipo.BOOLEAN;
         let v = Temp.etiqueta();
         let f = Temp.etiqueta();
-        nodo.codigo3D += Temp.crearLinea("if (" +
-            nodoIzq.temporal.nombre +
-            " " +
-            signo +
-            " " +
-            nodoDer.temporal.nombre +
-            ") goto " +
-            v, "Si es verdadero salta a " + v);
-        nodo.codigo3D += Temp.crearLinea("goto " + f, "si no se cumple salta a: " + f);
+        nodo.codigo3D +=
+            "if (" +
+                nodoIzq.temporal.nombre +
+                " " +
+                signo +
+                " " +
+                nodoDer.temporal.nombre +
+                ") goto " +
+                v +
+                "; // Si es verdadero salta a " + v + "\n";
+        nodo.codigo3D += "goto " + f + "; //si no se cumple salta a: " + f + "\n";
         nodo.etiquetasV = [];
         nodo.etiquetasV.push(v);
         nodo.etiquetasF = [];

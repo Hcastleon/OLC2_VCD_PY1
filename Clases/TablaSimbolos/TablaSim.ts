@@ -7,6 +7,9 @@ export class TablaSim {
     public tabla: Map<string, Simbolos>;
     public nombre: string;
 
+    public entorno: number = 0;
+
+
     constructor(ant: any, nombre: string) {
         this.ant = ant;
         this.sig = [];
@@ -62,4 +65,22 @@ export class TablaSim {
         }
         return null;
     }
+
+    getEntornoStack(){
+        let ts : TablaSim = this; 
+        let i: number = 0;
+        while(ts != null){
+            
+            ts.tabla.forEach(element => {
+                if(element.simbolo == 1 || element.simbolo == 4){
+                i++;
+            }
+            });
+
+            
+            ts = ts.ant;
+        }
+        return i;
+    }
+
 }

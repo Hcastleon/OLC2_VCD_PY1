@@ -145,7 +145,7 @@ class ForEsp {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
     traducir(Temp, controlador, ts, ts_u) {
     }

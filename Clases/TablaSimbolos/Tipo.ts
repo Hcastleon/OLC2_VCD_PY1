@@ -1,6 +1,6 @@
 export enum tipo{
-    ENTERO,
-    DOUBLE,
+    ENTERO, 
+    DOUBLE, 
     BOOLEAN,
     CARACTER,
     CADENA,
@@ -8,10 +8,11 @@ export enum tipo{
     VOID,
     ARRAY,
     MAIN,
-    STRUCT
+    STRUCT,
+    ID
 }
 
-export enum Localizacion {
+export enum Ubicacion {
     HEAP,
     STACK
 }

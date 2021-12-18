@@ -15,10 +15,12 @@ class If {
         this.lista_elses = lista_elses;
         this.linea = linea;
         this.columna = columna;
+        this.entornoTrad = new TablaSim_1.TablaSim(null, "");
     }
     ejecutar(controlador, ts, ts_u) {
         let ts_local = new TablaSim_1.TablaSim(ts, "If");
         ts.setSiguiente(ts_local);
+        this.entornoTrad = ts_local;
         let valor_condi = this.condicion.getValor(controlador, ts, ts_u);
         if (this.condicion.getTipo(controlador, ts, ts_u) == Tipo_1.tipo.BOOLEAN) {
             if (valor_condi) {
@@ -74,17 +76,16 @@ class If {
         let salida = new Temporales_1.Resultado3D();
         let v = [];
         let f = [];
-        let nodo = this.condicion.traducir(Temp, controlador, ts, ts_u);
+        let nodo = this.condicion.traducir(Temp, controlador, this.entornoTrad, ts_u);
         salida.codigo3D += nodo.codigo3D + "\n";
         nodo = this.arreglarBoolean(nodo, salida, Temp);
         v = nodo.etiquetasV;
         f = nodo.etiquetasF;
-        salida.codigo3D += "//#############3Verdaderas##################3 \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%5Verdaderas%%%%%%%%%%%%%%%%%%% \n";
         salida.codigo3D += Temp.escribirEtiquetas(v);
         console.log(this.lista_ifs);
         this.lista_ifs.forEach((element) => {
-            let temp = element.traducir(Temp, controlador, ts, ts_u);
-            console.log(temp);
+            let temp = element.traducir(Temp, controlador, this.entornoTrad, ts_u);
             salida.codigo3D += temp.codigo3D;
             salida.saltos = salida.saltos.concat(temp.saltos);
             salida.breaks = salida.breaks.concat(temp.breaks);
@@ -99,11 +100,11 @@ class If {
         let salto = Temp.etiqueta();
         salida.codigo3D += Temp.saltoIncondicional(salto);
         salida.saltos.push(salto);
-        salida.codigo3D += "//#####################Falssa###########3 \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%Falssa%%%%%%%%%%%%%%%%%%%%%% \n";
         salida.codigo3D += Temp.escribirEtiquetas(f);
         //Ejecucion del resto de else ifs ------------------
         this.lista_elses.forEach((element) => {
-            let nodo = element.traducir(Temp, controlador, ts, ts_u);
+            let nodo = element.traducir(Temp, controlador, this.entornoTrad, ts_u);
             salida.codigo3D += nodo.codigo3D;
             salida.codigo3D += nodo.saltos;
             // salida.codigo3D += temp.breaks;
@@ -115,7 +116,7 @@ class If {
                salida.valor = temp.valor;
              }*/
         });
-        salida.codigo3D += "//#################### Saltos de Salida############## \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%Saltos de Salida############## \n";
         salida.codigo3D += Temp.escribirEtiquetas(salida.saltos);
         salida.saltos = [];
         return salida;

@@ -11,7 +11,7 @@ class Simbolo {
         //dimensiones:number;
         //isParam : Boolean;
         //isNull : Boolean;
-        this.localizacion = Tipo_1.Localizacion.HEAP;
+        this.localizacion = Tipo_1.Ubicacion.HEAP;
         this.instrucciones = [];
         //entorno:Entorno;
         this.verdaderas = [];

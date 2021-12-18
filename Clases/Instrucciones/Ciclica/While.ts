@@ -60,7 +60,7 @@ export class While implements Instruccion {
 
     let ciclo: string = Temp.etiqueta();
 
-    salida.codigo3D += Temp.crearLinea(ciclo + ":", "Etiqueta para controlar el ciclado");
+    salida.codigo3D += ciclo + ": //Etiqueta para controlar el ciclado";
     salida.codigo3D += nodoCondicion.codigo3D;
     nodoCondicion = this.arreglarBoolean(nodoCondicion, salida, Temp);
     salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%% Verdadera %%%%%%%%%%%%%%%%%";

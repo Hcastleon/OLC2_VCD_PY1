@@ -123,7 +123,7 @@ class Nativa extends Operaciones_1.Operacion {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
 }
 exports.Nativa = Nativa;

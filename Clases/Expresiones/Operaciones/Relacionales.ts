@@ -1023,7 +1023,7 @@ export class Relacionales extends Operacion implements Expresion {
     nodo.tipo = tipo.BOOLEAN;
     let v: string = Temp.etiqueta();
     let f: string = Temp.etiqueta();
-    nodo.codigo3D += Temp.crearLinea(
+    nodo.codigo3D += 
       "if (" +
         nodoIzq.temporal.nombre +
         " " +
@@ -1031,11 +1031,10 @@ export class Relacionales extends Operacion implements Expresion {
         " " +
         nodoDer.temporal.nombre +
         ") goto " +
-        v,
-      "Si es verdadero salta a " + v
-    );
+        v+
+      "; // Si es verdadero salta a " + v+ "\n";
 
-    nodo.codigo3D += Temp.crearLinea("goto " + f, "si no se cumple salta a: " + f);
+    nodo.codigo3D += "goto " + f+ "; //si no se cumple salta a: " + f+ "\n";
     nodo.etiquetasV = [];
     nodo.etiquetasV.push(v);
     nodo.etiquetasF = [];

@@ -1,4 +1,4 @@
-import { Localizacion } from "../TablaSimbolos/Tipo";
+import { Ubicacion } from "../TablaSimbolos/Tipo";
 
 export class NodoT {
   codigo: Array<String> = [];
@@ -6,7 +6,7 @@ export class NodoT {
   verdaderas: Array<String> = [];
   falsas: Array<String> = [];
   atributos?: Object;
-  localizacion: Localizacion = Localizacion.HEAP;
+  localizacion: Ubicacion = Ubicacion.HEAP;
   posicion: String = "";
   saltos: Array<String> = [];
   breaks: Array<String> = [];

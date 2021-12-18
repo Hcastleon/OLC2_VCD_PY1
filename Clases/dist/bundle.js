@@ -838,6 +838,7 @@ class Temporales {
         this.etiquetaF = "";
         this.etiquetasV = [];
         this.etiquetasF = [];
+        this.pointersG = 0;
     }
     nuevoTemporal() {
         let temp = new Temporal(this.temporal());
@@ -872,8 +873,8 @@ class Temporales {
     saltoIncondicional(etiqueta) {
         return "goto " + etiqueta + ";\n";
     }
-    crearLinea(linea, comentario) {
-        return linea + "; //" + comentario + "\n";
+    ultimoTemporal() {
+        return "t" + this.contador_temporales;
     }
 }
 exports.Temporales = Temporales;
@@ -1310,7 +1311,7 @@ class Arreglo {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
 }
 exports.Arreglo = Arreglo;
@@ -1344,6 +1345,10 @@ class Identificador {
         return padre;
     }
     traducir(Temp, controlador, ts, ts_u) {
+        let id_exists = ts.getSimbolo(this.identificador);
+        if (id_exists != null) {
+            return id_exists;
+        }
     }
 }
 exports.Identificador = Identificador;
@@ -1822,7 +1827,7 @@ class AritArreglo {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
 }
 exports.AritArreglo = AritArreglo;
@@ -2283,7 +2288,7 @@ class Aritmetica extends Operaciones_1.Operacion {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
 }
 exports.Aritmetica = Aritmetica;
@@ -2432,7 +2437,7 @@ class Cadenas {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
     getTipoArray(lista) {
         if (typeof lista[0] == "number") {
@@ -2548,7 +2553,7 @@ class Conversion {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
     twoDecimal(numberInt) {
         return Number.parseFloat(numberInt.toFixed(4));
@@ -2852,7 +2857,7 @@ class Nativa extends Operaciones_1.Operacion {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
 }
 exports.Nativa = Nativa;
@@ -3817,15 +3822,17 @@ class Relacionales extends Operaciones_1.Operacion {
         nodo.tipo = Tipo_1.tipo.BOOLEAN;
         let v = Temp.etiqueta();
         let f = Temp.etiqueta();
-        nodo.codigo3D += Temp.crearLinea("if (" +
-            nodoIzq.temporal.nombre +
-            " " +
-            signo +
-            " " +
-            nodoDer.temporal.nombre +
-            ") goto " +
-            v, "Si es verdadero salta a " + v);
-        nodo.codigo3D += Temp.crearLinea("goto " + f, "si no se cumple salta a: " + f);
+        nodo.codigo3D +=
+            "if (" +
+                nodoIzq.temporal.nombre +
+                " " +
+                signo +
+                " " +
+                nodoDer.temporal.nombre +
+                ") goto " +
+                v +
+                "; // Si es verdadero salta a " + v + "\n";
+        nodo.codigo3D += "goto " + f + "; //si no se cumple salta a: " + f + "\n";
         nodo.etiquetasV = [];
         nodo.etiquetasV.push(v);
         nodo.etiquetasF = [];
@@ -3864,7 +3871,12 @@ class Primitivo {
             return Tipo_1.tipo.DOUBLE;
         }
         else if (typeof valor == "string") {
-            return Tipo_1.tipo.CADENA;
+            if (this.isChar(String(this.primitivo))) {
+                return Tipo_1.tipo.CARACTER;
+            }
+            else {
+                return Tipo_1.tipo.CADENA;
+            }
         }
         else if (typeof valor == "boolean") {
             return Tipo_1.tipo.BOOLEAN;
@@ -3881,7 +3893,12 @@ class Primitivo {
             return Tipo_1.tipo.DOUBLE;
         }
         else if (typeof this.primitivo == "string") {
-            return Tipo_1.tipo.CADENA;
+            if (this.isChar(String(this.primitivo))) {
+                return Tipo_1.tipo.CARACTER;
+            }
+            else {
+                return Tipo_1.tipo.CADENA;
+            }
         }
         else if (typeof this.primitivo == "boolean") {
             return Tipo_1.tipo.BOOLEAN;
@@ -3908,7 +3925,7 @@ class Primitivo {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z-*+/]/i);
+        return n.length === 1 && n.match(/./i);
     }
     traducir(Temp, controlador, ts, ts_u) {
         let resultado3D = new Temporales_1.Resultado3D();
@@ -3923,7 +3940,9 @@ class Primitivo {
             if (this.isChar(String(this.primitivo))) {
                 resultado3D.tipo = Tipo_1.tipo.CARACTER;
             }
-            resultado3D.tipo = Tipo_1.tipo.CADENA;
+            else {
+                resultado3D.tipo = Tipo_1.tipo.CADENA;
+            }
         }
         else if (typeof this.primitivo == "boolean") {
             resultado3D.tipo = Tipo_1.tipo.BOOLEAN;
@@ -3945,11 +3964,9 @@ class Primitivo {
                 nodo.tipo = Tipo_1.tipo.CARACTER;
                 nodo.temporal = new Temporales_1.Temporal(ascii.toString());
                 resultado3D = nodo;
-                console.log("CHAR");
             }
             else {
                 resultado3D = this.setCadena(this.primitivo.toString(), Temp);
-                console.log("NO CHAR");
             }
         }
         else {
@@ -3967,16 +3984,17 @@ class Primitivo {
         cadena = cadena.replace("\\'", "'");
         nodo.codigo3D +=
             "//%%%%%%%%%%%%%%%%%%% GUARDAR CADENA " + cadenatemp + "%%%%%%%%%%%%%%%%%%%% \n";
+        let temporal = Temp.temporal();
+        nodo.codigo3D += temporal + " = H; \n ";
         for (let i = 0; i < cadena.length; i++) {
-            let temporal = Temp.temporal();
-            nodo.codigo3D += Temp.crearLinea(temporal + " = H ", "");
-            nodo.codigo3D += Temp.crearLinea("Heap[(int)" + temporal + "] = " + cadena.charCodeAt(i), "Guardamos en el Heap el caracter: " + cadena.charAt(i));
-            nodo.codigo3D += Temp.crearLinea("H = H + 1", "Aumentamos el Heap");
-            if (i === 0)
+            nodo.codigo3D += "heap[(int) H] = " + cadena.charCodeAt(i) + ";  //Guardamos en el Heap el caracter: " + cadena.charAt(i) + "\n";
+            nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
+            if (i === 0) {
                 nodo.temporal = new Temporales_1.Temporal(temporal);
+            }
         }
-        nodo.codigo3D += Temp.crearLinea("Heap[(int) H] = 0", "Fin de la cadena");
-        nodo.codigo3D += Temp.crearLinea("H = H + 1", "Aumentamos el Heap");
+        nodo.codigo3D += "heap[(int) H] = 0; //Fin de la cadena \n";
+        nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
         return nodo;
     }
 }
@@ -5344,6 +5362,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Asignacion = void 0;
 const Errores_1 = require("../AST/Errores");
 const Nodo_1 = require("../AST/Nodo");
+const Temporales_1 = require("../AST/Temporales");
+const Tipo_1 = require("../TablaSimbolos/Tipo");
 class Asignacion {
     constructor(identificador, valor, linea, column) {
         this.identificador = identificador;
@@ -5369,11 +5389,53 @@ class Asignacion {
         padre.addHijo(this.valor.recorrer());
         return padre;
     }
-    traducir(Temp, controlador, ts, ts_u) { }
+    traducir(Temp, controlador, ts, ts_u) {
+        let salida = new Temporales_1.Resultado3D();
+        //let valor = this.valor.traducir(Temp, controlador, ts, ts_u);
+        let simbolo = ts.getSimbolo(this.identificador);
+        if (simbolo != null) {
+            let nodo = this.valor.traducir(Temp, controlador, ts, ts_u);
+            let ultimoT;
+            if (nodo.codigo3D == "") {
+                ultimoT = nodo.temporal.nombre;
+            }
+            else {
+                ultimoT = Temp.ultimoTemporal();
+            }
+            if (!(nodo.tipo == Tipo_1.tipo.BOOLEAN)) {
+                salida.codigo3D += nodo.codigo3D + "\n";
+            }
+            else {
+                if (simbolo.valor == true) {
+                    ultimoT = "1";
+                }
+                else {
+                    ultimoT = "0";
+                }
+            }
+            if (ts.nombre != "Global" && simbolo != null) {
+                if (ts.entorno == 0) {
+                    ts.entorno = ts.entorno + ts.ant.entorno;
+                }
+                let temp = Temp.temporal();
+                salida.codigo3D += temp + " = P + " + ts.entorno + "; \n";
+                salida.codigo3D += "stack[(int)" + temp + "]  = " + ultimoT + "; \n";
+                simbolo.posicion = ts.entorno;
+                ts.entorno++;
+            }
+            else if (ts.nombre == "Global" && simbolo != null) {
+                // ts.entorno++;
+                salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n";
+                simbolo.posicion = ts.entorno;
+                ts.entorno++;
+            }
+        }
+        return salida;
+    }
 }
 exports.Asignacion = Asignacion;
 
-},{"../AST/Errores":6,"../AST/Nodo":7}],27:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../AST/Temporales":8,"../TablaSimbolos/Tipo":49}],27:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AsignacionArray = void 0;
@@ -5470,7 +5532,7 @@ class AsignacionArray {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
 }
 exports.AsignacionArray = AsignacionArray;
@@ -5805,7 +5867,7 @@ class ForEsp {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
     traducir(Temp, controlador, ts, ts_u) {
     }
@@ -5865,7 +5927,7 @@ class While {
         let salida = new Temporales_1.Resultado3D();
         let nodoCondicion = this.condicion.traducir(Temp, controlador, ts, ts_u);
         let ciclo = Temp.etiqueta();
-        salida.codigo3D += Temp.crearLinea(ciclo + ":", "Etiqueta para controlar el ciclado");
+        salida.codigo3D += ciclo + ": //Etiqueta para controlar el ciclado";
         salida.codigo3D += nodoCondicion.codigo3D;
         nodoCondicion = this.arreglarBoolean(nodoCondicion, salida, Temp);
         salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%% Verdadera %%%%%%%%%%%%%%%%%";
@@ -6049,10 +6111,12 @@ class If {
         this.lista_elses = lista_elses;
         this.linea = linea;
         this.columna = columna;
+        this.entornoTrad = new TablaSim_1.TablaSim(null, "");
     }
     ejecutar(controlador, ts, ts_u) {
         let ts_local = new TablaSim_1.TablaSim(ts, "If");
         ts.setSiguiente(ts_local);
+        this.entornoTrad = ts_local;
         let valor_condi = this.condicion.getValor(controlador, ts, ts_u);
         if (this.condicion.getTipo(controlador, ts, ts_u) == Tipo_1.tipo.BOOLEAN) {
             if (valor_condi) {
@@ -6108,17 +6172,16 @@ class If {
         let salida = new Temporales_1.Resultado3D();
         let v = [];
         let f = [];
-        let nodo = this.condicion.traducir(Temp, controlador, ts, ts_u);
+        let nodo = this.condicion.traducir(Temp, controlador, this.entornoTrad, ts_u);
         salida.codigo3D += nodo.codigo3D + "\n";
         nodo = this.arreglarBoolean(nodo, salida, Temp);
         v = nodo.etiquetasV;
         f = nodo.etiquetasF;
-        salida.codigo3D += "//#############3Verdaderas##################3 \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%5Verdaderas%%%%%%%%%%%%%%%%%%% \n";
         salida.codigo3D += Temp.escribirEtiquetas(v);
         console.log(this.lista_ifs);
         this.lista_ifs.forEach((element) => {
-            let temp = element.traducir(Temp, controlador, ts, ts_u);
-            console.log(temp);
+            let temp = element.traducir(Temp, controlador, this.entornoTrad, ts_u);
             salida.codigo3D += temp.codigo3D;
             salida.saltos = salida.saltos.concat(temp.saltos);
             salida.breaks = salida.breaks.concat(temp.breaks);
@@ -6133,11 +6196,11 @@ class If {
         let salto = Temp.etiqueta();
         salida.codigo3D += Temp.saltoIncondicional(salto);
         salida.saltos.push(salto);
-        salida.codigo3D += "//#####################Falssa###########3 \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%Falssa%%%%%%%%%%%%%%%%%%%%%% \n";
         salida.codigo3D += Temp.escribirEtiquetas(f);
         //Ejecucion del resto de else ifs ------------------
         this.lista_elses.forEach((element) => {
-            let nodo = element.traducir(Temp, controlador, ts, ts_u);
+            let nodo = element.traducir(Temp, controlador, this.entornoTrad, ts_u);
             salida.codigo3D += nodo.codigo3D;
             salida.codigo3D += nodo.saltos;
             // salida.codigo3D += temp.breaks;
@@ -6149,7 +6212,7 @@ class If {
                salida.valor = temp.valor;
              }*/
         });
-        salida.codigo3D += "//#################### Saltos de Salida############## \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%Saltos de Salida############## \n";
         salida.codigo3D += Temp.escribirEtiquetas(salida.saltos);
         salida.saltos = [];
         return salida;
@@ -6246,7 +6309,7 @@ class Switch {
             comp = this.arreglarBoolean(comp, salida, Temp);
             v = comp.etiquetasV;
             f = comp.etiquetasF;
-            salida.codigo3D += "//#############3Verdaderas##################3 \n";
+            salida.codigo3D += "//%%%%%%%%%%%%%%%%Verdaderas%%%%%%%%%%%%%%%% \n";
             salida.codigo3D += Temp.escribirEtiquetas(v);
             //console.log(this.lista_ifs);
             caso.list_inst.forEach((element) => {
@@ -6265,7 +6328,7 @@ class Switch {
             let salto = Temp.etiqueta();
             salida.codigo3D += Temp.saltoIncondicional(salto);
             salida.saltos.push(salto);
-            salida.codigo3D += "//#####################Falssa###########3 \n";
+            salida.codigo3D += "//%%%%%%%%%%Falssa%%%%%%%%%%%%%%%%% \n";
             salida.codigo3D += Temp.escribirEtiquetas(f);
         });
         //--------------------Default
@@ -6281,10 +6344,10 @@ class Switch {
              salida.valor = temp.valor;
            }*/
         //----------------
-        salida.codigo3D += "//#################### Saltos de Salida############## \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%% Saltos de Salida%%%%%%%%%%%% \n";
         salida.codigo3D += Temp.escribirEtiquetas(salida.saltos);
         salida.saltos = [];
-        salida.codigo3D += "//#################### BREAKS############## \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%% BREAKS %%%%%%%%%%%%%%%% \n";
         salida.codigo3D += Temp.escribirEtiquetas(salida.breaks);
         salida.breaks = [];
         return salida;
@@ -6305,15 +6368,16 @@ class Switch {
         nodo.tipo = Tipo_1.tipo.BOOLEAN;
         let v = Temp.etiqueta();
         let f = Temp.etiqueta();
-        nodo.codigo3D += Temp.crearLinea("if (" +
+        nodo.codigo3D += "if (" +
             nodoIzq.temporal.nombre +
             " " +
             signo +
             " " +
             nodoDer.temporal.nombre +
             ") goto " +
-            v, "Si es verdadero salta a " + v);
-        nodo.codigo3D += Temp.crearLinea("goto " + f, "si no se cumple salta a: " + f);
+            v +
+            "; //Si es verdadero salta a " + v + "\n";
+        nodo.codigo3D += "goto " + f + "; //si no se cumple salta a: " + f + "\n";
         nodo.etiquetasV = [];
         nodo.etiquetasV.push(v);
         nodo.etiquetasF = [];
@@ -6333,6 +6397,7 @@ const Simbolos_1 = require("../TablaSimbolos/Simbolos");
 const Tipo_1 = require("../TablaSimbolos/Tipo");
 const Arreglo_1 = require("../Expresiones/Arreglo");
 const AritArreglo_1 = require("../Expresiones/Operaciones/AritArreglo");
+const Temporales_1 = require("../AST/Temporales");
 class Declaracion {
     constructor(tipo, lista_simbolos, linea, columna) {
         this.tipo = tipo;
@@ -6438,13 +6503,111 @@ class Declaracion {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
-    traducir(Temp, controlador, ts, ts_u) { }
+    traducir(Temp, controlador, ts, ts_u) {
+        let salida = new Temporales_1.Resultado3D();
+        for (let simbolo of this.lista_simbolos) {
+            let variable = simbolo;
+            let existe = ts.getSimbolo(variable.identificador);
+            if (variable.valor != null) {
+                let nodo = variable.valor.traducir(Temp, controlador, ts, ts_u);
+                let ultimoT;
+                if (nodo.codigo3D == "") {
+                    ultimoT = nodo.temporal.nombre;
+                }
+                else {
+                    if (nodo.tipo == Tipo_1.tipo.BOOLEAN) {
+                        salida.codigo3D += nodo.codigo3D + "\n";
+                        if (ts.nombre != "Global" && existe != null) {
+                            if (ts.entorno == 0) {
+                                ts.entorno = ts.entorno + ts.ant.entorno;
+                            }
+                            let a = Temp.etiqueta();
+                            let temp = Temp.temporal();
+                            salida.codigo3D += temp + " = P + " + ts.entorno + "; \n";
+                            salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasV);
+                            salida.codigo3D += "stack[(int)" + temp + "] = 1; \n";
+                            salida.codigo3D += "goto " + a + ";\n";
+                            salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasF);
+                            salida.codigo3D += "stack[(int)" + temp + "] = 0; \n";
+                            salida.codigo3D += a + ": \n";
+                            existe.posicion = ts.entorno;
+                            ts.entorno++;
+                            return salida;
+                        }
+                        else if (ts.nombre == "Global" && existe != null) {
+                            let a = Temp.etiqueta();
+                            salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasV);
+                            salida.codigo3D += "stack[(int)" + ts.entorno + "] = 1; \n";
+                            salida.codigo3D += "goto " + a + ";\n";
+                            salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasF);
+                            salida.codigo3D += "stack[(int)" + ts.entorno + "] = 0; \n";
+                            salida.codigo3D += a + ": \n";
+                            existe.posicion = ts.entorno;
+                            ts.entorno++;
+                            return salida;
+                        }
+                        //ultimoT = nodo.temporal.nombre
+                    }
+                    else {
+                        ultimoT = Temp.ultimoTemporal();
+                    }
+                }
+                salida.codigo3D += nodo.codigo3D + "\n";
+                /*
+                        if (!(nodo.tipo == tipo.BOOLEAN)) {
+                          salida.codigo3D += nodo.codigo3D + "\n";
+                        } else {
+                          console.log(variable.valor);
+                          if(variable.valor == true){
+                            ultimoT = "1"
+                          }else{
+                            ultimoT = "0"
+                          }
+                        }*/
+                if (ts.nombre != "Global" && existe != null) {
+                    if (ts.entorno == 0) {
+                        ts.entorno = ts.entorno + ts.ant.entorno;
+                    }
+                    let temp = Temp.temporal();
+                    salida.codigo3D += temp + " = P + " + ts.entorno + "; \n";
+                    salida.codigo3D += "stack[(int)" + temp + "]  = " + ultimoT + "; \n";
+                    existe.posicion = ts.entorno;
+                    ts.entorno++;
+                }
+                else if (ts.nombre == "Global" && existe != null) {
+                    // ts.entorno++;
+                    salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n";
+                    existe.posicion = ts.entorno;
+                    ts.entorno++;
+                }
+            }
+            else {
+                if (ts.nombre != "Global" && existe != null) {
+                    if (ts.entorno == 0) {
+                        ts.entorno = ts.entorno + ts.ant.entorno;
+                    }
+                    let temp = Temp.temporal();
+                    salida.codigo3D += temp + " = P + " + ts.entorno + "; \n";
+                    salida.codigo3D += "stack[(int)" + temp + "]  = 0; \n";
+                    existe.posicion = ts.entorno;
+                    ts.entorno++;
+                }
+                else if (ts.nombre == "Global" && existe != null) {
+                    // ts.entorno++;
+                    salida.codigo3D += "stack[(int)" + ts.entorno + "]  = 0; \n";
+                    existe.posicion = ts.entorno;
+                    ts.entorno++;
+                }
+            }
+        }
+        return salida;
+    }
 }
 exports.Declaracion = Declaracion;
 
-},{"../AST/Errores":6,"../AST/Nodo":7,"../Expresiones/Arreglo":12,"../Expresiones/Operaciones/AritArreglo":14,"../TablaSimbolos/Simbolos":47,"../TablaSimbolos/Tipo":49}],38:[function(require,module,exports){
+},{"../AST/Errores":6,"../AST/Nodo":7,"../AST/Temporales":8,"../Expresiones/Arreglo":12,"../Expresiones/Operaciones/AritArreglo":14,"../TablaSimbolos/Simbolos":47,"../TablaSimbolos/Tipo":49}],38:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DeclaracionStruct = void 0;
@@ -6539,6 +6702,7 @@ class Funcion extends Simbolos_1.Simbolos {
         this.linea = linea;
         this.column = columna;
         this.etiqueta = "";
+        this.entornoTrad = new TablaSim_1.TablaSim(null, "");
     }
     agregarSimboloFunc(controlador, ts, ts_u) {
         if (!ts.existe(this.identificador)) {
@@ -6552,6 +6716,7 @@ class Funcion extends Simbolos_1.Simbolos {
     ejecutar(controlador, ts, ts_u) {
         let ts_local = new TablaSim_1.TablaSim(ts, this.identificador);
         ts.setSiguiente(ts_local);
+        this.entornoTrad = ts_local;
         let valor_type = this.tipo.stype;
         let tipo_aux = "";
         if (valor_type == "ENTERO" || valor_type == "DECIMAL") {
@@ -6604,7 +6769,7 @@ class Funcion extends Simbolos_1.Simbolos {
     traducir(Temp, controlador, ts, ts_u) {
         // controlador.appendT("\n"+ this.etiqueta + ":"+"#"+this.identificador);
         for (let ins of this.lista_ints) {
-            let a = ins.traducir(Temp, controlador, ts, ts_u);
+            let a = ins.traducir(Temp, controlador, this.entornoTrad, ts_u);
             if (a != undefined) {
                 controlador.appendT("\n" + a.codigo3D);
             }
@@ -6827,7 +6992,7 @@ class ManejoArray {
         return Number(n) === n && n % 1 === 0;
     }
     isChar(n) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
 }
 exports.ManejoArray = ManejoArray;
@@ -6839,6 +7004,7 @@ exports.Print = void 0;
 const Nodo_1 = require("../AST/Nodo");
 const Temporales_1 = require("../AST/Temporales");
 const Tipo_1 = require("../TablaSimbolos/Tipo");
+const Simbolos_1 = require("../TablaSimbolos/Simbolos");
 class Print {
     constructor(expresion, linea, columna) {
         this.expresion = expresion;
@@ -6856,23 +7022,170 @@ class Print {
         return padre;
     }
     traducir(Temp, controlador, ts, ts_u) {
-        let valorfinal = 'print("';
         let salida = new Temporales_1.Resultado3D();
         // cadena = cadena.temporal.utilizar();
         //cadena = cadena[1:-1];
         let exp_3D = this.expresion.traducir(Temp, controlador, ts, ts_u);
-        console.log(exp_3D);
-        if (exp_3D.tipo == Tipo_1.tipo.ENTERO || exp_3D.tipo == Tipo_1.tipo.DOUBLE) {
-            controlador.appendT("\n" + exp_3D.codigo3D);
-            controlador.appendT("\n" + 'printf("%f", (double)' + exp_3D.temporal.nombre + ");");
+        //IDENTIFICADOR------------------------------------------------------------------------------------------
+        if (exp_3D instanceof Simbolos_1.Simbolos) {
+            if (exp_3D.tipo.stype == "ENTERO") {
+                if (ts.nombre != "Global") {
+                    let temp = Temp.temporal();
+                    let temp2 = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + " = P + " + exp_3D.posicion + "; \n";
+                    salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+                    salida.codigo3D += "\n" + 'printf("%d", (int)' + temp2 + ");";
+                    // salida.codigo3D += this.estructura(temp2, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                }
+                else {
+                    let temp = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + "= stack[(int)" + exp_3D.posicion + "]; \n";
+                    // salida.codigo3D += this.estructura(temp, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                    salida.codigo3D += "\n" + 'printf("%d", (int)' + temp + ");";
+                }
+            }
+            if (exp_3D.tipo.stype == "DECIMAL") {
+                if (ts.nombre != "Global") {
+                    let temp = Temp.temporal();
+                    let temp2 = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + " = P + " + exp_3D.posicion + "; \n";
+                    salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+                    salida.codigo3D += "\n" + 'printf("%f", (double)' + temp2 + ");";
+                    // salida.codigo3D += this.estructura(temp2, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                }
+                else {
+                    let temp = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + "= stack[(int)" + exp_3D.posicion + "]; \n";
+                    // salida.codigo3D += this.estructura(temp, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                    salida.codigo3D += "\n" + 'printf("%f", (double)' + temp + ");";
+                }
+            }
+            if (exp_3D.tipo.stype == "CHAR") {
+                if (ts.nombre != "Global") {
+                    let temp = Temp.temporal();
+                    let temp2 = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + " = P + " + exp_3D.posicion + "; \n";
+                    salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+                    salida.codigo3D += "\n" + 'printf("%c", (char)' + temp2 + ");";
+                    // salida.codigo3D += this.estructura(temp2, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                }
+                else {
+                    let temp = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + "= stack[(int)" + exp_3D.posicion + "]; \n";
+                    // salida.codigo3D += this.estructura(temp, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                    salida.codigo3D += "\n" + 'printf("%c", (char)' + temp + ");";
+                }
+            }
+            else if (exp_3D.tipo.stype == "STRING") {
+                if (ts.nombre != "Global") {
+                    let temp = Temp.temporal();
+                    let temp2 = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + " = P + " + exp_3D.posicion + "; \n";
+                    salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+                    //----------------
+                    // salida.codigo3D += "\n" + exp_3D.codigo3D;
+                    let posicion = Temp.temporal();
+                    let valor = Temp.temporal();
+                    let v = Temp.etiqueta();
+                    let f = Temp.etiqueta();
+                    salida.codigo3D +=
+                        posicion + " = " + temp2 + "; //Posicion de inicio de la cadena\n";
+                    salida.codigo3D += f + ":";
+                    salida.codigo3D +=
+                        valor + " = heap[(int)" + posicion + "];\n";
+                    salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v) + "// Si esta vacio no imprimimos nada\n";
+                    salida.codigo3D +=
+                        posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
+                    salida.codigo3D += 'printf( "%c", (char)' + valor + "); //Se imprime el caracter\n";
+                    salida.codigo3D += Temp.saltoIncondicional(f);
+                    salida.codigo3D += v + ":";
+                    //------------
+                    //salida.codigo3D += "\n" + 'printf("%c", (char)' + temp2 + ");";
+                    // salida.codigo3D += this.estructura(temp2, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                }
+                else {
+                    let temp = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + "= stack[(int)" + exp_3D.posicion + "]; \n";
+                    // salida.codigo3D += this.estructura(temp, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                    salida.codigo3D += "\n" + 'printf("%c", (char)' + temp + ");";
+                }
+            }
+            else if (exp_3D.tipo.stype == "BOOLEAN") {
+                if (ts.nombre != "Global") {
+                    let temp = Temp.temporal();
+                    let temp2 = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + " = P + " + exp_3D.posicion + "; \n";
+                    salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+                    //---
+                    let verdadera = Temp.etiqueta();
+                    let salto = Temp.etiqueta();
+                    salida.codigo3D += Temp.saltoCondicional("(" + temp2 + "== 0)", verdadera);
+                    salida.codigo3D +=
+                        'printf("%c", (char)116); \n printf("%c", (char)114); \n printf("%c", (char)117); \n printf("%c", (char)101); \n'; // true
+                    salida.codigo3D += Temp.saltoIncondicional(salto);
+                    salida.codigo3D += verdadera + ":";
+                    salida.codigo3D +=
+                        'printf("%c", (char)102); \n printf("%c", (char)97); \n printf("%c", (char)108); \n printf("%c", (char)115); \n printf("%c", (char)101); \n'; //false
+                    salida.codigo3D += salto + ":";
+                    // salida.codigo3D += this.estructura(temp2, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                }
+                else {
+                    let temp = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + "= stack[(int)" + exp_3D.posicion + "]; \n";
+                    // salida.codigo3D += this.estructura(temp, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                    salida.codigo3D += "\n" + 'printf("%d", (int)' + temp + ");";
+                }
+            }
+            return salida;
+        }
+        // EXPRESIOMES--------------------------------------------------------------------------------------
+        //
+        if (exp_3D.tipo == Tipo_1.tipo.ENTERO) {
+            salida.codigo3D += "\n" + exp_3D.codigo3D;
+            salida.codigo3D += "\n" + 'printf("%d", (int)' + exp_3D.temporal.nombre + ");";
+        }
+        else if (exp_3D.tipo == Tipo_1.tipo.DOUBLE) {
+            salida.codigo3D += "\n" + exp_3D.codigo3D;
+            salida.codigo3D += "\n" + 'printf("%f", (double)' + exp_3D.temporal.nombre + ");";
+        }
+        else if (exp_3D.tipo == Tipo_1.tipo.CARACTER) {
+            salida.codigo3D += "\n" + exp_3D.codigo3D;
+            salida.codigo3D += "\n" + 'printf("%c", (char)' + exp_3D.temporal.nombre + "); // Se imprime char";
+        }
+        else if (exp_3D.tipo == Tipo_1.tipo.CADENA) {
+            salida.codigo3D += "\n" + exp_3D.codigo3D;
+            let posicion = Temp.temporal();
+            let valor = Temp.temporal();
+            let v = Temp.etiqueta();
+            let f = Temp.etiqueta();
+            salida.codigo3D +=
+                posicion + " = " + exp_3D.temporal.nombre + "; //Posicion de inicio de la cadena\n";
+            salida.codigo3D += f + ":";
+            salida.codigo3D +=
+                valor + " = heap[(int)" + posicion + "];\n";
+            salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v) + "// Si esta vacio no imprimimos nada\n";
+            salida.codigo3D +=
+                posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
+            salida.codigo3D += 'printf( "%c", (char)' + valor + "); //Se imprime el caracter\n";
+            salida.codigo3D += Temp.saltoIncondicional(f);
+            salida.codigo3D += v + ":";
         }
         else if (exp_3D.tipo == Tipo_1.tipo.BOOLEAN) {
-            console.log(exp_3D.etiquetasV.length + "LAROG DE VERDADERs");
             controlador.appendT("\n" + exp_3D.codigo3D);
             if (exp_3D.etiquetasV.length == 0) {
                 let verdadera = Temp.etiqueta();
                 let salto = Temp.etiqueta();
-                salida.codigo3D += Temp.crearLinea(Temp.saltoCondicional("(" + exp_3D.temporal.nombre + "== 0)", verdadera), "Si es un false");
+                salida.codigo3D += Temp.saltoCondicional("(" + exp_3D.temporal.nombre + "== 0)", verdadera);
                 salida.codigo3D +=
                     'printf("%c", (char)116); \n printf("%c", (char)114); \n printf("%c", (char)117); \n printf("%c", (char)101); \n'; // true
                 salida.codigo3D += Temp.saltoIncondicional(salto);
@@ -6892,19 +7205,20 @@ class Print {
                     'printf("%c", (char)102); \n printf("%c", (char)97); \n printf("%c", (char)108); \n printf("%c", (char)115); \n printf("%c", (char)101); \n'; //false
                 salida.codigo3D += salto + ":";
             }
-            controlador.appendT("\n" + salida.codigo3D);
         }
+        return salida;
     }
 }
 exports.Print = Print;
 
-},{"../AST/Nodo":7,"../AST/Temporales":8,"../TablaSimbolos/Tipo":49}],43:[function(require,module,exports){
+},{"../AST/Nodo":7,"../AST/Temporales":8,"../TablaSimbolos/Simbolos":47,"../TablaSimbolos/Tipo":49}],43:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Println = void 0;
 const Nodo_1 = require("../AST/Nodo");
 const Temporales_1 = require("../AST/Temporales");
 const Tipo_1 = require("../TablaSimbolos/Tipo");
+const Simbolos_1 = require("../TablaSimbolos/Simbolos");
 class Println {
     constructor(expresion, linea, columna) {
         this.expresion = expresion;
@@ -6927,46 +7241,171 @@ class Println {
         return padre;
     }
     traducir(Temp, controlador, ts, ts_u) {
-        let valorfinal = 'print("';
         let salida = new Temporales_1.Resultado3D();
         // cadena = cadena.temporal.utilizar();
         //cadena = cadena[1:-1];
         let exp_3D = this.expresion.traducir(Temp, controlador, ts, ts_u);
-        if (exp_3D == undefined) {
-            return;
+        //IDENTIFICADOR------------------------------------------------------------------------------------------
+        if (exp_3D instanceof Simbolos_1.Simbolos) {
+            if (exp_3D.tipo.stype == "ENTERO") {
+                if (ts.nombre != "Global") {
+                    let temp = Temp.temporal();
+                    let temp2 = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + " = P + " + exp_3D.posicion + "; \n";
+                    salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+                    salida.codigo3D += "\n" + 'printf("%d", (int)' + temp2 + ");";
+                    // salida.codigo3D += this.estructura(temp2, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                }
+                else {
+                    let temp = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + "= stack[(int)" + exp_3D.posicion + "]; \n";
+                    // salida.codigo3D += this.estructura(temp, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                    salida.codigo3D += "\n" + 'printf("%d", (int)' + temp + ");";
+                }
+            }
+            if (exp_3D.tipo.stype == "DECIMAL") {
+                if (ts.nombre != "Global") {
+                    let temp = Temp.temporal();
+                    let temp2 = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + " = P + " + exp_3D.posicion + "; \n";
+                    salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+                    salida.codigo3D += "\n" + 'printf("%f", (double)' + temp2 + ");";
+                    // salida.codigo3D += this.estructura(temp2, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                }
+                else {
+                    let temp = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + "= stack[(int)" + exp_3D.posicion + "]; \n";
+                    // salida.codigo3D += this.estructura(temp, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                    salida.codigo3D += "\n" + 'printf("%f", (double)' + temp + ");";
+                }
+            }
+            if (exp_3D.tipo.stype == "CHAR") {
+                if (ts.nombre != "Global") {
+                    let temp = Temp.temporal();
+                    let temp2 = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + " = P + " + exp_3D.posicion + "; \n";
+                    salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+                    salida.codigo3D += "\n" + 'printf("%c", (char)' + temp2 + ");";
+                    // salida.codigo3D += this.estructura(temp2, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                }
+                else {
+                    let temp = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + "= stack[(int)" + exp_3D.posicion + "]; \n";
+                    // salida.codigo3D += this.estructura(temp, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                    salida.codigo3D += "\n" + 'printf("%c", (char)' + temp + ");";
+                }
+            }
+            else if (exp_3D.tipo.stype == "STRING") {
+                if (ts.nombre != "Global") {
+                    let temp = Temp.temporal();
+                    let temp2 = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + " = P + " + exp_3D.posicion + "; \n";
+                    salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+                    //----------------
+                    // salida.codigo3D += "\n" + exp_3D.codigo3D;
+                    let posicion = Temp.temporal();
+                    let valor = Temp.temporal();
+                    let v = Temp.etiqueta();
+                    let f = Temp.etiqueta();
+                    salida.codigo3D +=
+                        posicion + " = " + temp2 + "; //Posicion de inicio de la cadena\n";
+                    salida.codigo3D += f + ":";
+                    salida.codigo3D +=
+                        valor + " = heap[(int)" + posicion + "];\n";
+                    salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v) + "// Si esta vacio no imprimimos nada\n";
+                    salida.codigo3D +=
+                        posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
+                    salida.codigo3D += 'printf( "%c", (char)' + valor + "); //Se imprime el caracter\n";
+                    salida.codigo3D += Temp.saltoIncondicional(f);
+                    salida.codigo3D += v + ":";
+                    //------------
+                    //salida.codigo3D += "\n" + 'printf("%c", (char)' + temp2 + ");";
+                    // salida.codigo3D += this.estructura(temp2, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                }
+                else {
+                    let temp = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + "= stack[(int)" + exp_3D.posicion + "]; \n";
+                    // salida.codigo3D += this.estructura(temp, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                    salida.codigo3D += "\n" + 'printf("%c", (char)' + temp + ");";
+                }
+            }
+            else if (exp_3D.tipo.stype == "BOOLEAN") {
+                if (ts.nombre != "Global") {
+                    let temp = Temp.temporal();
+                    let temp2 = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + " = P + " + exp_3D.posicion + "; \n";
+                    salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+                    //---
+                    let verdadera = Temp.etiqueta();
+                    let salto = Temp.etiqueta();
+                    salida.codigo3D += Temp.saltoCondicional("(" + temp2 + "== 0)", verdadera);
+                    salida.codigo3D +=
+                        'printf("%c", (char)116); \n printf("%c", (char)114); \n printf("%c", (char)117); \n printf("%c", (char)101); \n'; // true
+                    salida.codigo3D += Temp.saltoIncondicional(salto);
+                    salida.codigo3D += verdadera + ":";
+                    salida.codigo3D +=
+                        'printf("%c", (char)102); \n printf("%c", (char)97); \n printf("%c", (char)108); \n printf("%c", (char)115); \n printf("%c", (char)101); \n'; //false
+                    salida.codigo3D += salto + ":";
+                    // salida.codigo3D += this.estructura(temp2, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                }
+                else {
+                    let temp = Temp.temporal();
+                    salida.tipo = Tipo_1.tipo.ID;
+                    salida.codigo3D += temp + "= stack[(int)" + exp_3D.posicion + "]; \n";
+                    // salida.codigo3D += this.estructura(temp, this.getTipoID(exp_3D.valor), salida, Temp, controlador, ts, ts_u);
+                    salida.codigo3D += "\n" + 'printf("%d", (int)' + temp + ");";
+                }
+            }
+            salida.codigo3D += '\n printf("%c", (char)10); \n';
+            return salida;
         }
-        console.log(exp_3D);
-        if (this.expresion.getTipo(controlador, ts, ts_u) == Tipo_1.tipo.ENTERO) {
+        // EXPRESIOMES--------------------------------------------------------------------------------------
+        //
+        if (exp_3D.tipo == Tipo_1.tipo.ENTERO) {
             salida.codigo3D += "\n" + exp_3D.codigo3D;
             salida.codigo3D += "\n" + 'printf("%d", (int)' + exp_3D.temporal.nombre + ");";
         }
-        else if (this.expresion.getTipo(controlador, ts, ts_u) == Tipo_1.tipo.DOUBLE) {
+        else if (exp_3D.tipo == Tipo_1.tipo.DOUBLE) {
             salida.codigo3D += "\n" + exp_3D.codigo3D;
             salida.codigo3D += "\n" + 'printf("%f", (double)' + exp_3D.temporal.nombre + ");";
         }
-        else if (this.expresion.getTipo(controlador, ts, ts_u) == Tipo_1.tipo.CADENA) {
+        else if (exp_3D.tipo == Tipo_1.tipo.CARACTER) {
+            salida.codigo3D += "\n" + exp_3D.codigo3D;
+            salida.codigo3D += "\n" + 'printf("%c", (char)' + exp_3D.temporal.nombre + "); // Se imprime char";
+        }
+        else if (exp_3D.tipo == Tipo_1.tipo.CADENA) {
             salida.codigo3D += "\n" + exp_3D.codigo3D;
             let posicion = Temp.temporal();
             let valor = Temp.temporal();
             let v = Temp.etiqueta();
             let f = Temp.etiqueta();
-            salida.codigo3D += Temp.crearLinea(posicion + " = " + exp_3D.temporal.nombre, "Posicion de inicio de la cadena");
+            salida.codigo3D +=
+                posicion + " = " + exp_3D.temporal.nombre + "; //Posicion de inicio de la cadena\n";
             salida.codigo3D += f + ":";
-            salida.codigo3D += Temp.crearLinea(valor + " = Heap[  (int)" + posicion + "]", "Primer caracter de la cadena");
-            (salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v)),
-                "Si esta vacio no imprimimos nada";
-            salida.codigo3D += Temp.crearLinea(posicion + " = " + posicion + " + 1", "Aumento de la posicion");
-            salida.codigo3D += Temp.crearLinea('printf( "%c", (char)' + valor + ")", "Se imprime el caracter");
+            salida.codigo3D +=
+                valor + " = heap[(int)" + posicion + "];\n";
+            salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v) + "// Si esta vacio no imprimimos nada\n";
+            salida.codigo3D +=
+                posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
+            salida.codigo3D += 'printf( "%c", (char)' + valor + "); //Se imprime el caracter\n";
             salida.codigo3D += Temp.saltoIncondicional(f);
             salida.codigo3D += v + ":";
         }
         else if (exp_3D.tipo == Tipo_1.tipo.BOOLEAN) {
-            console.log(exp_3D.etiquetasV.length + "LAROG DE VERDADERs");
             controlador.appendT("\n" + exp_3D.codigo3D);
             if (exp_3D.etiquetasV.length == 0) {
                 let verdadera = Temp.etiqueta();
                 let salto = Temp.etiqueta();
-                salida.codigo3D += Temp.crearLinea(Temp.saltoCondicional("(" + exp_3D.temporal.nombre + "== 0)", verdadera), "Si es un false");
+                salida.codigo3D += Temp.saltoCondicional("(" + exp_3D.temporal.nombre + "== 0)", verdadera);
                 salida.codigo3D +=
                     'printf("%c", (char)116); \n printf("%c", (char)114); \n printf("%c", (char)117); \n printf("%c", (char)101); \n'; // true
                 salida.codigo3D += Temp.saltoIncondicional(salto);
@@ -6993,7 +7432,7 @@ class Println {
 }
 exports.Println = Println;
 
-},{"../AST/Nodo":7,"../AST/Temporales":8,"../TablaSimbolos/Tipo":49}],44:[function(require,module,exports){
+},{"../AST/Nodo":7,"../AST/Temporales":8,"../TablaSimbolos/Simbolos":47,"../TablaSimbolos/Tipo":49}],44:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Break = void 0;
@@ -7079,6 +7518,7 @@ class Simbolos {
         this.valor = valor;
         this.lista_params = lista_params;
         this.metodo = metodo;
+        this.posicion = 0;
     }
     setSimbolo(simbolo) {
         this.simbolo = simbolo;
@@ -7116,6 +7556,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TablaSim = void 0;
 class TablaSim {
     constructor(ant, nombre) {
+        this.entorno = 0;
         this.ant = ant;
         this.sig = [];
         this.tabla = new Map();
@@ -7161,13 +7602,26 @@ class TablaSim {
         }
         return null;
     }
+    getEntornoStack() {
+        let ts = this;
+        let i = 0;
+        while (ts != null) {
+            ts.tabla.forEach(element => {
+                if (element.simbolo == 1 || element.simbolo == 4) {
+                    i++;
+                }
+            });
+            ts = ts.ant;
+        }
+        return i;
+    }
 }
 exports.TablaSim = TablaSim;
 
 },{}],49:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Tipo = exports.Localizacion = exports.tipo = void 0;
+exports.Tipo = exports.Ubicacion = exports.tipo = void 0;
 var tipo;
 (function (tipo) {
     tipo[tipo["ENTERO"] = 0] = "ENTERO";
@@ -7180,12 +7634,13 @@ var tipo;
     tipo[tipo["ARRAY"] = 7] = "ARRAY";
     tipo[tipo["MAIN"] = 8] = "MAIN";
     tipo[tipo["STRUCT"] = 9] = "STRUCT";
+    tipo[tipo["ID"] = 10] = "ID";
 })(tipo = exports.tipo || (exports.tipo = {}));
-var Localizacion;
-(function (Localizacion) {
-    Localizacion[Localizacion["HEAP"] = 0] = "HEAP";
-    Localizacion[Localizacion["STACK"] = 1] = "STACK";
-})(Localizacion = exports.Localizacion || (exports.Localizacion = {}));
+var Ubicacion;
+(function (Ubicacion) {
+    Ubicacion[Ubicacion["HEAP"] = 0] = "HEAP";
+    Ubicacion[Ubicacion["STACK"] = 1] = "STACK";
+})(Ubicacion = exports.Ubicacion || (exports.Ubicacion = {}));
 class Tipo {
     constructor(stype) {
         this.stype = stype;
@@ -7494,7 +7949,9 @@ let Temp = new Temporales_1.Temporales();
     }
       if (ins instanceof Declaracion_1.Declaracion || ins instanceof Asignacion_1.Asignacion) {
           ins.ejecutar(controlador, entornoGlobal, entornoU);
-      }
+          let a = ins.traducir(Temp, controlador, entornoGlobal,entornoU);
+        controlador.appendT("\n" + a.codigo3D);
+    }
   });
   instrucciones.forEach((element) => {
       if (element instanceof Funcion_1.Funcion) {

@@ -132,6 +132,6 @@ export class Nativa extends Operacion implements Expresion {
     }
 
     isChar(n: string) {
-        return n.length === 1 && n.match(/[a-zA-Z]/i);
+        return n.length === 1 && n.match(/./i);
     }
 }

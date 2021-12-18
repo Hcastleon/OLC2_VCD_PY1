@@ -95,7 +95,7 @@ export class Switch implements Instruccion {
       v = comp.etiquetasV;
       f = comp.etiquetasF;
 
-      salida.codigo3D += "//#############3Verdaderas##################3 \n";
+      salida.codigo3D += "//%%%%%%%%%%%%%%%%Verdaderas%%%%%%%%%%%%%%%% \n";
       salida.codigo3D += Temp.escribirEtiquetas(v);
 
       //console.log(this.lista_ifs);
@@ -118,7 +118,7 @@ export class Switch implements Instruccion {
       salida.codigo3D += Temp.saltoIncondicional(salto);
       salida.saltos.push(salto);
 
-      salida.codigo3D += "//#####################Falssa###########3 \n";
+      salida.codigo3D += "//%%%%%%%%%%Falssa%%%%%%%%%%%%%%%%% \n";
       salida.codigo3D += Temp.escribirEtiquetas(f);
     });
 
@@ -137,10 +137,10 @@ export class Switch implements Instruccion {
          salida.valor = temp.valor;
        }*/
     //----------------
-    salida.codigo3D += "//#################### Saltos de Salida############## \n";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%% Saltos de Salida%%%%%%%%%%%% \n";
     salida.codigo3D += Temp.escribirEtiquetas(salida.saltos);
     salida.saltos = [];
-    salida.codigo3D += "//#################### BREAKS############## \n";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%% BREAKS %%%%%%%%%%%%%%%% \n";
     salida.codigo3D += Temp.escribirEtiquetas(salida.breaks);
     salida.breaks = [];
 
@@ -173,19 +173,18 @@ export class Switch implements Instruccion {
     nodo.tipo = tipo.BOOLEAN;
     let v: string = Temp.etiqueta();
     let f: string = Temp.etiqueta();
-    nodo.codigo3D += Temp.crearLinea(
-      "if (" +
+    nodo.codigo3D += "if (" +
         nodoIzq.temporal.nombre +
         " " +
         signo +
         " " +
         nodoDer.temporal.nombre +
         ") goto " +
-        v,
-      "Si es verdadero salta a " + v
-    );
+        v+
+      "; //Si es verdadero salta a " + v+ "\n"
+    ;
 
-    nodo.codigo3D += Temp.crearLinea("goto " + f, "si no se cumple salta a: " + f);
+    nodo.codigo3D += "goto " + f+ "; //si no se cumple salta a: " + f+ "\n";
     nodo.etiquetasV = [];
     nodo.etiquetasV.push(v);
     nodo.etiquetasF = [];

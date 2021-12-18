@@ -8,7 +8,7 @@ import { tipo, Tipo } from "../TablaSimbolos/Tipo";
 import { Primitivo } from "../Expresiones/Primitivo";
 import { Arreglo } from "../Expresiones/Arreglo";
 import { AritArreglo } from "../Expresiones/Operaciones/AritArreglo";
-import { Temporales } from "../AST/Temporales";
+import { Temporales, Resultado3D } from "../AST/Temporales";
 
 export class Declaracion implements Instruccion {
   public tipo: Tipo;
@@ -155,8 +155,129 @@ export class Declaracion implements Instruccion {
   }
 
   isChar(n: string) {
-    return n.length === 1 && n.match(/[a-zA-Z]/i);
+    return n.length === 1 && n.match(/./i);
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {}
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
+    let salida: Resultado3D = new Resultado3D();
+
+
+
+
+    for (let simbolo of this.lista_simbolos) {
+      let variable = simbolo as Simbolos;
+
+      let existe = ts.getSimbolo(variable.identificador);
+
+      if (variable.valor != null) {
+
+        let nodo: Resultado3D = variable.valor.traducir(Temp, controlador, ts, ts_u);
+
+
+
+        let ultimoT;
+        if (nodo.codigo3D == "") {
+          ultimoT = nodo.temporal.nombre
+        } else {
+
+          if (nodo.tipo == tipo.BOOLEAN) {
+            salida.codigo3D += nodo.codigo3D + "\n";
+            
+            if (ts.nombre != "Global" && existe != null) {
+              if (ts.entorno == 0) {
+              ts.entorno = ts.entorno + ts.ant.entorno;
+              }
+              let a = Temp.etiqueta();
+              let temp = Temp.temporal();
+              salida.codigo3D += temp + " = P + " + ts.entorno + "; \n";
+              salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasV);
+              salida.codigo3D += "stack[(int)" + temp + "] = 1; \n";
+              salida.codigo3D += "goto " + a + ";\n";
+              salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasF);
+              salida.codigo3D += "stack[(int)" + temp + "] = 0; \n";
+              salida.codigo3D += a + ": \n";
+              existe.posicion = ts.entorno;
+              ts.entorno++;
+              return salida;
+            } else if (ts.nombre == "Global" && existe != null) {
+              let a = Temp.etiqueta();
+              salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasV);
+              salida.codigo3D += "stack[(int)" + ts.entorno + "] = 1; \n";
+              salida.codigo3D += "goto " + a + ";\n";
+              salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasF);
+              salida.codigo3D += "stack[(int)" + ts.entorno + "] = 0; \n";
+              salida.codigo3D += a + ": \n";
+              existe.posicion = ts.entorno;
+              ts.entorno++;
+              return salida;
+            }
+
+            //ultimoT = nodo.temporal.nombre
+          } else {
+            ultimoT = Temp.ultimoTemporal();
+          }
+        }
+
+        salida.codigo3D += nodo.codigo3D + "\n";
+
+        /*
+                if (!(nodo.tipo == tipo.BOOLEAN)) {
+                  salida.codigo3D += nodo.codigo3D + "\n";
+                } else {
+                  console.log(variable.valor);
+                  if(variable.valor == true){
+                    ultimoT = "1"
+                  }else{
+                    ultimoT = "0"
+                  }
+                }*/
+
+
+        if (ts.nombre != "Global" && existe != null) {
+          if (ts.entorno == 0) {
+            ts.entorno = ts.entorno + ts.ant.entorno;
+          }
+
+          let temp = Temp.temporal();
+          salida.codigo3D += temp + " = P + " + ts.entorno + "; \n";
+
+          salida.codigo3D += "stack[(int)" + temp + "]  = " + ultimoT + "; \n"
+
+          existe.posicion = ts.entorno;
+          ts.entorno++;
+        } else if (ts.nombre == "Global" && existe != null) {
+          // ts.entorno++;
+          salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n"
+
+          existe.posicion = ts.entorno;
+          ts.entorno++;
+
+        }
+
+      } else {
+        if (ts.nombre != "Global" && existe != null) {
+          if (ts.entorno == 0) {
+            ts.entorno = ts.entorno + ts.ant.entorno;
+          }
+
+          let temp = Temp.temporal();
+          salida.codigo3D += temp + " = P + " + ts.entorno + "; \n";
+          salida.codigo3D += "stack[(int)" + temp + "]  = 0; \n"
+
+          existe.posicion = ts.entorno;
+          ts.entorno++;
+        } else if (ts.nombre == "Global" && existe != null) {
+          // ts.entorno++;
+          salida.codigo3D += "stack[(int)" + ts.entorno + "]  = 0; \n"
+
+          existe.posicion = ts.entorno;
+          ts.entorno++;
+
+        }
+      }
+    }
+
+    return salida;
+
+  }
 }

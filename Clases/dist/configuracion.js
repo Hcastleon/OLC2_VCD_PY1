@@ -267,7 +267,9 @@ let Temp = new Temporales_1.Temporales();
     }
       if (ins instanceof Declaracion_1.Declaracion || ins instanceof Asignacion_1.Asignacion) {
           ins.ejecutar(controlador, entornoGlobal, entornoU);
-      }
+          let a = ins.traducir(Temp, controlador, entornoGlobal,entornoU);
+        controlador.appendT("\n" + a.codigo3D);
+    }
   });
   instrucciones.forEach((element) => {
       if (element instanceof Funcion_1.Funcion) {

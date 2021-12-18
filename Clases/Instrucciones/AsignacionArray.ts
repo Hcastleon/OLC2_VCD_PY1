@@ -127,6 +127,6 @@ export class AsignacionArray implements Instruccion {
   }
 
   isChar(n: string) {
-    return n.length === 1 && n.match(/[a-zA-Z]/i);
+    return n.length === 1 && n.match(/./i);
   }
 }
