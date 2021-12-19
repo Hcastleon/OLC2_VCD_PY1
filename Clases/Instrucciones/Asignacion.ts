@@ -88,18 +88,18 @@ export class Asignacion implements Instruccion {
             ts.entorno = ts.entorno + ts.ant.entorno;
           }
         let temp = Temp.temporal();
-        salida.codigo3D += temp + " = P + " + ts.entorno + "; \n";
+        salida.codigo3D += temp + " = P + " + simbolo.posicion + "; \n";
 
         salida.codigo3D += "stack[(int)" + temp + "]  = " + ultimoT + "; \n"
 
-        simbolo.posicion = ts.entorno;
-        ts.entorno++;
+        //simbolo.posicion = ts.entorno;
+        //ts.entorno++;
       } else if (ts.nombre == "Global" && simbolo != null) {
         // ts.entorno++;
         salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n"
 
-        simbolo.posicion = ts.entorno;
-        ts.entorno++;
+        //simbolo.posicion = ts.entorno;
+        //ts.entorno++;
 
       }
 

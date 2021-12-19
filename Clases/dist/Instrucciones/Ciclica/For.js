@@ -63,8 +63,56 @@ class For {
     }
     traducir(Temp, controlador, ts, ts_u) {
         let salida = new Temporales_1.Resultado3D();
-        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%% FOR DECLA  %%%%%%%%%%%%%%%%%%%%%";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%  FOR  %%%%%%%%%%%%%%%%%%%%%%";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+        let nodoDeclaracion = this.asig_decla.traducir(Temp, controlador, ts, ts_u);
+        salida.codigo3D += nodoDeclaracion.codigo3D;
+        let nodoCondicion = this.condicion.traducir(Temp, controlador, ts, ts_u);
+        let salto = Temp.etiqueta();
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%  CONDICION %%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += salto + ": // Ciclicidad \n";
+        salida.codigo3D += nodoCondicion.codigo3D;
+        nodoCondicion = this.arreglarBoolean(nodoCondicion, salida, Temp);
+        let nodoAsignacion = this.actualizacion.traducir(Temp, controlador, ts, ts_u);
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%% VERDADERO FOR %%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += Temp.escribirEtiquetas(nodoCondicion.etiquetasV);
+        this.lista_ins.forEach(element => {
+            let nodo = element.traducir(Temp, controlador, ts, ts_u);
+            salida.codigo3D += nodo.codigo3D;
+            salida.breaks = salida.breaks.concat(nodo.breaks);
+            salida.saltos = salida.saltos.concat(nodo.saltos);
+            //salida.continues = salida.continues.concat(nodo.continues);
+            //salida.returns = salida.returns.concat(nodo.returns);
+            /*if(nodo.retornos.length > 0){
+                      salida.tipo = nodo.tipo;
+                      salida.valor = nodo.valor;
+                  }*/
+        });
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%% Saltos %%%%%%%%%%%%%%%%%%%%%%%%  \n";
+        salida.codigo3D += Temp.escribirEtiquetas(salida.saltos);
+        // salida.codigo3D += Temp.escribirEtiquetas(salida.continue);
+        salida.codigo3D += nodoAsignacion.codigo3D;
+        salida.codigo3D += Temp.saltoIncondicional(salto);
+        salida.codigo3D += "//%%%%%%%%%% FALSAS t BREAKS %%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += Temp.escribirEtiquetas(nodoCondicion.etiquetasF);
+        salida.codigo3D += Temp.escribirEtiquetas(salida.breaks);
+        salida.saltos = [];
+        salida.breaks = [];
+        //  salida.continue = [];
         return salida;
+    }
+    arreglarBoolean(nodo, salida, Temp) {
+        if (nodo.etiquetasV.length == 0) {
+            let v = Temp.etiqueta();
+            let f = Temp.etiqueta();
+            salida.codigo3D += Temp.saltoCondicional("(" + nodo.temporal.nombre + "== 1 )", v);
+            salida.codigo3D += Temp.saltoIncondicional(f);
+            console.log("2" + salida);
+            nodo.etiquetasV = [v];
+            nodo.etiquetasF = [f];
+        }
+        return nodo;
     }
 }
 exports.For = For;

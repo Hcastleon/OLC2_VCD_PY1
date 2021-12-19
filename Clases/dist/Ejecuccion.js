@@ -16,6 +16,7 @@ function ejecutarCodigo(entrada) {
     const salida = gramatica.parse(entrada);
     const instrucciones = salida.arbol;
     let listaErrores = salida.errores;
+    let reportGramar = salida.reportg;
     let controlador = new Controller_1.Controller();
     const entornoGlobal = new TablaSim_1.TablaSim(null, "Global");
     let entornoU = new TablaSim_1.TablaSim(null, "Global");
@@ -36,7 +37,6 @@ function ejecutarCodigo(entrada) {
             let funcion = element;
             if (funcion.getIdentificador() == "main") {
                 element.ejecutar(controlador, entornoGlobal, entornoU);
-                element.traducir(Temp, controlador, entornoGlobal, entornoU);
             }
         }
     });
@@ -46,5 +46,5 @@ function ejecutarCodigo(entrada) {
     });
     let grafo = new Arbol_1.Arbol();
     let res = grafo.tour(raiz);
-    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res, tradu: controlador.texto };
+    return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res, tradu: controlador.texto, gramar: reportGramar };
 }

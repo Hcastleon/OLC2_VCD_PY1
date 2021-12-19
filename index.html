@@ -69,12 +69,14 @@
                         name="prueba">Analizar</button>
                       <button type="button" class="btn btn-outline-secondary" id="codigo3d"
                         name="codigo3d">Traducir</button>
+                      <button type="button" class="btn btn-outline-secondary" id="rpgramatica"
+                        name="rpgramatica">Gramar</button>
                     </div>
                   </div>
                   <div class="card-body text-dark bg-light">
                     <!--  **INPUT CONSOLE**  -->
                     <label for="textInput-Blank" class="form-label">Input:</label>
-                    <textarea class="form-control" id="textInput-Blank" rows="10" cols="50"></textarea>
+                    <textarea class="form-control" id="textInput-Blank" rows="15" cols="50"></textarea>
                     <!-- **OUTPUT CONSOLE** -->
                     <label for="textOutput-Blank" class="form-label" style="margin-top: 10px;">Output:</label>
                     <textarea class="form-control" id="textOutput-Blank" rows="5" cols="50"></textarea>
@@ -122,6 +124,21 @@
                           </tr>
                         </thead>
                         <tbody id="tabla_s-Blank">
+                        </tbody>
+                      </table>
+                    </div>
+
+                    <label for="textInput" class="form-label">Gramar:</label>
+                    <div class="table-wrapper-scroll-y my-custom-scrollbar">
+                      <table class="table">
+                        <thead>
+                          <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Production</th>
+                            <th scope="col">Semantic rules </th>
+                          </tr>
+                        </thead>
+                        <tbody id="tabla_g-Blank">
                         </tbody>
                       </table>
                     </div>

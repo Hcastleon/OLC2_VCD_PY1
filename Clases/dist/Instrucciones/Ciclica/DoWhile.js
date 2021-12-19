@@ -6,6 +6,7 @@ const TablaSim_1 = require("../../TablaSimbolos/TablaSim");
 const Break_1 = require("../Transferencia/Break");
 const Continue_1 = require("../Transferencia/Continue");
 const Return_1 = require("../Transferencia/Return");
+const Temporales_1 = require("../../AST/Temporales");
 class DoWhile {
     constructor(condicion, lista_ins, linea, columna) {
         this.condicion = condicion;
@@ -64,6 +65,50 @@ class DoWhile {
         return padre;
     }
     traducir(Temp, controlador, ts, ts_u) {
+        let salida = new Temporales_1.Resultado3D();
+        let nodoCondicion = this.condicion.traducir(Temp, controlador, ts, ts_u);
+        let ciclo = Temp.etiqueta();
+        salida.codigo3D += ciclo + ": //Etiqueta para controlar el ciclado \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%% Verdadera %%%%%%%%%%%%%%%%% \n";
+        //salida.etiquetasF = salida.etiquetasF.concat(nodoCondicion.etiquetasF)
+        this.lista_ins.forEach((element) => {
+            let nodo = element.traducir(Temp, controlador, ts, ts_u);
+            salida.codigo3D += nodo.codigo3D;
+            salida.saltos = salida.saltos.concat(nodo.saltos);
+            salida.breaks = salida.breaks.concat(nodo.breaks);
+            // salida.continue = salida.continue.concat(nodo.continue);
+            // salida.returns = salida.returns.concat(nodo.returns);
+            /*if (nodo.retornos.length > 0) {
+                 salida.tipo = nodo.tipo;
+                 salida.valor = nodo.valor;
+               }*/
+        });
+        salida.codigo3D += "//###########################  SALTOS | CICLO | VERDADERA ###################### \n";
+        //salida.codigo3D += Temp.escribirEtiquetas(salida.continues);
+        salida.codigo3D += Temp.escribirEtiquetas(salida.saltos);
+        salida.codigo3D += nodoCondicion.codigo3D;
+        nodoCondicion = this.arreglarBoolean(nodoCondicion, salida, Temp);
+        salida.codigo3D += Temp.escribirEtiquetas(nodoCondicion.etiquetasV);
+        salida.codigo3D += Temp.saltoIncondicional(ciclo);
+        salida.codigo3D += "//%%%%%%%%%% FALSAS t BREAKS %%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += Temp.escribirEtiquetas(nodoCondicion.etiquetasF);
+        salida.codigo3D += Temp.escribirEtiquetas(salida.breaks);
+        salida.breaks = [];
+        salida.saltos = [];
+        // salida.continue = [];
+        return salida;
+    }
+    arreglarBoolean(nodo, salida, Temp) {
+        if (nodo.etiquetasV.length == 0) {
+            let v = Temp.etiqueta();
+            let f = Temp.etiqueta();
+            salida.codigo3D += Temp.saltoCondicional("(" + nodo.temporal.nombre + "== 1 )", v);
+            salida.codigo3D += Temp.saltoIncondicional(f);
+            console.log("2" + salida);
+            nodo.etiquetasV = [v];
+            nodo.etiquetasF = [f];
+        }
+        return nodo;
     }
 }
 exports.DoWhile = DoWhile;

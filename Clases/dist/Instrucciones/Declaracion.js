@@ -128,7 +128,11 @@ class Declaracion {
                 }
                 else {
                     if (nodo.tipo == Tipo_1.tipo.BOOLEAN) {
-                        salida.codigo3D += nodo.codigo3D + "\n";
+                        if (nodo instanceof Simbolos_1.Simbolos == false) {
+                            salida.codigo3D += nodo.codigo3D + "\n";
+                        }
+                        salida.etiquetasV = salida.etiquetasV.concat(nodo.etiquetasV);
+                        salida.etiquetasF = salida.etiquetasF.concat(nodo.etiquetasF);
                         if (ts.nombre != "Global" && existe != null) {
                             if (ts.entorno == 0) {
                                 ts.entorno = ts.entorno + ts.ant.entorno;
@@ -160,22 +164,29 @@ class Declaracion {
                         }
                         //ultimoT = nodo.temporal.nombre
                     }
+                    else if (nodo.tipo == Tipo_1.tipo.ID) { // EL tipo es ID pero lo usacom como referencia del incremneto o decremento
+                        if (ts.nombre != "Global" && existe != null) {
+                            if (ts.entorno == 0) {
+                                ts.entorno = ts.entorno + ts.ant.entorno;
+                            }
+                            salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n";
+                            existe.posicion = ts.entorno;
+                            ts.entorno++;
+                        }
+                        else if (ts.nombre == "Global" && existe != null) {
+                            // ts.entorno++;
+                            salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n";
+                            existe.posicion = ts.entorno;
+                            ts.entorno++;
+                        }
+                    }
                     else {
                         ultimoT = Temp.ultimoTemporal();
                     }
                 }
-                salida.codigo3D += nodo.codigo3D + "\n";
-                /*
-                        if (!(nodo.tipo == tipo.BOOLEAN)) {
-                          salida.codigo3D += nodo.codigo3D + "\n";
-                        } else {
-                          console.log(variable.valor);
-                          if(variable.valor == true){
-                            ultimoT = "1"
-                          }else{
-                            ultimoT = "0"
-                          }
-                        }*/
+                if (nodo instanceof Simbolos_1.Simbolos == false) {
+                    salida.codigo3D += nodo.codigo3D + "\n";
+                }
                 if (ts.nombre != "Global" && existe != null) {
                     if (ts.entorno == 0) {
                         ts.entorno = ts.entorno + ts.ant.entorno;

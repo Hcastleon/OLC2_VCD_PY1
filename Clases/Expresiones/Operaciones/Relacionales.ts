@@ -6,6 +6,7 @@ import { TablaSim } from "../../TablaSimbolos/TablaSim";
 import { tipo } from "../../TablaSimbolos/Tipo";
 import { Operacion, Operador } from "./Operaciones";
 import { Temporales, Temporal, Resultado3D } from "../../AST/Temporales";
+import { Simbolos } from "../../TablaSimbolos/Simbolos";
 
 export class Relacionales extends Operacion implements Expresion {
   public constructor(
@@ -974,8 +975,8 @@ export class Relacionales extends Operacion implements Expresion {
     let result = new Resultado3D();
     result.tipo = tipo.BOOLEAN;
 
-    if (valor1.tipo != tipo.BOOLEAN) result.codigo3D += valor1.codigo3D;
-    if (valor2.tipo != tipo.BOOLEAN) result.codigo3D += valor2.codigo3D;
+    if (valor1.tipo != tipo.BOOLEAN && valor1 instanceof Simbolos==false) result.codigo3D += valor1.codigo3D;
+    if (valor2.tipo != tipo.BOOLEAN && valor2 instanceof Simbolos==false) result.codigo3D += valor2.codigo3D;
 
     switch (this.operador) {
       case Operador.MAYORQUE:
@@ -1023,9 +1024,15 @@ export class Relacionales extends Operacion implements Expresion {
     nodo.tipo = tipo.BOOLEAN;
     let v: string = Temp.etiqueta();
     let f: string = Temp.etiqueta();
-    nodo.codigo3D += 
+
+    if(nodoIzq instanceof Simbolos && nodoDer instanceof Simbolos == false){
+      let temporal = Temp.nuevoTemporal();
+      let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp,ts);
+      nodo.codigo3D = res.op;
+
+    nodo.codigo3D +=
       "if (" +
-        nodoIzq.temporal.nombre +
+        res.val +
         " " +
         signo +
         " " +
@@ -1034,12 +1041,80 @@ export class Relacionales extends Operacion implements Expresion {
         v+
       "; // Si es verdadero salta a " + v+ "\n";
 
+
+    }else if(nodoDer instanceof Simbolos && nodoIzq instanceof Simbolos == false){
+      let temporal = Temp.nuevoTemporal();
+      let res = this.relacionalIdAccess(nodoDer, nodo.codigo3D, temporal, Temp,ts);
+      nodo.codigo3D = res.op;
+      
+    nodo.codigo3D += 
+      "if (" +
+        nodoIzq.temporal.nombre +
+        " " +
+        signo +
+        " " +
+        res.val +
+        ") goto " +
+        v+
+      "; // Si es verdadero salta a " + v+ "\n";
+    }else if(nodoDer instanceof Simbolos && nodoIzq instanceof Simbolos){
+      let temporal = Temp.nuevoTemporal();
+      let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp,ts);
+      nodo.codigo3D = res.op;
+      let temporal2 = Temp.nuevoTemporal();
+      let res2 = this.relacionalIdAccess(nodoDer, nodo.codigo3D, temporal2, Temp,ts);
+      nodo.codigo3D = res2.op;
+      
+    nodo.codigo3D += 
+      "if (" +
+        res.val +
+        " " +
+        signo +
+        " " +
+        res2.val +
+        ") goto " +
+        v+
+      "; // Si es verdadero salta a " + v+ "\n";
+
+    }else{
+      nodo.codigo3D += 
+            "if (" +
+              nodoIzq.temporal.nombre +
+              " " +
+              signo +
+              " " +
+              nodoDer.temporal.nombre +
+              ") goto " +
+              v+
+            "; // Si es verdadero salta a " + v+ "\n";
+    }
+
+
+    
+
     nodo.codigo3D += "goto " + f+ "; //si no se cumple salta a: " + f+ "\n";
     nodo.etiquetasV = [];
     nodo.etiquetasV.push(v);
     nodo.etiquetasF = [];
     nodo.etiquetasF.push(f);
     return nodo;
+  }
+
+
+  relacionalIdAccess(nodo: any, op: string,temporal:any,Temp: Temporales,ts:TablaSim){
+      let val = Temp.temporal();
+    if (ts.nombre != "Global" && nodo != null) {
+      
+            if (ts.entorno == 0) {
+              ts.entorno = ts.entorno + ts.ant.entorno ;
+            }
+            op += temporal.obtener() + " = P + " + nodo.posicion + "; \n";
+            op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
+          
+          } else if (ts.nombre == "Global" && nodo != null) {   
+            op += val + " = stack[(int)" + nodo.posicion + "] ;\n";
+          }
+          return {op,val}
   }
 
   codigoAscii(cadena: string): number {

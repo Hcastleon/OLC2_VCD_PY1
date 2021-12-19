@@ -10,7 +10,7 @@ export class Continue implements Instruccion{
     constructor(){
 
     }
-    
+
     ejecutar(controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
         return this
     }
@@ -18,8 +18,9 @@ export class Continue implements Instruccion{
         let pader = new Nodo("Continue","")
         return pader
     }
+
     traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
-        
+
     }
 
 }

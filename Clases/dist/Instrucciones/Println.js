@@ -51,7 +51,7 @@ class Println {
                     salida.codigo3D += "\n" + 'printf("%d", (int)' + temp + ");";
                 }
             }
-            if (exp_3D.tipo.stype == "DECIMAL") {
+            else if (exp_3D.tipo.stype == "DECIMAL") {
                 if (ts.nombre != "Global") {
                     let temp = Temp.temporal();
                     let temp2 = Temp.temporal();
@@ -69,7 +69,7 @@ class Println {
                     salida.codigo3D += "\n" + 'printf("%f", (double)' + temp + ");";
                 }
             }
-            if (exp_3D.tipo.stype == "CHAR") {
+            else if (exp_3D.tipo.stype == "CHAR") {
                 if (ts.nombre != "Global") {
                     let temp = Temp.temporal();
                     let temp2 = Temp.temporal();
@@ -133,7 +133,12 @@ class Println {
                     //---
                     let verdadera = Temp.etiqueta();
                     let salto = Temp.etiqueta();
-                    salida.codigo3D += Temp.saltoCondicional("(" + temp2 + "== 0)", verdadera);
+                    if (exp_3D.valor == true) {
+                        salida.codigo3D += Temp.saltoCondicional("(" + temp2 + " == 1)", verdadera);
+                    }
+                    else {
+                        salida.codigo3D += Temp.saltoCondicional("(" + temp2 + " == 0)", verdadera);
+                    }
                     salida.codigo3D +=
                         'printf("%c", (char)116); \n printf("%c", (char)114); \n printf("%c", (char)117); \n printf("%c", (char)101); \n'; // true
                     salida.codigo3D += Temp.saltoIncondicional(salto);
@@ -191,7 +196,7 @@ class Println {
             if (exp_3D.etiquetasV.length == 0) {
                 let verdadera = Temp.etiqueta();
                 let salto = Temp.etiqueta();
-                salida.codigo3D += Temp.saltoCondicional("(" + exp_3D.temporal.nombre + "== 0)", verdadera);
+                salida.codigo3D += Temp.saltoCondicional("(" + exp_3D.temporal.nombre + " == 0)", verdadera);
                 salida.codigo3D +=
                     'printf("%c", (char)116); \n printf("%c", (char)114); \n printf("%c", (char)117); \n printf("%c", (char)101); \n'; // true
                 salida.codigo3D += Temp.saltoIncondicional(salto);

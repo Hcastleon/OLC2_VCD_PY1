@@ -164,7 +164,7 @@ export class ForEsp implements Instruccion {
   }
 
   traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
-      
+    
   }
 
 }

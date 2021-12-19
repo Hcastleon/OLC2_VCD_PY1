@@ -2,7 +2,13 @@
 var TabId = 0;
 var ListaTab= [];
 var TabActual = null;
-let ejecucion = null;
+var ejecucion = null;
+var TablaGramar = [];
+var controlador =null;
+var entornoGlobal = null;
+var entornoU = null;
+var Temp = null;
+var instrucciones = null;
 // ------------------- reload ----------------------------------------
 function loadPage(){
   let cm = new CodeMirror.fromTextArea(document.getElementById(`textInput-Blank`), {
@@ -215,18 +221,33 @@ function obtener_arbol_ast_(contenido){
 
 document.getElementById("prueba").onclick = function() {ej()};
 document.getElementById("codigo3d").onclick = function() {ej2()};
+document.getElementById("rpgramatica").onclick = function() {obtener_gramar()};
 
+function obtener_gramar(){
+  let contiene = "";
+  var contador = 0;
+    for (let produc of TablaGramar) {
+      contador += 1;
+      contiene += `<tr>
+                            <th scope="row">${contador}</th>
+                            <td>${produc.p}</td>
+                            <td>${produc.g}</td>
+                           </tr>`;
+    }
+    document.getElementById(`tabla_g-Blank`).innerHTML = contiene;
+}
 
 function ej(){
   ejecucion = ejecutarCodigo(TabActual.editor.getValue());
   document.getElementById(`textOutput-Blank`).value = ejecucion.salida;
   document.getElementById(`tabla_e-Blank`).innerHTML = ejecucion.tabla_e;
   document.getElementById(`tabla_s-Blank`).innerHTML = ejecucion.tabla_s;
+  TablaGramar = ejecucion.gramar.slice().reverse();
   graficando_ast_d(ejecucion.ast);
 }
 
 function ej2(){
-  document.getElementById(`textOutputTrans-Blank`).innerHTML = ejecucion.tradu;
+  document.getElementById(`textOutputTrans-Blank`).value = ejecutarCodigo3d();
 }
 
 
@@ -246,39 +267,30 @@ const gramatica = require("./Gramar/gramar");
 function ejecutarCodigo(entrada) {
   //traigo todas las raices
   const salida = gramatica.parse(entrada);
-  const instrucciones = salida.arbol;
+  instrucciones = salida.arbol;
   let listaErrores = salida.errores;
-  let controlador = new Controller_1.Controller();
-  const entornoGlobal = new TablaSim_1.TablaSim(null, "Global");
-  let entornoU = new TablaSim_1.TablaSim(null, "Global");
+  let reportGramar = salida.reportg;
+  controlador = new Controller_1.Controller();
+  entornoGlobal = new TablaSim_1.TablaSim(null, "Global");
+  entornoU = new TablaSim_1.TablaSim(null, "Global");
   controlador.errores = listaErrores.slice();
-let Temp = new Temporales_1.Temporales();
-
+  Temp = new Temporales_1.Temporales();
   const ast = new Ast_1.AST(instrucciones);
   instrucciones.forEach((ins) => {
       if (ins instanceof Funcion_1.Funcion) {
           let funcion = ins;
           funcion.agregarSimboloFunc(controlador, entornoGlobal, entornoU);
       }
-    if (ins instanceof Struct_1.Struct) {
-      let funcion = ins;
-      funcion.agregarSimboloStruct(controlador, entornoGlobal, entornoU);
-     // funcion.ejecutar(controlador, entornoGlobal, entornoU);
-    }
       if (ins instanceof Declaracion_1.Declaracion || ins instanceof Asignacion_1.Asignacion) {
           ins.ejecutar(controlador, entornoGlobal, entornoU);
-          let a = ins.traducir(Temp, controlador, entornoGlobal,entornoU);
-        controlador.appendT("\n" + a.codigo3D);
-    }
+      }
   });
   instrucciones.forEach((element) => {
       if (element instanceof Funcion_1.Funcion) {
           let funcion = element;
           if (funcion.getIdentificador() == "main") {
               element.ejecutar(controlador, entornoGlobal, entornoU);
-              element.traducir(Temp, controlador, entornoGlobal,entornoU);
           }
-          
       }
   });
   let raiz = new Nodo_1.Nodo("Inicio", "");
@@ -287,8 +299,24 @@ let Temp = new Temporales_1.Temporales();
   });
   let grafo = new Arbol_1.Arbol();
   let res = grafo.tour(raiz);
+  return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res, gramar: reportGramar };
+}
 
-  console.log(entornoGlobal);
-  console.log(controlador.texto);
-  return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res, tradu:controlador.texto };
+function ejecutarCodigo3d() {
+  instrucciones.forEach((ins) => {
+      if (ins instanceof Declaracion_1.Declaracion || ins instanceof Asignacion_1.Asignacion) {
+          let a = ins.traducir(Temp, controlador, entornoGlobal, entornoU);
+          controlador.appendT("\n" + a.codigo3D);
+      }
+  });
+  instrucciones.forEach((element) => {
+      if (element instanceof Funcion_1.Funcion) {
+          let funcion = element;
+          if (funcion.getIdentificador() == "main") {
+              element.traducir(Temp, controlador, entornoGlobal, entornoU);
+          }
+      }
+  });
+
+  return controlador.texto;
 }

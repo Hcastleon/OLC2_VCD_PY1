@@ -6,6 +6,7 @@ const Nodo_1 = require("../../AST/Nodo");
 const Tipo_1 = require("../../TablaSimbolos/Tipo");
 const Operaciones_1 = require("./Operaciones");
 const Temporales_1 = require("../../AST/Temporales");
+const Simbolos_1 = require("../../TablaSimbolos/Simbolos");
 class Aritmetica extends Operaciones_1.Operacion {
     constructor(expre1, expre2, expreU, operador, linea, column) {
         super(expre1, expre2, expreU, operador, linea, column);
@@ -390,6 +391,9 @@ class Aritmetica extends Operaciones_1.Operacion {
         else {
             resultado += valor2.codigo3D;
         }
+        if (valor1 instanceof Simbolos_1.Simbolos || valor2 instanceof Simbolos_1.Simbolos) {
+            resultado = "";
+        }
         if (resultado != "") {
             resultado = resultado + "\n";
         }
@@ -402,12 +406,31 @@ class Aritmetica extends Operaciones_1.Operacion {
           return result;
         }*/
         let temporal = Temp.nuevoTemporal();
-        let op;
+        let op = "";
         if (signo == "%") {
             op = temporal.obtener() + '= fmod(' + valor1.temporal.utilizar() + "," + valor2.temporal.utilizar() + ");";
         }
         else {
-            op = temporal.obtener() + '=' + valor1.temporal.utilizar() + " " + signo + " " + valor2.temporal.utilizar() + ";";
+            if (valor1 instanceof Simbolos_1.Simbolos && valor2 instanceof Simbolos_1.Simbolos == false) {
+                let res = this.operacionSimbolosIzq(valor1, valor2, op, temporal, result, signo, Temp, ts);
+                op += res.op;
+                temporal = res.temporal;
+                result.tipo = Tipo_1.tipo.ID;
+            }
+            else if (valor2 instanceof Simbolos_1.Simbolos && valor1 instanceof Simbolos_1.Simbolos == false) {
+                let res = this.operacionSimbolosDer(valor1, valor2, op, temporal, result, signo, Temp, ts);
+                op += res.op;
+                temporal = res.temporal;
+                result.tipo = Tipo_1.tipo.ID;
+            }
+            else if (valor2 instanceof Simbolos_1.Simbolos && valor1 instanceof Simbolos_1.Simbolos) {
+                let res = this.operacionSimbolos(valor1, valor2, op, temporal, result, signo, Temp, ts);
+                op += res.op;
+                temporal = res.temporal;
+            }
+            else {
+                op = temporal.obtener() + '=' + valor1.temporal.utilizar() + " " + signo + " " + valor2.temporal.utilizar() + ";";
+            }
         }
         resultado += op;
         result.codigo3D = resultado;
@@ -454,6 +477,113 @@ class Aritmetica extends Operaciones_1.Operacion {
     }
     isChar(n) {
         return n.length === 1 && n.match(/./i);
+    }
+    operacionSimbolosIzq(valor1, valor2, op, temporal, result, signo, Temp, ts) {
+        if (valor1 != null) {
+            let ultimoT;
+            if (valor2.codigo3D == "") {
+                ultimoT = valor2.temporal.nombre;
+            }
+            else {
+                ultimoT = Temp.ultimoTemporal();
+            }
+            if (!(valor2.tipo == Tipo_1.tipo.BOOLEAN)) {
+                op += valor2.codigo3D + "\n";
+            }
+            else {
+                if (valor1.valor == true) {
+                    ultimoT = "1";
+                }
+                else {
+                    ultimoT = "0";
+                }
+            }
+            if (ts.nombre != "Global" && valor1 != null) {
+                if (ts.entorno == 0) {
+                    ts.entorno = ts.entorno + ts.ant.entorno;
+                }
+                //
+                //console.log(valor1);
+                op += temporal.obtener() + " = P + " + valor1.posicion + "; \n";
+                let val = Temp.temporal();
+                op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
+                let nuevo = Temp.temporal();
+                op += valor2.codigo3D;
+                op += nuevo + '=' + val + " " + signo + " " + valor2.temporal.nombre + "; \n";
+                temporal.nombre = nuevo;
+                //  op += "stack[(int)" + temporal.obtener() + "]  = " + nuevo + "; \n"
+                // result.tipo = tipo.ID;
+                // valor1.posicion = ts.entorno;
+                // ts.entorno++;
+            }
+            else if (ts.nombre == "Global" && valor1 != null) {
+                let val = Temp.temporal();
+                op += val + " = stack[(int)" + ts.entorno + "] ;\n";
+                let nuevo = Temp.temporal();
+                op += nuevo + '=' + val + " " + signo + " " + valor2.temporal.nombre + "; \n";
+                temporal.nombre = nuevo;
+                //  op += "stack[(int)" + ts.entorno + "]  = " + nuevo + "; \n"
+                // result.tipo = tipo.ID;
+                // valor1.posicion = ts.entorno;
+                //ts.entorno++;
+            }
+        }
+        return { op, temporal };
+    }
+    operacionSimbolosDer(valor1, valor2, op, temporal, result, signo, Temp, ts) {
+        if (valor2 != null) {
+            if (ts.nombre != "Global" && valor1 != null) {
+                if (ts.entorno == 0) {
+                    ts.entorno = ts.entorno + ts.ant.entorno;
+                }
+                op += temporal.obtener() + " = P + " + valor2.posicion + "; \n";
+                let val = Temp.temporal();
+                op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
+                let nuevo = Temp.temporal();
+                op += valor1.codigo3D;
+                op += nuevo + '=' + valor1.temporal.nombre + " " + signo + " " + val + "; \n";
+                temporal.nombre = nuevo;
+            }
+            else if (ts.nombre == "Global" && valor2 != null) {
+                let val = Temp.temporal();
+                op += val + " = stack[(int)" + ts.entorno + "] ;\n";
+                let nuevo = Temp.temporal();
+                op += nuevo + '=' + valor1.temporal.nombre + " " + signo + " " + val + "; \n";
+                temporal.nombre = nuevo;
+            }
+        }
+        return { op, temporal };
+    }
+    operacionSimbolos(valor1, valor2, op, temporal, result, signo, Temp, ts) {
+        if (valor2 != null && valor1 != null) {
+            if (ts.nombre != "Global" && valor1 != null) {
+                if (ts.entorno == 0) {
+                    ts.entorno = ts.entorno + ts.ant.entorno;
+                }
+                op += temporal.obtener() + " = P + " + valor1.posicion + "; \n";
+                let val = Temp.temporal();
+                op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
+                let temp2 = Temp.temporal();
+                op += temp2 + " = P + " + valor2.posicion + "; \n";
+                let val2 = Temp.temporal();
+                op += val2 + " = stack[(int)" + temp2 + "] ;\n";
+                //---------
+                let nuevo = Temp.temporal();
+                op += nuevo + '=' + val + " " + signo + " " + val2 + "; \n";
+                temporal.nombre = nuevo;
+            }
+            else if (ts.nombre == "Global" && valor2 != null) {
+                let val = Temp.temporal();
+                op += val + " = stack[(int)" + valor1.posicion + "] ;\n";
+                let val2 = Temp.temporal();
+                op += val2 + " = stack[(int)" + valor2.posicion + "] ;\n";
+                //---------
+                let nuevo = Temp.temporal();
+                op += nuevo + '=' + val + " " + signo + " " + val2 + "; \n";
+                temporal.nombre = nuevo;
+            }
+        }
+        return { op, temporal };
     }
 }
 exports.Aritmetica = Aritmetica;

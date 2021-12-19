@@ -57,13 +57,14 @@ export class While implements Instruccion {
   traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     let salida: Resultado3D = new Resultado3D();
     let nodoCondicion: Resultado3D = this.condicion.traducir(Temp, controlador, ts, ts_u);
-
+    
     let ciclo: string = Temp.etiqueta();
 
     salida.codigo3D += ciclo + ": //Etiqueta para controlar el ciclado";
     salida.codigo3D += nodoCondicion.codigo3D;
+    //salida.etiquetasF = salida.etiquetasF.concat(nodoCondicion.etiquetasF)
     nodoCondicion = this.arreglarBoolean(nodoCondicion, salida, Temp);
-    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%% Verdadera %%%%%%%%%%%%%%%%%";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%% Verdadera %%%%%%%%%%%%%%%%% \n";
     salida.codigo3D += Temp.escribirEtiquetas(nodoCondicion.etiquetasV);
     this.lista_ins.forEach((element) => {
       let nodo: Resultado3D = element.traducir(Temp, controlador, ts, ts_u);
@@ -78,13 +79,13 @@ export class While implements Instruccion {
          }*/
     });
 
-    salida.codigo3D += "//%%%%%%%%%% SALTOS y CICLO %%%%%%%%%%%%%%%%%%%%";
+    salida.codigo3D += "//%%%%%%%%%% SALTOS y CICLO %%%%%%%%%%%%%%%%%%%% \n";
     //salida.codigo3D += Temp.escribirEtiquetas(salida.continue);
     salida.codigo3D += Temp.escribirEtiquetas(salida.saltos);
     salida.codigo3D += Temp.saltoIncondicional(ciclo);
 
-    salida.codigo3D += "//%%%%%%%%%% FALSas t BREAKS %%%%%%%%%%%%%%%%%%%%";
-    salida.codigo3D += Temp.escribirEtiquetas(salida.etiquetasF);
+    salida.codigo3D += "//%%%%%%%%%% FALSas t BREAKS %%%%%%%%%%%%%%%%%%%% \n";
+    salida.codigo3D += Temp.escribirEtiquetas(nodoCondicion.etiquetasF);
     salida.codigo3D += Temp.escribirEtiquetas(salida.breaks);
 
     salida.breaks = [];
