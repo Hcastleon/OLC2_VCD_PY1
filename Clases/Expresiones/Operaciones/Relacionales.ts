@@ -975,8 +975,10 @@ export class Relacionales extends Operacion implements Expresion {
     let result = new Resultado3D();
     result.tipo = tipo.BOOLEAN;
 
-    if (valor1.tipo != tipo.BOOLEAN && valor1 instanceof Simbolos==false) result.codigo3D += valor1.codigo3D;
-    if (valor2.tipo != tipo.BOOLEAN && valor2 instanceof Simbolos==false) result.codigo3D += valor2.codigo3D;
+    if (valor1.tipo != tipo.BOOLEAN && valor1 instanceof Simbolos == false)
+      result.codigo3D += valor1.codigo3D;
+    if (valor2.tipo != tipo.BOOLEAN && valor2 instanceof Simbolos == false)
+      result.codigo3D += valor2.codigo3D;
 
     switch (this.operador) {
       case Operador.MAYORQUE:
@@ -1025,74 +1027,77 @@ export class Relacionales extends Operacion implements Expresion {
     let v: string = Temp.etiqueta();
     let f: string = Temp.etiqueta();
 
-    if(nodoIzq instanceof Simbolos && nodoDer instanceof Simbolos == false){
+    if (nodoIzq instanceof Simbolos && nodoDer instanceof Simbolos == false) {
       let temporal = Temp.nuevoTemporal();
-      let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp,ts);
+      let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp, ts);
       nodo.codigo3D = res.op;
 
-    nodo.codigo3D +=
-      "if (" +
+      nodo.codigo3D +=
+        "if (" +
         res.val +
         " " +
         signo +
         " " +
         nodoDer.temporal.nombre +
         ") goto " +
-        v+
-      "; // Si es verdadero salta a " + v+ "\n";
-
-
-    }else if(nodoDer instanceof Simbolos && nodoIzq instanceof Simbolos == false){
+        v +
+        "; // Si es verdadero salta a " +
+        v +
+        "\n";
+    } else if (nodoDer instanceof Simbolos && nodoIzq instanceof Simbolos == false) {
       let temporal = Temp.nuevoTemporal();
-      let res = this.relacionalIdAccess(nodoDer, nodo.codigo3D, temporal, Temp,ts);
+      let res = this.relacionalIdAccess(nodoDer, nodo.codigo3D, temporal, Temp, ts);
       nodo.codigo3D = res.op;
-      
-    nodo.codigo3D += 
-      "if (" +
+
+      nodo.codigo3D +=
+        "if (" +
         nodoIzq.temporal.nombre +
         " " +
         signo +
         " " +
         res.val +
         ") goto " +
-        v+
-      "; // Si es verdadero salta a " + v+ "\n";
-    }else if(nodoDer instanceof Simbolos && nodoIzq instanceof Simbolos){
+        v +
+        "; // Si es verdadero salta a " +
+        v +
+        "\n";
+    } else if (nodoDer instanceof Simbolos && nodoIzq instanceof Simbolos) {
       let temporal = Temp.nuevoTemporal();
-      let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp,ts);
+      let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp, ts);
       nodo.codigo3D = res.op;
       let temporal2 = Temp.nuevoTemporal();
-      let res2 = this.relacionalIdAccess(nodoDer, nodo.codigo3D, temporal2, Temp,ts);
+      let res2 = this.relacionalIdAccess(nodoDer, nodo.codigo3D, temporal2, Temp, ts);
       nodo.codigo3D = res2.op;
-      
-    nodo.codigo3D += 
-      "if (" +
+
+      nodo.codigo3D +=
+        "if (" +
         res.val +
         " " +
         signo +
         " " +
         res2.val +
         ") goto " +
-        v+
-      "; // Si es verdadero salta a " + v+ "\n";
-
-    }else{
-      nodo.codigo3D += 
-            "if (" +
-              nodoIzq.temporal.nombre +
-              " " +
-              signo +
-              " " +
-              nodoDer.temporal.nombre +
-              ") goto " +
-              v+
-            "; // Si es verdadero salta a " + v+ "\n";
+        v +
+        "; // Si es verdadero salta a " +
+        v +
+        "\n";
+    } else {
+      console.log(nodoIzq);
+      nodo.codigo3D +=
+        "if (" +
+        nodoIzq.temporal.nombre +
+        " " +
+        signo +
+        " " +
+        nodoDer.temporal.nombre +
+        ") goto " +
+        v +
+        "; // Si es verdadero salta a " +
+        v +
+        "\n";
     }
 
-
-    
-
-    nodo.codigo3D += "goto " + f+ "; //si no se cumple salta a: " + f+ "\n";
+    nodo.codigo3D += "goto " + f + "; //si no se cumple salta a: " + f + "\n";
     nodo.etiquetasV = [];
     nodo.etiquetasV.push(v);
     nodo.etiquetasF = [];
@@ -1100,21 +1105,18 @@ export class Relacionales extends Operacion implements Expresion {
     return nodo;
   }
 
-
-  relacionalIdAccess(nodo: any, op: string,temporal:any,Temp: Temporales,ts:TablaSim){
-      let val = Temp.temporal();
+  relacionalIdAccess(nodo: any, op: string, temporal: any, Temp: Temporales, ts: TablaSim) {
+    let val = Temp.temporal();
     if (ts.nombre != "Global" && nodo != null) {
-      
-            if (ts.entorno == 0) {
-              ts.entorno = ts.entorno + ts.ant.entorno ;
-            }
-            op += temporal.obtener() + " = P + " + nodo.posicion + "; \n";
-            op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
-          
-          } else if (ts.nombre == "Global" && nodo != null) {   
-            op += val + " = stack[(int)" + nodo.posicion + "] ;\n";
-          }
-          return {op,val}
+      if (ts.entorno == 0) {
+        ts.entorno = ts.entorno + ts.ant.entorno;
+      }
+      op += temporal.obtener() + " = P + " + nodo.posicion + "; \n";
+      op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
+    } else if (ts.nombre == "Global" && nodo != null) {
+      op += val + " = stack[(int)" + nodo.posicion + "] ;\n";
+    }
+    return { op, val };
   }
 
   codigoAscii(cadena: string): number {

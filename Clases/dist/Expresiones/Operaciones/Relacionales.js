@@ -834,7 +834,9 @@ class Relacionales extends Operaciones_1.Operacion {
                     nodoDer.temporal.nombre +
                     ") goto " +
                     v +
-                    "; // Si es verdadero salta a " + v + "\n";
+                    "; // Si es verdadero salta a " +
+                    v +
+                    "\n";
         }
         else if (nodoDer instanceof Simbolos_1.Simbolos && nodoIzq instanceof Simbolos_1.Simbolos == false) {
             let temporal = Temp.nuevoTemporal();
@@ -849,7 +851,9 @@ class Relacionales extends Operaciones_1.Operacion {
                     res.val +
                     ") goto " +
                     v +
-                    "; // Si es verdadero salta a " + v + "\n";
+                    "; // Si es verdadero salta a " +
+                    v +
+                    "\n";
         }
         else if (nodoDer instanceof Simbolos_1.Simbolos && nodoIzq instanceof Simbolos_1.Simbolos) {
             let temporal = Temp.nuevoTemporal();
@@ -867,9 +871,12 @@ class Relacionales extends Operaciones_1.Operacion {
                     res2.val +
                     ") goto " +
                     v +
-                    "; // Si es verdadero salta a " + v + "\n";
+                    "; // Si es verdadero salta a " +
+                    v +
+                    "\n";
         }
         else {
+            console.log(nodoIzq);
             nodo.codigo3D +=
                 "if (" +
                     nodoIzq.temporal.nombre +
@@ -879,7 +886,9 @@ class Relacionales extends Operaciones_1.Operacion {
                     nodoDer.temporal.nombre +
                     ") goto " +
                     v +
-                    "; // Si es verdadero salta a " + v + "\n";
+                    "; // Si es verdadero salta a " +
+                    v +
+                    "\n";
         }
         nodo.codigo3D += "goto " + f + "; //si no se cumple salta a: " + f + "\n";
         nodo.etiquetasV = [];

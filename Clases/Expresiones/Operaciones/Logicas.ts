@@ -4,18 +4,12 @@ import { Controller } from "../../Controller";
 import { Expresion } from "../../Interfaces/Expresion";
 import { TablaSim } from "../../TablaSimbolos/TablaSim";
 import { tipo } from "../../TablaSimbolos/Tipo";
+import { Simbolos } from "../../TablaSimbolos/Simbolos";
 import { Operacion, Operador } from "./Operaciones";
 import { Temporales, Temporal, Resultado3D } from "../../AST/Temporales";
 
 export class Logicas extends Operacion implements Expresion {
-  constructor(
-    expre1: any,
-    expre2: any,
-    expreU: any,
-    operador: any,
-    linea: any,
-    column: any
-  ) {
+  constructor(expre1: any, expre2: any, expreU: any, operador: any, linea: any, column: any) {
     super(expre1, expre2, expreU, operador, linea, column);
   }
 
@@ -101,23 +95,21 @@ export class Logicas extends Operacion implements Expresion {
       valor2 = this.expre1.traducir(Temp, controlador, ts, ts_u);
     }
 
-    if (valor1 == (null || undefined) || valor2 == (null || undefined))
-      return null;
+    if (valor1 == (null || undefined) || valor2 == (null || undefined)) return null;
     //-------
     //let resultado = "";
     let result = new Resultado3D();
     result.tipo = tipo.BOOLEAN;
     if (this.operador == Operador.OR) {
-      result.codigo3D += valor1.codigo3D;
-      
+      if (valor1.codigo3D != undefined) result.codigo3D += valor1.codigo3D;
       //
       valor1 = this.arreglarBoolean(valor1, result, Temp);
       //
       result.codigo3D += Temp.escribirEtiquetas(valor1.etiquetasF);
-      
-      result.codigo3D += valor2.codigo3D;
+
+      if (valor2.codigo3D != undefined) result.codigo3D += valor2.codigo3D;
       valor2 = this.arreglarBoolean(valor2, result, Temp);
-      
+
       result.etiquetasV = valor1.etiquetasV;
       result.etiquetasV = result.etiquetasV.concat(valor2.etiquetasV);
       result.etiquetasF = valor2.etiquetasF;
@@ -129,14 +121,14 @@ export class Logicas extends Operacion implements Expresion {
       }
       return result;
     } else if (this.operador == Operador.AND) {
-      result.codigo3D += valor1.codigo3D;
-      
+      if (valor1.codigo3D != undefined) result.codigo3D += valor1.codigo3D;
+
       //
       valor1 = this.arreglarBoolean(valor1, result, Temp);
       //
       result.codigo3D += Temp.escribirEtiquetas(valor1.etiquetasV);
-      
-      result.codigo3D += valor2.codigo3D;
+
+      if (valor2.codigo3D != undefined) result.codigo3D += valor2.codigo3D;
       valor2 = this.arreglarBoolean(valor2, result, Temp);
 
       result.etiquetasV = valor2.etiquetasV;
@@ -149,26 +141,20 @@ export class Logicas extends Operacion implements Expresion {
         result.temporal = new Temporal("false");
       }
       return result;
-    }else{
-       result.codigo3D += valor2.codigo3D;
-       valor2 = this.arreglarBoolean(valor2, result, Temp);
+    } else {
+      if (valor2.codigo3D != undefined) result.codigo3D += valor2.codigo3D;
+      valor2 = this.arreglarBoolean(valor2, result, Temp);
 
-       let  v = valor2.etiquetasV;
-       let  f = valor2.etiquetasF;
+      let v = valor2.etiquetasV;
+      let f = valor2.etiquetasF;
 
-       result.etiquetasF = v;
-       result.etiquetasV = f;
-       return result;
-
+      result.etiquetasF = v;
+      result.etiquetasV = f;
+      return result;
     }
   }
 
-  traducir(
-    Temp: Temporales,
-    controlador: Controller,
-    ts: TablaSim,
-    ts_u: TablaSim
-  ) {
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     if (this.operador == Operador.AND) {
       return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "&&", 0);
     } else if (this.operador == Operador.OR) {
@@ -181,12 +167,27 @@ export class Logicas extends Operacion implements Expresion {
   }
 
   arreglarBoolean(nodo: Resultado3D, salida: Resultado3D, Temp: Temporales) {
-    if (nodo.etiquetasV.length == 0) {
+    if (nodo instanceof Simbolos) {
+      console.log(nodo);
+      let temp = Temp.temporal();
+      let temp2 = Temp.temporal();
+      //salida.tipo = tipo.ID;
+      salida.codigo3D += temp + " = P + " + nodo.posicion + "; \n";
+      salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+      //----------
+      let v: string = Temp.etiqueta();
+      let f: string = Temp.etiqueta();
+      salida.codigo3D += Temp.saltoCondicional("(" + temp2 + "== 1 )", v);
+      salida.codigo3D += Temp.saltoIncondicional(f);
+
+      nodo.etiquetasV = [v];
+      nodo.etiquetasF = [f];
+    } else if (nodo.etiquetasV.length == 0) {
       let v: string = Temp.etiqueta();
       let f: string = Temp.etiqueta();
       salida.codigo3D += Temp.saltoCondicional("(" + nodo.temporal.nombre + "== 1 )", v);
       salida.codigo3D += Temp.saltoIncondicional(f);
-      console.log("2"+ salida)
+
       nodo.etiquetasV = [v];
       nodo.etiquetasF = [f];
     }

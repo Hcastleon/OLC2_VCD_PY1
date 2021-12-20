@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Logicas = void 0;
 const Nodo_1 = require("../../AST/Nodo");
 const Tipo_1 = require("../../TablaSimbolos/Tipo");
+const Simbolos_1 = require("../../TablaSimbolos/Simbolos");
 const Operaciones_1 = require("./Operaciones");
 const Temporales_1 = require("../../AST/Temporales");
 class Logicas extends Operaciones_1.Operacion {
@@ -90,12 +91,14 @@ class Logicas extends Operaciones_1.Operacion {
         let result = new Temporales_1.Resultado3D();
         result.tipo = Tipo_1.tipo.BOOLEAN;
         if (this.operador == Operaciones_1.Operador.OR) {
-            result.codigo3D += valor1.codigo3D;
+            if (valor1.codigo3D != undefined)
+                result.codigo3D += valor1.codigo3D;
             //
             valor1 = this.arreglarBoolean(valor1, result, Temp);
             //
             result.codigo3D += Temp.escribirEtiquetas(valor1.etiquetasF);
-            result.codigo3D += valor2.codigo3D;
+            if (valor2.codigo3D != undefined)
+                result.codigo3D += valor2.codigo3D;
             valor2 = this.arreglarBoolean(valor2, result, Temp);
             result.etiquetasV = valor1.etiquetasV;
             result.etiquetasV = result.etiquetasV.concat(valor2.etiquetasV);
@@ -110,12 +113,14 @@ class Logicas extends Operaciones_1.Operacion {
             return result;
         }
         else if (this.operador == Operaciones_1.Operador.AND) {
-            result.codigo3D += valor1.codigo3D;
+            if (valor1.codigo3D != undefined)
+                result.codigo3D += valor1.codigo3D;
             //
             valor1 = this.arreglarBoolean(valor1, result, Temp);
             //
             result.codigo3D += Temp.escribirEtiquetas(valor1.etiquetasV);
-            result.codigo3D += valor2.codigo3D;
+            if (valor2.codigo3D != undefined)
+                result.codigo3D += valor2.codigo3D;
             valor2 = this.arreglarBoolean(valor2, result, Temp);
             result.etiquetasV = valor2.etiquetasV;
             result.etiquetasF = valor1.etiquetasF;
@@ -130,7 +135,8 @@ class Logicas extends Operaciones_1.Operacion {
             return result;
         }
         else {
-            result.codigo3D += valor2.codigo3D;
+            if (valor2.codigo3D != undefined)
+                result.codigo3D += valor2.codigo3D;
             valor2 = this.arreglarBoolean(valor2, result, Temp);
             let v = valor2.etiquetasV;
             let f = valor2.etiquetasF;
@@ -153,12 +159,26 @@ class Logicas extends Operaciones_1.Operacion {
         return "Holiwis";
     }
     arreglarBoolean(nodo, salida, Temp) {
-        if (nodo.etiquetasV.length == 0) {
+        if (nodo instanceof Simbolos_1.Simbolos) {
+            console.log(nodo);
+            let temp = Temp.temporal();
+            let temp2 = Temp.temporal();
+            //salida.tipo = tipo.ID;
+            salida.codigo3D += temp + " = P + " + nodo.posicion + "; \n";
+            salida.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+            //----------
+            let v = Temp.etiqueta();
+            let f = Temp.etiqueta();
+            salida.codigo3D += Temp.saltoCondicional("(" + temp2 + "== 1 )", v);
+            salida.codigo3D += Temp.saltoIncondicional(f);
+            nodo.etiquetasV = [v];
+            nodo.etiquetasF = [f];
+        }
+        else if (nodo.etiquetasV.length == 0) {
             let v = Temp.etiqueta();
             let f = Temp.etiqueta();
             salida.codigo3D += Temp.saltoCondicional("(" + nodo.temporal.nombre + "== 1 )", v);
             salida.codigo3D += Temp.saltoIncondicional(f);
-            console.log("2" + salida);
             nodo.etiquetasV = [v];
             nodo.etiquetasF = [f];
         }

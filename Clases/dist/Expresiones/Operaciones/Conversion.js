@@ -66,8 +66,11 @@ class Conversion {
     }
     traducir(Temp, controlador, ts, ts_u) {
         let salida = new Temporales_1.Resultado3D();
+        salida.temporal = new Temporales_1.Temporal("");
         let nodo = this.expre2.traducir(Temp, controlador, ts, ts_u);
-        salida.codigo3D += nodo.codigo3D;
+        if (nodo.codigo3D != undefined)
+            salida.codigo3D += nodo.codigo3D;
+        console.log(nodo);
         switch (this.operador) {
             case "parse":
                 break;
@@ -79,23 +82,44 @@ class Conversion {
                 break;
             case "tostring":
                 if (nodo.tipo == Tipo_1.tipo.CADENA) {
-                    return salida;
                 }
-                else {
+                else if (nodo.tipo == Tipo_1.tipo.BOOLEAN) {
+                    let salto = Temp.etiqueta();
+                    salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasV);
+                    salida.codigo3D += this.setCadena("true", Temp).codigo3D;
+                    salida.codigo3D += Temp.saltoIncondicional(salto);
+                    salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasF);
+                    salida.codigo3D += this.setCadena("false", Temp).codigo3D;
+                    salida.codigo3D += salto + ": \n";
                     salida.tipo == Tipo_1.tipo.CADENA;
                     let temporal = Temp.temporal();
                     salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%5 TOSTRING %%%%%%%%%%%%%%%%%%%%% \n";
                     salida.codigo3D += temporal + " = H + 0; // Inicio de la cadena nueva \n";
-                    salida.codigo3D += this.concatenar(nodo.temporal.nombre, Temp).codigo3D;
+                    salida.codigo3D += this.concatenar(nodo, Temp).codigo3D;
+                    salida.codigo3D += "heap[(int)H] = 0 ; //Finde la cadena \n";
+                    salida.codigo3D += "H = H + 1; // Aumento del heap \n";
+                    salida.temporal.nombre = temporal;
+                    // console.log(nodo);
+                }
+                else {
+                    salida = this.setCadena(nodo.temporal.nombre, Temp);
+                    salida.tipo == Tipo_1.tipo.CADENA;
+                    let temporal = Temp.temporal();
+                    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%5 TOSTRING %%%%%%%%%%%%%%%%%%%%% \n";
+                    salida.codigo3D += temporal + " = H + 0; // Inicio de la cadena nueva \n";
+                    salida.codigo3D += this.concatenar(nodo, Temp).codigo3D;
                     salida.codigo3D += "heap[(int)H] = 0 ; //Finde la cadena \n";
                     salida.codigo3D += "H = H + 1; // Aumento del heap \n";
                     salida.temporal.nombre = temporal;
                 }
+                salida.tipo = Tipo_1.tipo.CADENA;
                 return salida;
                 break;
             default:
                 break;
         }
+        salida.tipo == Tipo_1.tipo.CADENA;
+        return salida;
     }
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
@@ -123,7 +147,9 @@ class Conversion {
             nodo.codigo3D += v + ": \n";
             nodo.codigo3D += aux + " = heap[(int)" + temp2 + "]; //Posicion de inicio de la cadena\n";
             nodo.temporal.nombre = aux;
-            nodo.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) + "//Si se cumple es el final de cadena \n";
+            nodo.codigo3D +=
+                Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
+                    "//Si se cumple es el final de cadena \n";
             nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
             nodo.codigo3D += "H = H + 1; // invrementar heap \n";
             nodo.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de cadena \n";
@@ -133,19 +159,55 @@ class Conversion {
         }
         else {
             //nodo.codigo3D += nodito.codigo3D;
-            nodo.codigo3D += "// %%%%%%%%%%%%%%%%%%%%5 Concatenando cadena " + nodito.temporal.nombre + "%%%%%%%%%%%%% \n";
+            //console.log(nodito);
+            nodo.codigo3D += "// %%%%%%%%%%%%%%%%%%%%5 Concatenando cadena  %%%%%%%%%%%%% \n";
+            let temp2 = Temp.temporal();
+            //salida.tipo = tipo.ID;
+            nodo.codigo3D += temp2 + "= stack[(int)H]; \n";
+            //----------------
             let aux = Temp.temporal();
+            //let temp2 = Temp.temporal();
             let v = Temp.etiqueta();
             let f = Temp.etiqueta();
             nodo.codigo3D += v + ": \n";
-            nodo.codigo3D += aux + " = heap[(int)" + nodito.temporal.nombre + "]; // Se almacena primer valor \n";
-            nodo.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) + "//Si se cumple es el final de cadena \n";
+            nodo.codigo3D += aux + " = heap[(int)" + temp2 + "]; // Se almacena primer valor \n";
+            nodo.codigo3D +=
+                Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
+                    "//Si se cumple es el final de cadena \n";
             nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
             nodo.codigo3D += "H = H + 1; // invrementar heap \n";
-            nodo.codigo3D += nodito.temporal.nombre + " = " + nodito.temporal.nombre + " + 1 ; //incrementar pos de cadena \n";
+            nodo.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de cadena \n";
             nodo.codigo3D += Temp.saltoIncondicional(v);
             nodo.codigo3D += f + ": \n";
         }
+        return nodo;
+    }
+    setCadena(cadena, Temp) {
+        let nodo = new Temporales_1.Resultado3D();
+        nodo.tipo = Tipo_1.tipo.CADENA;
+        let cadenatemp = cadena;
+        cadena = cadena.replace("\\n", "\n");
+        cadena = cadena.replace("\\t", "\t");
+        cadena = cadena.replace('\\"', '"');
+        cadena = cadena.replace("\\'", "'");
+        nodo.codigo3D +=
+            "//%%%%%%%%%%%%%%%%%%% GUARDAR CADENA " + cadenatemp + "%%%%%%%%%%%%%%%%%%%% \n";
+        let temporal = Temp.temporal();
+        nodo.codigo3D += temporal + " = H; \n ";
+        for (let i = 0; i < cadena.length; i++) {
+            nodo.codigo3D +=
+                "heap[(int) H] = " +
+                    cadena.charCodeAt(i) +
+                    ";  //Guardamos en el Heap el caracter: " +
+                    cadena.charAt(i) +
+                    "\n";
+            nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
+            if (i === 0) {
+                nodo.temporal = new Temporales_1.Temporal(temporal);
+            }
+        }
+        nodo.codigo3D += "heap[(int) H] = 0; //Fin de la cadena \n";
+        nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
         return nodo;
     }
 }
