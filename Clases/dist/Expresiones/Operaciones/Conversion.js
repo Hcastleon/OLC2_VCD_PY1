@@ -3,6 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Conversion = void 0;
 const Nodo_1 = require("../../AST/Nodo");
 const Tipo_1 = require("../../TablaSimbolos/Tipo");
+const Temporales_1 = require("../../AST/Temporales");
+const Simbolos_1 = require("../../TablaSimbolos/Simbolos");
 class Conversion {
     constructor(tipo, expre2, operador, linea, column) {
         this.tipo = tipo;
@@ -11,7 +13,9 @@ class Conversion {
         this.column = column;
         this.operador = operador;
     }
-    getTipo(controlador, ts, ts_u) { }
+    getTipo(controlador, ts, ts_u) {
+        return this.tipo.tipo;
+    }
     getValor(controlador, ts, ts_u) {
         let valor_expre2;
         valor_expre2 = this.expre2.getValor(controlador, ts, ts_u);
@@ -33,9 +37,9 @@ class Conversion {
                 break;
             case "toint":
                 if (typeof valor_expre2 === "number") {
-                    if (!this.isInt(Number(valor_expre2))) {
-                        return Math.ceil(valor_expre2);
-                    }
+                    //if (!this.isInt(Number(valor_expre2))) {
+                    return Math.round(valor_expre2);
+                    //}
                 }
                 break;
             case "todouble":
@@ -61,6 +65,37 @@ class Conversion {
         return padre;
     }
     traducir(Temp, controlador, ts, ts_u) {
+        let salida = new Temporales_1.Resultado3D();
+        let nodo = this.expre2.traducir(Temp, controlador, ts, ts_u);
+        salida.codigo3D += nodo.codigo3D;
+        switch (this.operador) {
+            case "parse":
+                break;
+            case "toint":
+                break;
+            case "todouble":
+                break;
+            case "typeof":
+                break;
+            case "tostring":
+                if (nodo.tipo == Tipo_1.tipo.CADENA) {
+                    return salida;
+                }
+                else {
+                    salida.tipo == Tipo_1.tipo.CADENA;
+                    let temporal = Temp.temporal();
+                    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%5 TOSTRING %%%%%%%%%%%%%%%%%%%%% \n";
+                    salida.codigo3D += temporal + " = H + 0; // Inicio de la cadena nueva \n";
+                    salida.codigo3D += this.concatenar(nodo.temporal.nombre, Temp).codigo3D;
+                    salida.codigo3D += "heap[(int)H] = 0 ; //Finde la cadena \n";
+                    salida.codigo3D += "H = H + 1; // Aumento del heap \n";
+                    salida.temporal.nombre = temporal;
+                }
+                return salida;
+                break;
+            default:
+                break;
+        }
     }
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
@@ -70,6 +105,48 @@ class Conversion {
     }
     twoDecimal(numberInt) {
         return Number.parseFloat(numberInt.toFixed(4));
+    }
+    concatenar(nodito, Temp) {
+        let nodo = new Temporales_1.Resultado3D();
+        nodo.temporal = new Temporales_1.Temporal("");
+        if (nodito instanceof Simbolos_1.Simbolos) {
+            let temp = Temp.temporal();
+            let temp2 = Temp.temporal();
+            //salida.tipo = tipo.ID;
+            nodo.codigo3D += temp + " = P + " + nodito.posicion + "; \n";
+            nodo.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+            //----------------
+            let aux = Temp.temporal();
+            let valor = Temp.temporal();
+            let v = Temp.etiqueta();
+            let f = Temp.etiqueta();
+            nodo.codigo3D += v + ": \n";
+            nodo.codigo3D += aux + " = heap[(int)" + temp2 + "]; //Posicion de inicio de la cadena\n";
+            nodo.temporal.nombre = aux;
+            nodo.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) + "//Si se cumple es el final de cadena \n";
+            nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
+            nodo.codigo3D += "H = H + 1; // invrementar heap \n";
+            nodo.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de cadena \n";
+            nodo.codigo3D += Temp.saltoIncondicional(v);
+            nodo.codigo3D += f + ": \n";
+            nodo.temporal.nombre = temp;
+        }
+        else {
+            //nodo.codigo3D += nodito.codigo3D;
+            nodo.codigo3D += "// %%%%%%%%%%%%%%%%%%%%5 Concatenando cadena " + nodito.temporal.nombre + "%%%%%%%%%%%%% \n";
+            let aux = Temp.temporal();
+            let v = Temp.etiqueta();
+            let f = Temp.etiqueta();
+            nodo.codigo3D += v + ": \n";
+            nodo.codigo3D += aux + " = heap[(int)" + nodito.temporal.nombre + "]; // Se almacena primer valor \n";
+            nodo.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) + "//Si se cumple es el final de cadena \n";
+            nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
+            nodo.codigo3D += "H = H + 1; // invrementar heap \n";
+            nodo.codigo3D += nodito.temporal.nombre + " = " + nodito.temporal.nombre + " + 1 ; //incrementar pos de cadena \n";
+            nodo.codigo3D += Temp.saltoIncondicional(v);
+            nodo.codigo3D += f + ": \n";
+        }
+        return nodo;
     }
 }
 exports.Conversion = Conversion;

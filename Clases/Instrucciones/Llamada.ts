@@ -110,20 +110,16 @@ export class Llamada implements Instruccion, Expresion {
       let valor_aux;
 
       for (let i = 0; i < para_llama.length; i++) {
-        console.log(para_func[i]);
-        console.log(para_llama[i]);
         aux = para_func[i] as Simbolos;
         id_aux = aux.identificador;
-        tipo_axu = aux.tipo.tipo;
+        tipo_axu = aux.tipo.tipo; //Funcion
 
         exp_aux = para_llama[i] as Expresion;
-        tipo_valor = exp_aux.getTipo(controlador, ts, ts_u);
+        tipo_valor = exp_aux.getTipo(controlador, ts, ts_u); // de la llamada
         valor_aux = exp_aux.getValor(controlador, ts, ts_u);
-
-        if (
-          tipo_axu == tipo_valor ||
-          (tipo_axu == tipo.ENTERO && tipo_valor == tipo.DOUBLE) ||
-          (tipo_valor == tipo.CADENA && tipo_axu == tipo.CARACTER)
+        if (tipo_axu == tipo_valor||((tipo_axu == tipo.DOUBLE || tipo_axu == tipo.ENTERO) &&
+              (tipo_valor == tipo.ENTERO || tipo_valor== tipo.DOUBLE)) ||
+            (tipo_axu == tipo.CADENA && tipo_valor== tipo.CARACTER)
         ) {
           let simbolo = new Simbolos(aux.simbolo, aux.tipo, id_aux, valor_aux);
           ts_local.agregar(id_aux, simbolo);

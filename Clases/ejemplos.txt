@@ -1,3 +1,39 @@
+int var1 = 10;
+int var2 = 20;
+double punteoBasicas = 0.0;
+double declaracion, asignacion, aritmeticas, relacionales, logicas;
+
+int dimension = 3;
+String[] arreglo = ["Estudiante1", "Estudiante2", "Estudiante3"];
+//Posicion 0 - 2 para estudiante 1
+//Posicion 3 - 5 para estudiante 2
+//Posicion 6 - 8 para estudiante 3
+int[] tablero = [0,0,0,0,0,0,0,0,0];
+boolean[] estado = [false, false, false, false, false, false, false, false, false];
+
+
+void main(){
+    double val1 = 0.0;
+    double val2 = 0.0;
+    double val3 = 0.0;
+    double a = 0.0;
+    double b = 0;
+
+    println("El valor defecto de declacion es 0 = ",declaracion);
+    println("El valor defecto de asignacion es 0 = $asignacion y de aritmeticas 0 = $val1");
+    print("Probando ");
+    println("Manejo de Entornos");
+}
+
+
+void main(){
+  int a = 3;
+  boolean b = false;
+  String[] as = ["H","O","L","A"];
+  println(" trae $a dos matches $b jij");
+  println(" solo uno especial $(as[1])");
+}
+
 void main(){
     int[] arr = [8,2,3,12];
     println("Hola bla bla bal");

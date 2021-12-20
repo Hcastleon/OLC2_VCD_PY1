@@ -12,12 +12,13 @@ var instrucciones = null;
 // ------------------- reload ----------------------------------------
 function loadPage(){
   let cm = new CodeMirror.fromTextArea(document.getElementById(`textInput-Blank`), {
-    lineNumbers: true,
     mode: "javascript",
     theme: "dracula",
-    lineWrapping: false,
-    matchBrackets: true
+    lineNumbers:true,
+    autoCloseBrackets: true,
+    readOnly: false
   });
+  cm.setSize(null, 450);
   cm.refresh;
   let tab_completo = { editor: cm, tab:`Blank`, pos:-1 };
   ListaTab.push(tab_completo);

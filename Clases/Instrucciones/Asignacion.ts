@@ -67,11 +67,19 @@ export class Asignacion implements Instruccion {
 
 
       let ultimoT;
-      if (nodo.codigo3D == "") {
+      if (nodo.codigo3D == "" ) {
         ultimoT = nodo.temporal.nombre
       } else {
-        ultimoT = Temp.ultimoTemporal();
+        if(nodo.tipo == tipo.CADENA){
+          ultimoT = nodo.temporal.nombre
+        }else{
+            ultimoT = Temp.ultimoTemporal();
+        }
+        
       }
+
+      
+
 
       if (!(nodo.tipo == tipo.BOOLEAN)) {
         salida.codigo3D += nodo.codigo3D + "\n";

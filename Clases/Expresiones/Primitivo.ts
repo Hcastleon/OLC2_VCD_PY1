@@ -10,15 +10,17 @@ export class Primitivo implements Expresion {
   public primitivo: any;
   public linea: number;
   public columna: number;
+  public tipo: any;
 
-  constructor(primitivo: any, linea: number, columna: number) {
+  constructor(primitivo: any,tipo:any, linea: number, columna: number) {
     this.columna = columna;
     this.linea = linea;
     this.primitivo = primitivo;
+    this.tipo = tipo;
   }
 
   getTipo(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
-    let valor = this.getValor(controlador, ts, ts_u);
+    /*let valor = this.getValor(controlador, ts, ts_u);
 
     if (typeof valor == "number") {
       if (this.isInt(Number(valor))) {
@@ -35,10 +37,11 @@ export class Primitivo implements Expresion {
       return tipo.BOOLEAN;
     } else if (valor === null) {
       return tipo.NULO;
-    }
+    }*/
+    return this.tipo
   }
 
-  getTipoTraduc() {
+  getTipoTraduc() {/*
     if (typeof this.primitivo == "number") {
       if (this.isInt(Number(this.primitivo))) {
         return tipo.ENTERO;
@@ -54,7 +57,8 @@ export class Primitivo implements Expresion {
       return tipo.BOOLEAN;
     } else if (this.primitivo === null) {
       return tipo.NULO;
-    }
+    }*/
+    return this.tipo
   }
   getValor(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     return this.primitivo;
@@ -106,7 +110,7 @@ export class Primitivo implements Expresion {
     } else if (this.primitivo == false && typeof this.primitivo == "boolean") {
       resultado3D.temporal = new Temporal("0");
     } else if (typeof this.primitivo == "string") {
-      if (this.isChar(String(this.primitivo))) {
+      if (this.tipo == tipo.CARACTER) {
         let ascii = this.primitivo.toString().charCodeAt(0);
         let nodo: Resultado3D = new Resultado3D();
         nodo.tipo = tipo.CARACTER;

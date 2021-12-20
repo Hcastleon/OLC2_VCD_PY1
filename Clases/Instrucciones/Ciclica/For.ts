@@ -93,6 +93,7 @@ export class For implements Instruccion {
     salida.codigo3D += Temp.escribirEtiquetas(nodoCondicion.etiquetasV);
 
     this.lista_ins.forEach(element => {
+      console.log(element);
       let nodo: Resultado3D  = element.traducir(Temp, controlador, ts, ts_u);
       salida.codigo3D += nodo.codigo3D;
       salida.breaks = salida.breaks.concat(nodo.breaks);

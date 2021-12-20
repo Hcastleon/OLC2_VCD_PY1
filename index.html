@@ -62,7 +62,7 @@
           <div class="row">
             <div class="col">
               <div style="margin-top: 20px; margin-left: 0px; margin-right: 0px;">
-                <div class="card">
+                <div class="card" style="height: 65rem;">
                   <div class="card-header">
                     <div class="btn-group" role="group" aria-label="Basic example">
                       <button type="button" class="btn btn-outline-secondary" id="prueba"
@@ -73,17 +73,15 @@
                         name="rpgramatica">Gramar</button>
                     </div>
                   </div>
-                  <div class="card-body text-dark bg-light">
+                  <div class="card-body text-dark bg-light" style="resize:none">
                     <!--  **INPUT CONSOLE**  -->
                     <label for="textInput-Blank" class="form-label">Input:</label>
-                    <textarea class="form-control" id="textInput-Blank" rows="15" cols="50"></textarea>
+                    <textarea class="form-control" style="resize:none" id="textInput-Blank" rows="15" cols="50"></textarea>
                     <!-- **OUTPUT CONSOLE** -->
                     <label for="textOutput-Blank" class="form-label" style="margin-top: 10px;">Output:</label>
-                    <textarea class="form-control" id="textOutput-Blank" rows="5" cols="50"></textarea>
+                    <textarea class="form-control" id="textOutput-Blank" rows="15" cols="50"></textarea>
                   </div>
                   <div class="card-footer">
-                    <label for="textOutput-Blank" class="form-label" style="margin-top: 10px;">Translate:</label>
-                    <textarea class="form-control" id="textOutputTrans-Blank" rows="5" cols="50"></textarea>
                   </div>
                 </div>
               </div>
@@ -92,7 +90,9 @@
               <div style="margin-top: 20px; margin-left: 0px; margin-right: 0px;">
                 <div class="card">
                   <div class="card-body text-dark bg-light">
-                    <label for="textInput" class="form-label">Errors:</label>
+                    <label for="textOutput-Blank" class="form-label" style="margin-top: 10px;">Translate:</label>
+                    <textarea class="form-control" id="textOutputTrans-Blank" rows="15" cols="50"></textarea>
+                    <label for="textInput" class="form-label" style="margin-top: 10px;">Errors:</label>
                     <div class="table-wrapper-scroll-y my-custom-scrollbar">
                       <table class="table">
                         <thead>

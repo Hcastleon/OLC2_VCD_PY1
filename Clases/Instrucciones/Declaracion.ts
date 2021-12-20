@@ -9,6 +9,8 @@ import { Primitivo } from "../Expresiones/Primitivo";
 import { Arreglo } from "../Expresiones/Arreglo";
 import { AritArreglo } from "../Expresiones/Operaciones/AritArreglo";
 import { Temporales, Resultado3D } from "../AST/Temporales";
+import { Conversion } from "../Expresiones/Operaciones/Conversion";
+import { AccesoArreglo } from "../Expresiones/AccesoArreglo";
 
 export class Declaracion implements Instruccion {
   public tipo: Tipo;
@@ -50,7 +52,7 @@ export class Declaracion implements Instruccion {
               variable.identificador,
               valor
             );
-            ts.agregar(variable.identificador, nuevo_sim);
+            ts.agregar(variable.identificador, nuevo_sim);// array[0] //arreglo
             ts_u.agregar(variable.identificador, nuevo_sim);
           } else {
             let error = new Errores(
@@ -67,6 +69,48 @@ export class Declaracion implements Instruccion {
             let nuevo_sim = new Simbolos(
               variable.simbolo,
               new Tipo("ARRAY"),
+              variable.identificador,
+              valor
+            );
+            ts.agregar(variable.identificador, nuevo_sim);
+            ts_u.agregar(variable.identificador, nuevo_sim);
+          } else {
+            let error = new Errores(
+              "Semantico",
+              `Las variables ${this.getTipo(valor)} y ${this.tipo.tipo} no son del mismo tipo`,
+              this.linea,
+              this.columna
+            );
+            controlador.errores.push(error);
+          }
+        } else if(variable.valor instanceof Conversion){
+          let valor = variable.valor.getValor(controlador, ts, ts_u);
+          let tipo_local= variable.valor.getTipo(controlador, ts, ts_u);
+          if (tipo_local == this.tipo.tipo) {
+            let nuevo_sim = new Simbolos(
+              variable.simbolo,
+              this.tipo,
+              variable.identificador,
+              valor
+            );
+            ts.agregar(variable.identificador, nuevo_sim);
+            ts_u.agregar(variable.identificador, nuevo_sim);
+          } else {
+            let error = new Errores(
+              "Semantico",
+              `Las variables ${tipo_local} y ${this.tipo.tipo} no son del mismo tipo`,
+              this.linea,
+              this.columna
+            );
+            controlador.errores.push(error);
+          }
+        }else if(variable.valor instanceof AccesoArreglo){
+          let valor = variable.valor.getValor(controlador, ts, ts_u);
+          let tipo_vemaos = variable.valor.getTipoArreglo(controlador, ts, ts_u);
+          if (tipo_vemaos == this.tipo.tipo) {
+            let nuevo_sim = new Simbolos(
+              variable.simbolo,
+              this.tipo,
               variable.identificador,
               valor
             );
@@ -108,9 +152,17 @@ export class Declaracion implements Instruccion {
           }
         }
       } else {
-        let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, null);
-        ts.agregar(variable.identificador, nuevo_sim);
-        ts_u.agregar(variable.identificador, nuevo_sim);
+          let value: any;
+          if(this.tipo.tipo == tipo.ENTERO){
+            value = 0;
+          }else if(this.tipo.tipo == tipo.DOUBLE){
+            value = 0.00;
+          }else {
+            value = null;
+          }
+          let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, value);
+          ts.agregar(variable.identificador, nuevo_sim);
+          ts_u.agregar(variable.identificador, nuevo_sim);
       }
     }
   }

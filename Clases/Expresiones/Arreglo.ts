@@ -31,8 +31,13 @@ export class Arreglo implements Expresion {
   getTipoArreglo(controlador: Controller, ts: TablaSim, ts_u: TablaSim, tipoo: Tipo) {
     let flag = false;
     for (let element of this.valores) {
-      let valor_condicional = element.getValor(controlador, ts, ts_u);
-      if (typeof valor_condicional == "number") {
+      //let valor_condicional = element.getValor(controlador, ts, ts_u);
+      let valor_tipo = element.getTipo(controlador, ts, ts_u);
+      if(valor_tipo != tipoo.tipo){
+        flag = true;
+        break;
+      }
+      /*if (typeof valor_condicional == "number") {
         if (this.isInt(Number(valor_condicional))) {
           if (tipoo.tipo != tipo.ENTERO) {
             flag = true;
@@ -66,7 +71,7 @@ export class Arreglo implements Expresion {
           flag = true;
           break;
         }
-      }
+      }*/
     }
     if (flag == false) {
       return tipoo.tipo;

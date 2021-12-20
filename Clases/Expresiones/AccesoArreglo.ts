@@ -19,6 +19,7 @@ export class AccesoArreglo implements Expresion {
     public especial2: string;
     public linea: number;
     public column: number;
+    public tipito : tipo;
 
     constructor(identificador: any, posicion1: any, posicion2: any, tipo: boolean, esp: any, esp2: any, linea: number, column: number) {
         this.identificador = identificador;
@@ -29,9 +30,8 @@ export class AccesoArreglo implements Expresion {
         this.especial2 = esp2;
         this.linea = linea;
         this.column = column;
+        this.tipito = -1;
     }
-
-
     getTipo(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
         let id_exists = ts.getSimbolo(this.identificador.identificador);
         if (id_exists != null) {
@@ -50,6 +50,8 @@ export class AccesoArreglo implements Expresion {
                     let posi = this.posicion1.getValor(controlador, ts, ts_u);
                     if (typeof posi == "number") {
                         if (this.isInt(Number(posi))) {
+                            let res = id_exists.getValor()[posi];
+                            this.tipito = this.getTipito(res);
                             return id_exists.getValor()[posi];
                         } else {
                             let error = new Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
@@ -62,6 +64,7 @@ export class AccesoArreglo implements Expresion {
 
                 } else {
                     if (this.especial != null && this.especial2 != null) {
+                        this.tipito =  tipo.ARRAY;
                         return id_exists.getValor()
                     } else if (this.especial != null && this.especial2 == null) {
                         let posi = this.posicion2.getValor(controlador, ts, ts_u);
@@ -72,6 +75,7 @@ export class AccesoArreglo implements Expresion {
                                     for (let index = 0; index < posi+1; index++) {
                                         lista_valores.push(id_exists.getValor()[index]);
                                     }
+                                    this.tipito =  tipo.ARRAY;
                                     return lista_valores;
                                 }else{
                                     let error = new Errores('Semantico', `El valor ${posi}, sobre pasa el limite del arreglo`, this.linea, this.column);
@@ -93,6 +97,7 @@ export class AccesoArreglo implements Expresion {
                                 for (let index = posi; index < id_exists.getValor().length; index++) {
                                     lista_valores.push(id_exists.getValor()[index]);
                                 }
+                                this.tipito =  tipo.ARRAY;
                                 return lista_valores;
                             } else {
                                 let error = new Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
@@ -114,6 +119,7 @@ export class AccesoArreglo implements Expresion {
                                             for (let index = posi; index < posi2+1; index++) {
                                                 lista_valores.push(id_exists.getValor()[index]);
                                             }
+                                            this.tipito =  tipo.ARRAY;
                                             return lista_valores;
                                         }else{
                                             let error = new Errores('Semantico', `El valor ${posi2}, sobre pasa el limite del arreglo`, this.linea, this.column);
@@ -128,7 +134,6 @@ export class AccesoArreglo implements Expresion {
                                     let error = new Errores('Semantico', `El valor ${posi2}, tipo de dato incorrecto`, this.linea, this.column);
                                     controlador.errores.push(error);
                                 }
-
                             } else {
                                 let error = new Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                                 controlador.errores.push(error);
@@ -146,6 +151,10 @@ export class AccesoArreglo implements Expresion {
         }
     }
 
+    getTipoArreglo(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
+        return this.tipito;
+    }
+
     recorrer(): Nodo {
         let padre = new Nodo("ID", "");
         return padre
@@ -158,5 +167,27 @@ export class AccesoArreglo implements Expresion {
     isInt(n: number) {
         return Number(n) === n && n % 1 === 0;
     }
+ isChar(n: string) {
+    return n.length === 1 && n.match(/./i);
+  }
 
+  getTipito(lista: any) {
+    if (typeof lista == "number") {
+      if (this.isInt(Number(lista))) {
+        return tipo.ENTERO;
+      }
+      return tipo.DOUBLE;
+    } else if (typeof lista[0] == "string") {
+      if (this.isChar(String(lista))) {
+        return tipo.CARACTER;
+      }
+      return tipo.CADENA;
+    } else if (typeof lista == "boolean") {
+      return tipo.BOOLEAN;
+    } else if (lista === null) {
+      return tipo.NULO;
+    }else{
+        return tipo.NULO;
+    }
+  }
 }

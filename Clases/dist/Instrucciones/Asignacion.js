@@ -41,7 +41,12 @@ class Asignacion {
                 ultimoT = nodo.temporal.nombre;
             }
             else {
-                ultimoT = Temp.ultimoTemporal();
+                if (nodo.tipo == Tipo_1.tipo.CADENA) {
+                    ultimoT = nodo.temporal.nombre;
+                }
+                else {
+                    ultimoT = Temp.ultimoTemporal();
+                }
             }
             if (!(nodo.tipo == Tipo_1.tipo.BOOLEAN)) {
                 salida.codigo3D += nodo.codigo3D + "\n";

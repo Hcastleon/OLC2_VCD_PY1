@@ -70,17 +70,15 @@ class Llamada {
             let tipo_valor;
             let valor_aux;
             for (let i = 0; i < para_llama.length; i++) {
-                console.log(para_func[i]);
-                console.log(para_llama[i]);
                 aux = para_func[i];
                 id_aux = aux.identificador;
-                tipo_axu = aux.tipo.tipo;
+                tipo_axu = aux.tipo.tipo; //Funcion
                 exp_aux = para_llama[i];
-                tipo_valor = exp_aux.getTipo(controlador, ts, ts_u);
+                tipo_valor = exp_aux.getTipo(controlador, ts, ts_u); // de la llamada
                 valor_aux = exp_aux.getValor(controlador, ts, ts_u);
-                if (tipo_axu == tipo_valor ||
-                    (tipo_axu == Tipo_1.tipo.ENTERO && tipo_valor == Tipo_1.tipo.DOUBLE) ||
-                    (tipo_valor == Tipo_1.tipo.CADENA && tipo_axu == Tipo_1.tipo.CARACTER)) {
+                if (tipo_axu == tipo_valor || ((tipo_axu == Tipo_1.tipo.DOUBLE || tipo_axu == Tipo_1.tipo.ENTERO) &&
+                    (tipo_valor == Tipo_1.tipo.ENTERO || tipo_valor == Tipo_1.tipo.DOUBLE)) ||
+                    (tipo_axu == Tipo_1.tipo.CADENA && tipo_valor == Tipo_1.tipo.CARACTER)) {
                     let simbolo = new Simbolos_1.Simbolos(aux.simbolo, aux.tipo, id_aux, valor_aux);
                     ts_local.agregar(id_aux, simbolo);
                     ts_u.agregar(id_aux, simbolo);

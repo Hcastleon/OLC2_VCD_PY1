@@ -456,8 +456,102 @@ class Aritmetica extends Operaciones_1.Operacion {
         else if (this.operador == Operaciones_1.Operador.UNARIO) {
             return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "-", 0);
         }
+        else if (this.operador == Operaciones_1.Operador.CONCATENAR) {
+            console.log("SI ?");
+            return this.generarConcat(Temp, controlador, ts, ts_u);
+        }
         //modulo unario concatenar0  repetir
         return "Holiwis";
+    }
+    generarConcat(Temp, controlador, ts, ts_u) {
+        let valor1;
+        let valor2;
+        let valor_U;
+        if (this.expreU === false) {
+            valor1 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+            valor2 = this.expre2.traducir(Temp, controlador, ts, ts_u);
+        }
+        else {
+            valor1 = new Temporales_1.Resultado3D();
+            valor1.codigo3D = "";
+            valor1.temporal = new Temporales_1.Temporal("0");
+            valor1.tipo = Tipo_1.tipo.ENTERO;
+            valor2 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+        }
+        if (valor1 == (null || undefined) || valor2 == (null || undefined))
+            return null;
+        let resultado = valor1.codigo3D;
+        if (resultado != "" && valor2.codigo3D) {
+            resultado = resultado + "\n" + valor2.codigo3D;
+        }
+        else {
+            resultado += valor2.codigo3D;
+        }
+        if (valor1 instanceof Simbolos_1.Simbolos || valor2 instanceof Simbolos_1.Simbolos) {
+            resultado = "";
+        }
+        if (resultado != "") {
+            resultado = resultado + "\n";
+        }
+        let salida = new Temporales_1.Resultado3D();
+        salida.temporal = new Temporales_1.Temporal("");
+        salida.tipo = Tipo_1.tipo.CADENA;
+        if (valor1 instanceof Simbolos_1.Simbolos == false) {
+            salida.codigo3D += valor1.codigo3D;
+        }
+        if (valor2 instanceof Simbolos_1.Simbolos == false) {
+            salida.codigo3D += valor2.codigo3D;
+        }
+        let temporal = Temp.temporal();
+        salida.codigo3D += temporal + " = H + 0; // Inicion de nueva cadena \n";
+        salida.codigo3D += this.concatenar(valor1, Temp).codigo3D;
+        salida.codigo3D += this.concatenar(valor2, Temp).codigo3D;
+        salida.codigo3D += "heap[(int)H] = 0 ; // Fin cadena \n";
+        salida.codigo3D += "H = H + 1; // incremenar heap \n";
+        salida.temporal.nombre = temporal;
+        return salida;
+    }
+    concatenar(nodito, Temp) {
+        let nodo = new Temporales_1.Resultado3D();
+        nodo.temporal = new Temporales_1.Temporal("");
+        if (nodito instanceof Simbolos_1.Simbolos) {
+            let temp = Temp.temporal();
+            let temp2 = Temp.temporal();
+            //salida.tipo = tipo.ID;
+            nodo.codigo3D += temp + " = P + " + nodito.posicion + "; \n";
+            nodo.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+            //----------------
+            let aux = Temp.temporal();
+            let valor = Temp.temporal();
+            let v = Temp.etiqueta();
+            let f = Temp.etiqueta();
+            nodo.codigo3D += v + ": \n";
+            nodo.codigo3D += aux + " = heap[(int)" + temp2 + "]; //Posicion de inicio de la cadena\n";
+            nodo.temporal.nombre = aux;
+            nodo.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) + "//Si se cumple es el final de cadena \n";
+            nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
+            nodo.codigo3D += "H = H + 1; // invrementar heap \n";
+            nodo.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de cadena \n";
+            nodo.codigo3D += Temp.saltoIncondicional(v);
+            nodo.codigo3D += f + ": \n";
+            nodo.temporal.nombre = temp;
+        }
+        else {
+            //nodo.codigo3D += nodito.codigo3D;
+            nodo.codigo3D += "// %%%%%%%%%%%%%%%%%%%%5 Concatenando cadena " + nodito.temporal.nombre + "%%%%%%%%%%%%% \n";
+            let aux = Temp.temporal();
+            let v = Temp.etiqueta();
+            let f = Temp.etiqueta();
+            nodo.codigo3D += v + ": \n";
+            nodo.codigo3D += aux + " = heap[(int)" + nodito.temporal.nombre + "]; // Se almacena primer valor \n";
+            nodo.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) + "//Si se cumple es el final de cadena \n";
+            nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
+            nodo.codigo3D += "H = H + 1; // invrementar heap \n";
+            nodo.codigo3D += nodito.temporal.nombre + " = " + nodito.temporal.nombre + " + 1 ; //incrementar pos de cadena \n";
+            nodo.codigo3D += Temp.saltoIncondicional(v);
+            nodo.codigo3D += f + ": \n";
+        }
+        return nodo;
     }
     recorrer() {
         let padre = new Nodo_1.Nodo(this.op_string, "");

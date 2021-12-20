@@ -14,6 +14,7 @@ class AccesoArreglo {
         this.especial2 = esp2;
         this.linea = linea;
         this.column = column;
+        this.tipito = -1;
     }
     getTipo(controlador, ts, ts_u) {
         let id_exists = ts.getSimbolo(this.identificador.identificador);
@@ -33,6 +34,8 @@ class AccesoArreglo {
                     let posi = this.posicion1.getValor(controlador, ts, ts_u);
                     if (typeof posi == "number") {
                         if (this.isInt(Number(posi))) {
+                            let res = id_exists.getValor()[posi];
+                            this.tipito = this.getTipito(res);
                             return id_exists.getValor()[posi];
                         }
                         else {
@@ -47,6 +50,7 @@ class AccesoArreglo {
                 }
                 else {
                     if (this.especial != null && this.especial2 != null) {
+                        this.tipito = Tipo_1.tipo.ARRAY;
                         return id_exists.getValor();
                     }
                     else if (this.especial != null && this.especial2 == null) {
@@ -58,6 +62,7 @@ class AccesoArreglo {
                                     for (let index = 0; index < posi + 1; index++) {
                                         lista_valores.push(id_exists.getValor()[index]);
                                     }
+                                    this.tipito = Tipo_1.tipo.ARRAY;
                                     return lista_valores;
                                 }
                                 else {
@@ -83,6 +88,7 @@ class AccesoArreglo {
                                 for (let index = posi; index < id_exists.getValor().length; index++) {
                                     lista_valores.push(id_exists.getValor()[index]);
                                 }
+                                this.tipito = Tipo_1.tipo.ARRAY;
                                 return lista_valores;
                             }
                             else {
@@ -107,6 +113,7 @@ class AccesoArreglo {
                                             for (let index = posi; index < posi2 + 1; index++) {
                                                 lista_valores.push(id_exists.getValor()[index]);
                                             }
+                                            this.tipito = Tipo_1.tipo.ARRAY;
                                             return lista_valores;
                                         }
                                         else {
@@ -142,6 +149,9 @@ class AccesoArreglo {
             controlador.errores.push(error);
         }
     }
+    getTipoArreglo(controlador, ts, ts_u) {
+        return this.tipito;
+    }
     recorrer() {
         let padre = new Nodo_1.Nodo("ID", "");
         return padre;
@@ -150,6 +160,32 @@ class AccesoArreglo {
     }
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
+    }
+    isChar(n) {
+        return n.length === 1 && n.match(/./i);
+    }
+    getTipito(lista) {
+        if (typeof lista == "number") {
+            if (this.isInt(Number(lista))) {
+                return Tipo_1.tipo.ENTERO;
+            }
+            return Tipo_1.tipo.DOUBLE;
+        }
+        else if (typeof lista[0] == "string") {
+            if (this.isChar(String(lista))) {
+                return Tipo_1.tipo.CARACTER;
+            }
+            return Tipo_1.tipo.CADENA;
+        }
+        else if (typeof lista == "boolean") {
+            return Tipo_1.tipo.BOOLEAN;
+        }
+        else if (lista === null) {
+            return Tipo_1.tipo.NULO;
+        }
+        else {
+            return Tipo_1.tipo.NULO;
+        }
     }
 }
 exports.AccesoArreglo = AccesoArreglo;

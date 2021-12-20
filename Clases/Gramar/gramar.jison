@@ -165,6 +165,7 @@
     const {DeclaracionStruct} = require("../Instrucciones/DeclaracionStruct");
     const {AccesoStruct} = require("../Expresiones/AccesoStruct");
     const {AccesoArreglo} = require("../Expresiones/AccesoArreglo");
+    const { tipo } = require("../TablaSimbolos/Tipo");
 %}
 
 
@@ -276,8 +277,8 @@ INSTRUCCION : DECLARACIONVARIABLE ptcoma            { $$ = $1; listaRGramar.push
        SENTENCIAS EN BLOQUE
 */
 
-PRINT_BLOQUE : print parizq EXPRESION pardec                     { $$ = new Print($3, @1.first_line, @1.first_column ); listaRGramar.push({'p':'PRINT_BLOQUE -> print parizq EXPRESION pardec  ','g':'PRINT_BLOQUE.val = array(EXPRESION.val)'});}
-             | println parizq EXPRESION pardec                   { $$ = new Println($3, @1.first_line, @1.first_column ); listaRGramar.push({'p':'PRINT_BLOQUE -> println parizq EXPRESION pardec  ','g':'PRINT_BLOQUE.val = array(EXPRESION.val)'});}
+PRINT_BLOQUE : print parizq LISTAARRAY pardec                     { $$ = new Print($3, @1.first_line, @1.first_column ); listaRGramar.push({'p':'PRINT_BLOQUE -> print parizq LISTAARRAY pardec  ','g':'PRINT_BLOQUE.val = array(LISTAARRAY.val)'});}
+             | println parizq LISTAARRAY pardec                   { $$ = new Println($3, @1.first_line, @1.first_column ); listaRGramar.push({'p':'PRINT_BLOQUE -> println parizq LISTAARRAY pardec  ','g':'PRINT_BLOQUE.val = array(LISTAARRAY.val)'});}
              ;
 
 EXPRESION : ARITMETICA                                          { $$ = $1; listaRGramar.push({'p':'EXPRESION -> ARITMETICA','g':'EXPRESION.val = ARITMETICA.val'});}
@@ -352,10 +353,10 @@ NAT_ARREGLO : id punto push parizq EXPRESION pardec                             
             ;
 
 NAT_FUN : TIPO punto parse parizq EXPRESION pardec                                 { $$ = new Conversion($1, $5,'parse', @1.first_line,@1.last_column); listaRGramar.push({'p':'NAT_FUN -> TIPO punto parse parizq EXPRESION pardec','g':'NAT_FUN.val = array(TIPO.val,Expresion.val)'});}
-        | toint parizq EXPRESION pardec                                            { $$ = new Conversion(null, $3,'toint', @1.first_line,@1.last_column); listaRGramar.push({'p':'NAT_FUN -> toint parizq EXPRESION pardec','g':'NAT_FUN.val = array(toint.lexval,Expresion.val)'});}
-        | todouble parizq EXPRESION pardec                                         { $$ = new Conversion(null, $3,'todouble', @1.first_line,@1.last_column); listaRGramar.push({'p':'NAT_FUN -> todouble parizq EXPRESION pardec','g':'NAT_FUN.val = array(todouble.lexval,Expresion.val)'});}
-        | typeof parizq EXPRESION pardec                                           { $$ = new Conversion(null, $3,'typeof', @1.first_line,@1.last_column); listaRGramar.push({'p':'NAT_FUN -> typeof parizq EXPRESION pardec','g':'NAT_FUN.val = array(typeof.lexval,Expresion.val)'});}
-        | tostring parizq EXPRESION pardec                                         { $$ = new Conversion(null, $3,'tostring', @1.first_line,@1.last_column); listaRGramar.push({'p':'NAT_FUN -> tostring parizq EXPRESION pardec','g':'NAT_FUN.val = array(tostring.lexval,Expresion.val)'});}
+        | toint parizq EXPRESION pardec                                            { $$ = new Conversion(new Tipo('ENTERO'), $3,'toint', @1.first_line,@1.last_column); listaRGramar.push({'p':'NAT_FUN -> toint parizq EXPRESION pardec','g':'NAT_FUN.val = array(toint.lexval,Expresion.val)'});}
+        | todouble parizq EXPRESION pardec                                         { $$ = new Conversion(new Tipo('DOUBLE'), $3,'todouble', @1.first_line,@1.last_column); listaRGramar.push({'p':'NAT_FUN -> todouble parizq EXPRESION pardec','g':'NAT_FUN.val = array(todouble.lexval,Expresion.val)'});}
+        | typeof parizq EXPRESION pardec                                           { $$ = new Conversion(new Tipo('NULO'), $3,'typeof', @1.first_line,@1.last_column); listaRGramar.push({'p':'NAT_FUN -> typeof parizq EXPRESION pardec','g':'NAT_FUN.val = array(typeof.lexval,Expresion.val)'});}
+        | tostring parizq EXPRESION pardec                                         { $$ = new Conversion(new Tipo('STRING'), $3,'tostring', @1.first_line,@1.last_column); listaRGramar.push({'p':'NAT_FUN -> tostring parizq EXPRESION pardec','g':'NAT_FUN.val = array(tostring.lexval,Expresion.val)'});}
         ;
 
 NATIVAS : pow parizq EXPRESION coma EXPRESION pardec         { $$ = new Nativa($3, $5, false ,'pow', @1.first_line,@1.last_column); listaRGramar.push({'p':'NATIVAS -> pow parizq EXPRESION coma EXPRESION pardec','g':'NATIVAS.val = array(Expresion.val,Expresion.val)'});}
@@ -380,20 +381,20 @@ LOGICA : EXPRESION or EXPRESION                                 { $$ = new Logic
        |           menos EXPRESION %prec UMENOS                 { $$ = new Aritmetica($2, null, true , 'UNARIO',@1.first_line, @1.last_column); listaRGramar.push({'p':'LOGICA -> menos EXPRESION ','g':'LOGICA.val = array(Expresion.val)'});}
        ;
 
-UNARIA : incremento id                                   { $$ = new Asignacion($2, new Aritmetica(new Identificador($2, @1.first_line, @1.last_column),new Primitivo(1, @1.first_line, @1.last_column),false, '+',  @1.first_line, @1.last_column),@1.first_line, @1.last_column); listaRGramar.push({'p':'UNARIA -> incremento id  ','g':'UNARIA.val = array(id.lexval)'});}
-       | decremento id                                   { $$ = new Asignacion($2, new Aritmetica(new Identificador($2, @1.first_line, @1.last_column),new Primitivo(1, @1.first_line, @1.last_column),false, '-',  @1.first_line, @1.last_column),@1.first_line, @1.last_column); listaRGramar.push({'p':'UNARIA -> decremento id  ','g':'UNARIA.val = array(id.lexval)'});}
-       | id incremento                                   { $$ = new Asignacion($1, new Aritmetica(new Identificador($1, @1.first_line, @1.last_column),new Primitivo(1, @1.first_line, @1.last_column),false, '+',  @1.first_line, @1.last_column),@1.first_line, @1.last_column); listaRGramar.push({'p':'UNARIA -> id incremento ','g':'UNARIA.val = array(id.lexval)'});}
-       | id decremento                                   { $$ = new Asignacion($1, new Aritmetica(new Identificador($1, @1.first_line, @1.last_column),new Primitivo(1, @1.first_line, @1.last_column),false, '-',  @1.first_line, @1.last_column),@1.first_line, @1.last_column); listaRGramar.push({'p':'UNARIA -> id decremento ','g':'UNARIA.val = array(id.lexval)'});}
+UNARIA : incremento id                                   { $$ = new Asignacion($2, new Aritmetica(new Identificador($2, @1.first_line, @1.last_column),new Primitivo(1,tipo.ENTERO, @1.first_line, @1.last_column),false, '+',  @1.first_line, @1.last_column),@1.first_line, @1.last_column); listaRGramar.push({'p':'UNARIA -> incremento id  ','g':'UNARIA.val = array(id.lexval)'});}
+       | decremento id                                   { $$ = new Asignacion($2, new Aritmetica(new Identificador($2, @1.first_line, @1.last_column),new Primitivo(1,tipo.ENTERO, @1.first_line, @1.last_column),false, '-',  @1.first_line, @1.last_column),@1.first_line, @1.last_column); listaRGramar.push({'p':'UNARIA -> decremento id  ','g':'UNARIA.val = array(id.lexval)'});}
+       | id incremento                                   { $$ = new Asignacion($1, new Aritmetica(new Identificador($1, @1.first_line, @1.last_column),new Primitivo(1,tipo.ENTERO, @1.first_line, @1.last_column),false, '+',  @1.first_line, @1.last_column),@1.first_line, @1.last_column); listaRGramar.push({'p':'UNARIA -> id incremento ','g':'UNARIA.val = array(id.lexval)'});}
+       | id decremento                                   { $$ = new Asignacion($1, new Aritmetica(new Identificador($1, @1.first_line, @1.last_column),new Primitivo(1,tipo.ENTERO, @1.first_line, @1.last_column),false, '-',  @1.first_line, @1.last_column),@1.first_line, @1.last_column); listaRGramar.push({'p':'UNARIA -> id decremento ','g':'UNARIA.val = array(id.lexval)'});}
        ;
 
-PRIMITIVO : entero                  {$$ = new Primitivo(Number($1), @1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> entero','g':'PRIMITIVO.val = entero.lexval'});}
-          | decimal                 {$$ = new Primitivo(Number($1), @1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> decimal','g':'PRIMITIVO.val = decimal.lexval'});}
-          | caracter                {$$ = new Primitivo($1, @1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> caracter','g':'PRIMITIVO.val = caracter.lexval'});}
-          | cadena                  {$$ = new Primitivo($1, @1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> cadena','g':'PRIMITIVO.val = cadena.lexval'});}
+PRIMITIVO : entero                  {$$ = new Primitivo(Number($1),tipo.ENTERO, @1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> entero','g':'PRIMITIVO.val = entero.lexval'});}
+          | decimal                 {$$ = new Primitivo(Number($1),tipo.DOUBLE, @1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> decimal','g':'PRIMITIVO.val = decimal.lexval'});}
+          | caracter                {$$ = new Primitivo($1, tipo.CARACTER,@1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> caracter','g':'PRIMITIVO.val = caracter.lexval'});}
+          | cadena                  {$$ = new Primitivo($1,tipo.CADENA, @1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> cadena','g':'PRIMITIVO.val = cadena.lexval'});}
           | id                      {$$ = new Identificador($1, @1.first_line, @1.last_column); listaRGramar.push({'p':'PRIMITIVO -> id','g':'PRIMITIVO.val = id.lexval'});}
-          | true                    {$$ = new Primitivo(true, @1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> true','g':'PRIMITIVO.val = true.lexval'});}
-          | false                   {$$ = new Primitivo(false, @1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> false','g':'PRIMITIVO.val = false.lexval'});}
-          | null                    {$$ = new Primitivo(null, @1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> null','g':'PRIMITIVO.val = null.lexval'});}
+          | true                    {$$ = new Primitivo(true, tipo.BOOLEAN,@1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> true','g':'PRIMITIVO.val = true.lexval'});}
+          | false                   {$$ = new Primitivo(false,tipo.BOOLEAN, @1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> false','g':'PRIMITIVO.val = false.lexval'});}
+          | null                    {$$ = new Primitivo(null,tipo.NULO ,@1.first_line, @1.first_column); listaRGramar.push({'p':'PRIMITIVO -> null','g':'PRIMITIVO.val = null.lexval'});}
           ;
 
 DECLARACIONVARIABLE : TIPO LISTAIDS                                          { $$ = new Declaracion($1, $2, @1.first_line, @1.last_column); listaRGramar.push({'p':'DECLARACIONVARIABLE -> TIPO LISTAIDS','g':'DECLARACIONVARIABLE.val = array(TIPO.val, LISTAIDS.val)'});}

@@ -8,6 +8,8 @@ const Tipo_1 = require("../TablaSimbolos/Tipo");
 const Arreglo_1 = require("../Expresiones/Arreglo");
 const AritArreglo_1 = require("../Expresiones/Operaciones/AritArreglo");
 const Temporales_1 = require("../AST/Temporales");
+const Conversion_1 = require("../Expresiones/Operaciones/Conversion");
+const AccesoArreglo_1 = require("../Expresiones/AccesoArreglo");
 class Declaracion {
     constructor(tipo, lista_simbolos, linea, columna) {
         this.tipo = tipo;
@@ -30,7 +32,7 @@ class Declaracion {
                     let tipo_valor = variable.valor.getTipoArreglo(controlador, ts, ts_u, this.tipo);
                     if (tipo_valor == this.tipo.tipo) {
                         let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, new Tipo_1.Tipo("ARRAY"), variable.identificador, valor);
-                        ts.agregar(variable.identificador, nuevo_sim);
+                        ts.agregar(variable.identificador, nuevo_sim); // array[0] //arreglo
                         ts_u.agregar(variable.identificador, nuevo_sim);
                     }
                     else {
@@ -42,6 +44,32 @@ class Declaracion {
                     let valor = variable.valor.getValor(controlador, ts, ts_u);
                     if (this.getTipo(valor) == this.tipo.tipo) {
                         let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, new Tipo_1.Tipo("ARRAY"), variable.identificador, valor);
+                        ts.agregar(variable.identificador, nuevo_sim);
+                        ts_u.agregar(variable.identificador, nuevo_sim);
+                    }
+                    else {
+                        let error = new Errores_1.Errores("Semantico", `Las variables ${this.getTipo(valor)} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                    }
+                }
+                else if (variable.valor instanceof Conversion_1.Conversion) {
+                    let valor = variable.valor.getValor(controlador, ts, ts_u);
+                    let tipo_local = variable.valor.getTipo(controlador, ts, ts_u);
+                    if (tipo_local == this.tipo.tipo) {
+                        let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, this.tipo, variable.identificador, valor);
+                        ts.agregar(variable.identificador, nuevo_sim);
+                        ts_u.agregar(variable.identificador, nuevo_sim);
+                    }
+                    else {
+                        let error = new Errores_1.Errores("Semantico", `Las variables ${tipo_local} y ${this.tipo.tipo} no son del mismo tipo`, this.linea, this.columna);
+                        controlador.errores.push(error);
+                    }
+                }
+                else if (variable.valor instanceof AccesoArreglo_1.AccesoArreglo) {
+                    let valor = variable.valor.getValor(controlador, ts, ts_u);
+                    let tipo_vemaos = variable.valor.getTipoArreglo(controlador, ts, ts_u);
+                    if (tipo_vemaos == this.tipo.tipo) {
+                        let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, this.tipo, variable.identificador, valor);
                         ts.agregar(variable.identificador, nuevo_sim);
                         ts_u.agregar(variable.identificador, nuevo_sim);
                     }
@@ -68,7 +96,17 @@ class Declaracion {
                 }
             }
             else {
-                let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, this.tipo, variable.identificador, null);
+                let value;
+                if (this.tipo.tipo == Tipo_1.tipo.ENTERO) {
+                    value = 0;
+                }
+                else if (this.tipo.tipo == Tipo_1.tipo.DOUBLE) {
+                    value = 0.00;
+                }
+                else {
+                    value = null;
+                }
+                let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, this.tipo, variable.identificador, value);
                 ts.agregar(variable.identificador, nuevo_sim);
                 ts_u.agregar(variable.identificador, nuevo_sim);
             }

@@ -5,55 +5,35 @@ const Nodo_1 = require("../AST/Nodo");
 const Tipo_1 = require("../TablaSimbolos/Tipo");
 const Temporales_1 = require("../AST/Temporales");
 class Primitivo {
-    constructor(primitivo, linea, columna) {
+    constructor(primitivo, tipo, linea, columna) {
         this.columna = columna;
         this.linea = linea;
         this.primitivo = primitivo;
+        this.tipo = tipo;
     }
     getTipo(controlador, ts, ts_u) {
-        let valor = this.getValor(controlador, ts, ts_u);
+        /*let valor = this.getValor(controlador, ts, ts_u);
+    
         if (typeof valor == "number") {
-            if (this.isInt(Number(valor))) {
-                return Tipo_1.tipo.ENTERO;
-            }
-            return Tipo_1.tipo.DOUBLE;
-        }
-        else if (typeof valor == "string") {
-            if (this.isChar(String(this.primitivo))) {
-                return Tipo_1.tipo.CARACTER;
-            }
-            else {
-                return Tipo_1.tipo.CADENA;
-            }
-        }
-        else if (typeof valor == "boolean") {
-            return Tipo_1.tipo.BOOLEAN;
-        }
-        else if (valor === null) {
-            return Tipo_1.tipo.NULO;
-        }
+          if (this.isInt(Number(valor))) {
+            return tipo.ENTERO;
+          }
+          return tipo.DOUBLE;
+        } else if (typeof valor == "string") {
+          if (this.isChar(String(this.primitivo))) {
+            return tipo.CARACTER;
+          }else{
+          return tipo.CADENA;
+          }
+        } else if (typeof valor == "boolean") {
+          return tipo.BOOLEAN;
+        } else if (valor === null) {
+          return tipo.NULO;
+        }*/
+        return this.tipo;
     }
     getTipoTraduc() {
-        if (typeof this.primitivo == "number") {
-            if (this.isInt(Number(this.primitivo))) {
-                return Tipo_1.tipo.ENTERO;
-            }
-            return Tipo_1.tipo.DOUBLE;
-        }
-        else if (typeof this.primitivo == "string") {
-            if (this.isChar(String(this.primitivo))) {
-                return Tipo_1.tipo.CARACTER;
-            }
-            else {
-                return Tipo_1.tipo.CADENA;
-            }
-        }
-        else if (typeof this.primitivo == "boolean") {
-            return Tipo_1.tipo.BOOLEAN;
-        }
-        else if (this.primitivo === null) {
-            return Tipo_1.tipo.NULO;
-        }
+        return this.tipo;
     }
     getValor(controlador, ts, ts_u) {
         return this.primitivo;
@@ -106,7 +86,7 @@ class Primitivo {
             resultado3D.temporal = new Temporales_1.Temporal("0");
         }
         else if (typeof this.primitivo == "string") {
-            if (this.isChar(String(this.primitivo))) {
+            if (this.tipo == Tipo_1.tipo.CARACTER) {
                 let ascii = this.primitivo.toString().charCodeAt(0);
                 let nodo = new Temporales_1.Resultado3D();
                 nodo.tipo = Tipo_1.tipo.CARACTER;
