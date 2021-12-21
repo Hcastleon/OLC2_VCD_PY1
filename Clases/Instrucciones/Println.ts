@@ -29,6 +29,7 @@ export class Println implements Instruccion {
             result = nuevo_string;
           }
         }
+
         controlador.append(result);
       }
     }
@@ -89,6 +90,9 @@ export class Println implements Instruccion {
     let salida = new Resultado3D();
     // cadena = cadena.temporal.utilizar();
     //cadena = cadena[1:-1];
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%% PRINTLN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
     for (let expres of this.lista_exp) {
       let exp_3D: Resultado3D = expres.traducir(Temp, controlador, ts, ts_u);
 
@@ -226,7 +230,6 @@ export class Println implements Instruccion {
         salida.codigo3D +=
           "\n" + 'printf("%c", (char)' + exp_3D.temporal.nombre + "); // Se imprime char";
       } else if (exp_3D.tipo == tipo.CADENA) {
-        console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
         salida.codigo3D += "\n" + exp_3D.codigo3D;
         let posicion: string = Temp.temporal();
         let valor: string = Temp.temporal();

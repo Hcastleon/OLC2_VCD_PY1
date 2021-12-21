@@ -31,6 +31,10 @@ class DeclaracionStruct {
                 }
             }
         }
+        else {
+            let error = new Errores_1.Errores("Semantico", `El struct ${this.id3}, no existe`, this.linea, this.columna);
+            controlador.errores.push(error);
+        }
     }
     verificarParams(para_llama, para_func, controlador, ts, ts_local, ts_u) {
         if (para_llama.length == (para_func === null || para_func === void 0 ? void 0 : para_func.length)) {
@@ -69,7 +73,6 @@ class DeclaracionStruct {
         // let hijo_sim = new Nodo("Simbolos", "")
         return padre;
     }
-    traducir(Temp, controlador, ts, ts_u) {
-    }
+    traducir(Temp, controlador, ts, ts_u) { }
 }
 exports.DeclaracionStruct = DeclaracionStruct;

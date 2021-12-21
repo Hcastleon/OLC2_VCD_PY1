@@ -1024,6 +1024,7 @@ export class Relacionales extends Operacion implements Expresion {
     ts_u: TablaSim
   ) {
     nodo.tipo = tipo.BOOLEAN;
+
     let v: string = Temp.etiqueta();
     let f: string = Temp.etiqueta();
 
@@ -1083,6 +1084,8 @@ export class Relacionales extends Operacion implements Expresion {
         "\n";
     } else {
       console.log(nodoIzq);
+      if (nodoIzq.codigo3D != "") nodo.codigo3D += nodoIzq.codigo3D;
+      if (nodoDer.codigo3D != "") nodo.codigo3D += nodoDer.codigo3D;
       nodo.codigo3D +=
         "if (" +
         nodoIzq.temporal.nombre +
@@ -1095,6 +1098,19 @@ export class Relacionales extends Operacion implements Expresion {
         "; // Si es verdadero salta a " +
         v +
         "\n";
+
+      let temp: string = Temp.temporal();
+      let etiquetat: string = Temp.etiqueta();
+      let etiquetaf: string = Temp.etiqueta();
+      let salto: string = Temp.etiqueta();
+
+      nodo.codigo3D += etiquetat + ": \n";
+      nodo.codigo3D += temp + " = 1; \n";
+      nodo.codigo3D += Temp.saltoIncondicional(salto);
+      nodo.codigo3D += etiquetaf + ": \n";
+      nodo.codigo3D += temp + " = 0; \n";
+      nodo.codigo3D += salto + ": \n";
+      nodo.temporal = new Temporal(temp);
     }
 
     nodo.codigo3D += "goto " + f + "; //si no se cumple salta a: " + f + "\n";

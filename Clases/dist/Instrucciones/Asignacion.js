@@ -19,8 +19,29 @@ class Asignacion {
             (_a = ts.getSimbolo(this.identificador)) === null || _a === void 0 ? void 0 : _a.setValor(valor);
         }
         else {
-            let error = new Errores_1.Errores("Semantico", `La variable ${this.valor.getValor(controlador, ts, ts_u)}, no existe en el entorno`, this.linea, this.column);
+            let error = new Errores_1.Errores("Semantico", `La variable ${this.identificador}, no existe en el entorno`, this.linea, this.column);
             controlador.errores.push(error);
+        }
+        if (ts.sig instanceof Array) {
+            let entornos = ts.sig;
+            entornos.forEach((entorno) => {
+                if (entorno.nombre == this.identificador) {
+                    entorno.tabla.forEach((element) => {
+                        element.valor = null;
+                    });
+                }
+                else {
+                    /*
+                    let error = new Errores(
+                      "Semantico",
+                      ` El struct ${this.identificador} no existe`,
+                      this.linea,
+                      this.column
+                    );
+                    controlador.errores.push(error);*/
+                    //continue;
+                }
+            });
         }
     }
     recorrer() {
@@ -31,52 +52,61 @@ class Asignacion {
         return padre;
     }
     traducir(Temp, controlador, ts, ts_u) {
-        let salida = new Temporales_1.Resultado3D();
-        //let valor = this.valor.traducir(Temp, controlador, ts, ts_u);
-        let simbolo = ts.getSimbolo(this.identificador);
-        if (simbolo != null) {
-            let nodo = this.valor.traducir(Temp, controlador, ts, ts_u);
-            let ultimoT;
-            if (nodo.codigo3D == "") {
-                ultimoT = nodo.temporal.nombre;
-            }
-            else {
-                if (nodo.tipo == Tipo_1.tipo.CADENA) {
+        if (ts.existe(this.identificador)) {
+            let salida = new Temporales_1.Resultado3D();
+            salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+            salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ASIGANA %%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+            salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+            //let valor = this.valor.traducir(Temp, controlador, ts, ts_u);
+            let simbolo = ts.getSimbolo(this.identificador);
+            if (simbolo != null) {
+                let nodo = this.valor.traducir(Temp, controlador, ts, ts_u);
+                let ultimoT;
+                if (nodo.codigo3D == "") {
                     ultimoT = nodo.temporal.nombre;
                 }
                 else {
-                    ultimoT = Temp.ultimoTemporal();
+                    if (nodo.tipo == Tipo_1.tipo.CADENA) {
+                        ultimoT = nodo.temporal.nombre;
+                    }
+                    else {
+                        ultimoT = Temp.ultimoTemporal();
+                    }
                 }
-            }
-            if (!(nodo.tipo == Tipo_1.tipo.BOOLEAN)) {
-                salida.codigo3D += nodo.codigo3D + "\n";
-            }
-            else {
-                if (simbolo.valor == true) {
-                    ultimoT = "1";
+                if (!(nodo.tipo == Tipo_1.tipo.BOOLEAN)) {
+                    salida.codigo3D += nodo.codigo3D + "\n";
                 }
                 else {
-                    ultimoT = "0";
+                    if (simbolo.valor == true) {
+                        ultimoT = "1";
+                    }
+                    else {
+                        ultimoT = "0";
+                    }
+                }
+                if (ts.nombre != "Global" && simbolo != null) {
+                    if (ts.entorno == 0) {
+                        ts.entorno = ts.entorno + ts.ant.entorno;
+                    }
+                    let temp = Temp.temporal();
+                    salida.codigo3D += temp + " = P + " + simbolo.posicion + "; \n";
+                    salida.codigo3D += "stack[(int)" + temp + "]  = " + ultimoT + "; \n";
+                    //simbolo.posicion = ts.entorno;
+                    //ts.entorno++;
+                }
+                else if (ts.nombre == "Global" && simbolo != null) {
+                    // ts.entorno++;
+                    salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n";
+                    //simbolo.posicion = ts.entorno;
+                    //ts.entorno++;
                 }
             }
-            if (ts.nombre != "Global" && simbolo != null) {
-                if (ts.entorno == 0) {
-                    ts.entorno = ts.entorno + ts.ant.entorno;
-                }
-                let temp = Temp.temporal();
-                salida.codigo3D += temp + " = P + " + simbolo.posicion + "; \n";
-                salida.codigo3D += "stack[(int)" + temp + "]  = " + ultimoT + "; \n";
-                //simbolo.posicion = ts.entorno;
-                //ts.entorno++;
-            }
-            else if (ts.nombre == "Global" && simbolo != null) {
-                // ts.entorno++;
-                salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n";
-                //simbolo.posicion = ts.entorno;
-                //ts.entorno++;
-            }
+            return salida;
         }
-        return salida;
+        else {
+            let error = new Errores_1.Errores("Semantico", `La variable ${this.identificador}, no existe en el entorno`, this.linea, this.column);
+            controlador.errores.push(error);
+        }
     }
 }
 exports.Asignacion = Asignacion;

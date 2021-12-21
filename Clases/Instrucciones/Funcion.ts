@@ -33,7 +33,7 @@ export class Funcion extends Simbolos implements Instruccion {
     this.linea = linea;
     this.column = columna;
     this.etiqueta = "";
-    this.entornoTrad = new TablaSim(null,"");
+    this.entornoTrad = new TablaSim(null, "");
   }
 
   agregarSimboloFunc(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
@@ -58,6 +58,8 @@ export class Funcion extends Simbolos implements Instruccion {
       tipo_aux = "string";
     } else if (valor_type == "BOOLEAN") {
       tipo_aux = "boolean";
+    } else {
+      tipo_aux = "VOID";
     }
 
     for (let ins of this.lista_ints) {
@@ -86,7 +88,7 @@ export class Funcion extends Simbolos implements Instruccion {
             } else {
               let error = new Errores(
                 "Semantico",
-                ` La funcion no concuerda con el tipo`,
+                ` La funcion ${this.identificador} no concuerda con el tipo`,
                 this.linea,
                 this.column
               );

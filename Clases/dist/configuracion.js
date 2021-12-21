@@ -1,77 +1,82 @@
 // ------------------- global ---------------------------------------
 var TabId = 0;
-var ListaTab= [];
+var ListaTab = [];
 var TabActual = null;
 var ejecucion = null;
 var TablaGramar = [];
-var controlador =null;
+var controlador = null;
 var entornoGlobal = null;
 var entornoU = null;
 var Temp = null;
 var instrucciones = null;
 // ------------------- reload ----------------------------------------
-function loadPage(){
+function loadPage() {
   let cm = new CodeMirror.fromTextArea(document.getElementById(`textInput-Blank`), {
     mode: "javascript",
     theme: "dracula",
-    lineNumbers:true,
+    lineNumbers: true,
     autoCloseBrackets: true,
-    readOnly: false
+    readOnly: false,
   });
   cm.setSize(null, 450);
   cm.refresh;
-  let tab_completo = { editor: cm, tab:`Blank`, pos:-1 };
+  let tab_completo = { editor: cm, tab: `Blank`, pos: -1 };
   ListaTab.push(tab_completo);
-  TabActual=tab_completo;
+  TabActual = tab_completo;
 }
-document.getElementById("body").onload = function() {loadPage()};
+document.getElementById("body").onload = function () {
+  loadPage();
+};
 // ------------------- open document ---------------------------------
-function openDoc(e){
-    let file = document.getElementById("fileDoc");
-    if (file) file.click();
+function openDoc(e) {
+  let file = document.getElementById("fileDoc");
+  if (file) file.click();
 }
 
-function changeTabs(info){
+function changeTabs(info) {
   TabActual = ListaTab.find(function (element) {
-      return element.tab === info;
+    return element.tab === info;
   });
   TabActual.editor.refresh;
 }
 
-function handleFileDoc(){
-    let file = document.getElementById("fileDoc").files[0];
-    let fullPath = document.getElementById("fileDoc").value;
-    var startIndex = (fullPath.indexOf('\\') >= 0 ? fullPath.lastIndexOf('\\') : fullPath.lastIndexOf('/'));
-    var filename = fullPath.substring(startIndex);
-    if (filename.indexOf('\\') === 0 || filename.indexOf('/') === 0) {
-        filename = filename.substring(1);
-    }
-    filename = filename.substring(0,filename.indexOf('\.'));
-    let fileReader = new FileReader();
-    fileReader.onload = function (fileLoadedEvent) {
-        let text = fileLoadedEvent.target.result;
-        addTab(filename);
-        addContentTab(text,filename);
-        TabId++;
-    };
-    fileReader.readAsText(file, "UTF-8");
+function handleFileDoc() {
+  let file = document.getElementById("fileDoc").files[0];
+  let fullPath = document.getElementById("fileDoc").value;
+  var startIndex =
+    fullPath.indexOf("\\") >= 0 ? fullPath.lastIndexOf("\\") : fullPath.lastIndexOf("/");
+  var filename = fullPath.substring(startIndex);
+  if (filename.indexOf("\\") === 0 || filename.indexOf("/") === 0) {
+    filename = filename.substring(1);
+  }
+  filename = filename.substring(0, filename.indexOf("."));
+  let fileReader = new FileReader();
+  fileReader.onload = function (fileLoadedEvent) {
+    let text = fileLoadedEvent.target.result;
+    addTab(filename);
+    addContentTab(text, filename);
+    TabId++;
+  };
+  fileReader.readAsText(file, "UTF-8");
 }
 
-function addTab(filename){
-    let tab = document.getElementById('myTab').innerHTML;
-    let aux = tab.replace("active","");
-    aux = aux.replace("true","false");
-    document.getElementById('myTab').innerHTML= aux +
+function addTab(filename) {
+  let tab = document.getElementById("myTab").innerHTML;
+  let aux = tab.replace("active", "");
+  aux = aux.replace("true", "false");
+  document.getElementById("myTab").innerHTML =
+    aux +
     `<li class="nav-item" role="presentation">
     <button class="nav-link active" id="${filename}-${TabId}-tab" data-bs-toggle="tab" data-bs-target="#${filename}-${TabId}" type="button" role="tab" aria-controls="${filename}-${TabId}" aria-selected="true" onClick="changeTabs('${filename}-${TabId}')">${filename}-${TabId}</button>
-    </li>`
+    </li>`;
 }
 
-function addContentTab(text,filename){
-    let tab = document.getElementById('myTabContent').innerHTML;
-    let aux = tab.replace("tab-pane fade show active","tab-pane fade");
-    document.getElementById('myTabContent').innerHTML= aux +
-        `<div class="tab-pane fade show active" id="${filename}-${TabId}" role="tabpanel" aria-labelledby="${filename}-${TabId}-tab">
+function addContentTab(text, filename) {
+  let tab = document.getElementById("myTabContent").innerHTML;
+  let aux = tab.replace("tab-pane fade show active", "tab-pane fade");
+  document.getElementById("myTabContent").innerHTML =
+    aux +
+    `<div class="tab-pane fade show active" id="${filename}-${TabId}" role="tabpanel" aria-labelledby="${filename}-${TabId}-tab">
         <!-- **CONSOLES** -->
         <div class="container">
             <div class="row">
@@ -165,80 +170,87 @@ function addContentTab(text,filename){
                   </div>
             </div>
         </div>
-      </div>`
-    let cm = new CodeMirror.fromTextArea(document.getElementById(`textInput-${filename}-${TabId}`), {
-      lineNumbers: true,
-      mode: "javascript",
-      theme: "dracula",
-      lineWrapping: false
-    });
-    cm.getDoc().setValue(text);
-    cm.refresh;
-    let tab_completo = { editor: cm, tab:`${filename}-${TabId}`, pos:TabId };
-    ListaTab.push(tab_completo);
-    TabActual=tab_completo;
+      </div>`;
+  let cm = new CodeMirror.fromTextArea(document.getElementById(`textInput-${filename}-${TabId}`), {
+    lineNumbers: true,
+    mode: "javascript",
+    theme: "dracula",
+    lineWrapping: false,
+  });
+  cm.getDoc().setValue(text);
+  cm.refresh;
+  let tab_completo = { editor: cm, tab: `${filename}-${TabId}`, pos: TabId };
+  ListaTab.push(tab_completo);
+  TabActual = tab_completo;
 }
 // -------------------------------------- reporteria -----------------------------------------
-function graficando_ast_d(contenido){
+function graficando_ast_d(contenido) {
   var DOTstring = obtener_arbol_ast_(contenido);
-  
-  var container = document.getElementById('arbol_ast');
-  var parsedData = vis.network.convertDot(DOTstring);
-  
-  var dataDOT = {
-       nodes: parsedData.nodes,
-       edges: parsedData.edges
-       }
-       // OPTIONs
-   var options = {
-   autoResize: true,
-   physics:{
-   stabilization:false
-   },
-   layout: {
-           hierarchical:{
-               levelSeparation: 150,
-               nodeSpacing: 150,
-               parentCentralization: true,
-               direction: 'UD',
-               sortMethod: 'directed' 
-           },
-       }
-   };
 
-   var network = new vis.Network(container, dataDOT, options);
-  
+  var container = document.getElementById("arbol_ast");
+  var parsedData = vis.network.convertDot(DOTstring);
+
+  var dataDOT = {
+    nodes: parsedData.nodes,
+    edges: parsedData.edges,
+  };
+  // OPTIONs
+  var options = {
+    autoResize: true,
+    physics: {
+      stabilization: false,
+    },
+    layout: {
+      hierarchical: {
+        levelSeparation: 150,
+        nodeSpacing: 150,
+        parentCentralization: true,
+        direction: "UD",
+        sortMethod: "directed",
+      },
+    },
+  };
+
+  var network = new vis.Network(container, dataDOT, options);
 }
 
-
-function obtener_arbol_ast_(contenido){
-  var grafo = `digraph {
+function obtener_arbol_ast_(contenido) {
+  var grafo =
+    `digraph {
       node [shape=box, fontsize=15]
       edge [length=150, color=#ad85e4, fontcolor=black]
-      `+contenido+`}`;
+      ` +
+    contenido +
+    `}`;
   return grafo;
 }
 
+document.getElementById("prueba").onclick = function () {
+  ej();
+};
+document.getElementById("codigo3d").onclick = function () {
+  ej2();
+};
+document.getElementById("rpgramatica").onclick = function () {
+  obtener_gramar();
+};
 
-document.getElementById("prueba").onclick = function() {ej()};
-document.getElementById("codigo3d").onclick = function() {ej2()};
-document.getElementById("rpgramatica").onclick = function() {obtener_gramar()};
-
-function obtener_gramar(){
+function obtener_gramar() {
   let contiene = "";
   var contador = 0;
-    for (let produc of TablaGramar) {
-      contador += 1;
-      contiene += `<tr>
+  for (let produc of TablaGramar) {
+    contador += 1;
+    contiene += `<tr>
                             <th scope="row">${contador}</th>
                             <td>${produc.p}</td>
                             <td>${produc.g}</td>
                            </tr>`;
-    }
-    document.getElementById(`tabla_g-Blank`).innerHTML = contiene;
+  }
+  document.getElementById(`tabla_g-Blank`).innerHTML = contiene;
 }
 
-function ej(){
+function ej() {
+  document.getElementById('tabla_e-Blank').value = document.getElementById('tabla_e-Blank').defaultValue;
   ejecucion = ejecutarCodigo(TabActual.editor.getValue());
   document.getElementById(`textOutput-Blank`).value = ejecucion.salida;
   document.getElementById(`tabla_e-Blank`).innerHTML = ejecucion.tabla_e;
@@ -247,10 +259,9 @@ function ej(){
   graficando_ast_d(ejecucion.ast);
 }
 
-function ej2(){
+function ej2() {
   document.getElementById(`textOutputTrans-Blank`).value = ejecutarCodigo3d();
 }
-
 
 Object.defineProperty(exports, "__esModule", { value: true });
 const Ast_1 = require("./AST/Ast");
@@ -277,46 +288,60 @@ function ejecutarCodigo(entrada) {
   controlador.errores = listaErrores.slice();
   Temp = new Temporales_1.Temporales();
   const ast = new Ast_1.AST(instrucciones);
+  
+
   instrucciones.forEach((ins) => {
-      if (ins instanceof Funcion_1.Funcion) {
-          let funcion = ins;
-          funcion.agregarSimboloFunc(controlador, entornoGlobal, entornoU);
-      }
-      if (ins instanceof Declaracion_1.Declaracion || ins instanceof Asignacion_1.Asignacion) {
-          ins.ejecutar(controlador, entornoGlobal, entornoU);
-      }
+    if (ins instanceof Funcion_1.Funcion) {
+      let funcion = ins;
+      funcion.agregarSimboloFunc(controlador, entornoGlobal, entornoU);
+    }
+    if (ins instanceof Struct_1.Struct) {
+      let funcion = ins;
+      funcion.agregarSimboloStruct(controlador, entornoGlobal, entornoU);
+      // funcion.ejecutar(controlador, entornoGlobal, entornoU);
+    }
+
+    if (ins instanceof Declaracion_1.Declaracion || ins instanceof Asignacion_1.Asignacion) {
+      ins.ejecutar(controlador, entornoGlobal, entornoU);
+    }
   });
   instrucciones.forEach((element) => {
-      if (element instanceof Funcion_1.Funcion) {
-          let funcion = element;
-          if (funcion.getIdentificador() == "main") {
-              element.ejecutar(controlador, entornoGlobal, entornoU);
-          }
+    if (element instanceof Funcion_1.Funcion) {
+      let funcion = element;
+      if (funcion.getIdentificador() == "main") {
+        element.ejecutar(controlador, entornoGlobal, entornoU);
       }
+    }
   });
   let raiz = new Nodo_1.Nodo("Inicio", "");
   instrucciones.forEach((element) => {
-      raiz.addHijo(element.recorrer());
+    raiz.addHijo(element.recorrer());
   });
   let grafo = new Arbol_1.Arbol();
   let res = grafo.tour(raiz);
-  return { salida: controlador.consola, tabla_e: controlador.graficar_tErrores(), tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0), ast: res, gramar: reportGramar };
+  return {
+    salida: controlador.consola,
+    tabla_e: controlador.graficar_tErrores(),
+    tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0),
+    ast: res,
+    gramar: reportGramar,
+  };
 }
 
 function ejecutarCodigo3d() {
   instrucciones.forEach((ins) => {
-      if (ins instanceof Declaracion_1.Declaracion || ins instanceof Asignacion_1.Asignacion) {
-          let a = ins.traducir(Temp, controlador, entornoGlobal, entornoU);
-          controlador.appendT("\n" + a.codigo3D);
-      }
+    if (ins instanceof Declaracion_1.Declaracion || ins instanceof Asignacion_1.Asignacion) {
+      let a = ins.traducir(Temp, controlador, entornoGlobal, entornoU);
+      controlador.appendT("\n" + a.codigo3D);
+    }
   });
   instrucciones.forEach((element) => {
-      if (element instanceof Funcion_1.Funcion) {
-          let funcion = element;
-          if (funcion.getIdentificador() == "main") {
-              element.traducir(Temp, controlador, entornoGlobal, entornoU);
-          }
+    if (element instanceof Funcion_1.Funcion) {
+      let funcion = element;
+      if (funcion.getIdentificador() == "main") {
+        element.traducir(Temp, controlador, entornoGlobal, entornoU);
       }
+    }
   });
 
   return controlador.texto;

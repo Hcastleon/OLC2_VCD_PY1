@@ -1,0 +1,63 @@
+int var1 = 10;
+int var2 = 20;
+double punteoBasicas = 0.0;
+double declaracion, asignacion, aritmeticas, relacionales, logicas;
+
+int dimension = 3;
+
+
+void main(){
+    double val1 = 0.0;
+    double val2 = 0.0;
+    double val3 = 0.0;
+    double a = 0.0;
+    double b = 0;
+
+    println("El valor defecto de declacion es 0 = ",declaracion);
+    print("El valor defecto de asignacion es 0 =", asignacion);
+    println(" y de aritmeticas 0 =", aritmeticas);
+    print("Probando ");
+    println("Manejo de Entornos");
+
+    if(declaracion == 0.0 && asignacion == 0.0 && aritmeticas == 0.0){
+        declaracion = declaracion + 0.50; 
+    }else{
+        declaracion = 0.0;
+    }
+     println("El valor de var1 global es 10= ",a);  //10
+    if(var1==10){
+        declaracion = declaracion + 0.25; 
+    }
+
+    int var1 = 5*5;
+    println("El valor de var1 local es ", a);  //25
+    if(var1==25){
+        declaracion = declaracion + 0.25; 
+    }
+    
+    punteoBasicas = -10.0;
+    var2 = 40;
+    if(punteoBasicas == -10.0 && var2 == 40){
+        asignacion =  1;
+    }
+
+    println("Declaraciones = ",declaracion);
+    println("Asignaciones = ",asignacion);
+  
+  
+  
+      String String_3;
+    String String_4;
+    int int2_;
+    boolean TRUE = true;
+    boolean FALSE = false;
+    int2_ = 45;
+    int2_ = int2_ - 1; 
+    String ab = string(int2_ > 77 || FALSE);
+    String_3 = string(int2_ > 77 || FALSE) & "," & string(int2_ < 78 && TRUE) & "," & string(int2_ + 10 <= int2_ || FALSE) & "," & string(!!!!!!!!!!!! (int2_ + 10 >= int2_));
+    //println(int2_ > 77 || FALSE,",",int2_ < 78 && TRUE,",",int2_ + 10 <= int2_ || FALSE,",",!!!!!!!!!!!! (int2_ + 10 >= int2_));  ////false, true, false, true
+    String_4 = string(int2_ >= 77 || -1 < 100) & "," & string(int2_ > 78 && 100 + 0 == 100);
+    print(int2_ >= 77 || -1 < 100,","); println(int2_ > 78 && 100 + 0 == 100);  //true, false
+
+  	println("Lógica 1 = ",ab); //false,true,false,true
+}

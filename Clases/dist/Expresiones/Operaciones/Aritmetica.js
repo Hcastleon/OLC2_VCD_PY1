@@ -54,12 +54,12 @@ class Aritmetica extends Operaciones_1.Operacion {
                             return valor_expre1 + valor_expre2.charCodeAt(0);
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
@@ -73,22 +73,22 @@ class Aritmetica extends Operaciones_1.Operacion {
                                 return valor_expre1.charCodeAt(0) + valor_expre2.charCodeAt(0);
                             }
                             else {
-                                let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                                let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                                 controlador.errores.push(error);
                             }
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
@@ -102,12 +102,12 @@ class Aritmetica extends Operaciones_1.Operacion {
                             return valor_expre1 - valor_expre2.charCodeAt(0);
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
@@ -121,22 +121,22 @@ class Aritmetica extends Operaciones_1.Operacion {
                                 return valor_expre1.charCodeAt(0) - valor_expre2.charCodeAt(0);
                             }
                             else {
-                                let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                                let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                                 controlador.errores.push(error);
                             }
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
@@ -150,12 +150,12 @@ class Aritmetica extends Operaciones_1.Operacion {
                             return valor_expre1 * valor_expre2.charCodeAt(0);
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
@@ -169,22 +169,22 @@ class Aritmetica extends Operaciones_1.Operacion {
                                 return valor_expre1.charCodeAt(0) * valor_expre2.charCodeAt(0);
                             }
                             else {
-                                let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                                let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                                 controlador.errores.push(error);
                             }
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
@@ -198,12 +198,12 @@ class Aritmetica extends Operaciones_1.Operacion {
                             return valor_expre1 / valor_expre2.charCodeAt(0);
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
@@ -217,22 +217,22 @@ class Aritmetica extends Operaciones_1.Operacion {
                                 return valor_expre1.charCodeAt(0) / valor_expre2.charCodeAt(0);
                             }
                             else {
-                                let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                                let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                                 controlador.errores.push(error);
                             }
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
@@ -246,12 +246,12 @@ class Aritmetica extends Operaciones_1.Operacion {
                             return valor_expre1 % valor_expre2.charCodeAt(0);
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
@@ -265,22 +265,22 @@ class Aritmetica extends Operaciones_1.Operacion {
                                 return valor_expre1.charCodeAt(0) % valor_expre2.charCodeAt(0);
                             }
                             else {
-                                let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                                let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                                 controlador.errores.push(error);
                             }
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
@@ -289,7 +289,7 @@ class Aritmetica extends Operaciones_1.Operacion {
                     return -valor_U;
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
@@ -305,7 +305,7 @@ class Aritmetica extends Operaciones_1.Operacion {
                         return valor_expre1 + valor_expre2.toString();
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
@@ -314,7 +314,7 @@ class Aritmetica extends Operaciones_1.Operacion {
                         return valor_expre1.toString() + valor_expre2;
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
@@ -323,12 +323,12 @@ class Aritmetica extends Operaciones_1.Operacion {
                         return valor_expre1.toString() + valor_expre2;
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
@@ -343,17 +343,17 @@ class Aritmetica extends Operaciones_1.Operacion {
                             return sum_concat;
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
                 else {
-                    let error = new Errores_1.Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+                    let error = new Errores_1.Errores("Semantico", `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
                     controlador.errores.push(error);
                 }
                 break;
@@ -407,29 +407,45 @@ class Aritmetica extends Operaciones_1.Operacion {
         }*/
         let temporal = Temp.nuevoTemporal();
         let op = "";
-        if (signo == "%") {
-            op = temporal.obtener() + '= fmod(' + valor1.temporal.utilizar() + "," + valor2.temporal.utilizar() + ");";
+        if (valor1 instanceof Simbolos_1.Simbolos && valor2 instanceof Simbolos_1.Simbolos == false) {
+            //todo menos %
+            let res = this.operacionSimbolosIzq(valor1, valor2, op, temporal, result, signo, Temp, ts);
+            op += res.op;
+            temporal = res.temporal;
+            result.tipo = Tipo_1.tipo.DOUBLE;
+        }
+        else if (valor2 instanceof Simbolos_1.Simbolos && valor1 instanceof Simbolos_1.Simbolos == false) {
+            let res = this.operacionSimbolosDer(valor1, valor2, op, temporal, result, signo, Temp, ts);
+            op += res.op;
+            temporal = res.temporal;
+            result.tipo = Tipo_1.tipo.DOUBLE;
+        }
+        else if (valor2 instanceof Simbolos_1.Simbolos && valor1 instanceof Simbolos_1.Simbolos) {
+            let res = this.operacionSimbolos(valor1, valor2, op, temporal, result, signo, Temp, ts);
+            op += res.op;
+            temporal = res.temporal;
+            result.tipo = Tipo_1.tipo.DOUBLE;
         }
         else {
-            if (valor1 instanceof Simbolos_1.Simbolos && valor2 instanceof Simbolos_1.Simbolos == false) {
-                let res = this.operacionSimbolosIzq(valor1, valor2, op, temporal, result, signo, Temp, ts);
-                op += res.op;
-                temporal = res.temporal;
-                result.tipo = Tipo_1.tipo.ID;
-            }
-            else if (valor2 instanceof Simbolos_1.Simbolos && valor1 instanceof Simbolos_1.Simbolos == false) {
-                let res = this.operacionSimbolosDer(valor1, valor2, op, temporal, result, signo, Temp, ts);
-                op += res.op;
-                temporal = res.temporal;
-                result.tipo = Tipo_1.tipo.ID;
-            }
-            else if (valor2 instanceof Simbolos_1.Simbolos && valor1 instanceof Simbolos_1.Simbolos) {
-                let res = this.operacionSimbolos(valor1, valor2, op, temporal, result, signo, Temp, ts);
-                op += res.op;
-                temporal = res.temporal;
+            if (signo == "%") {
+                op =
+                    temporal.obtener() +
+                        "= fmod(" +
+                        valor1.temporal.utilizar() +
+                        "," +
+                        valor2.temporal.utilizar() +
+                        ");";
             }
             else {
-                op = temporal.obtener() + '=' + valor1.temporal.utilizar() + " " + signo + " " + valor2.temporal.utilizar() + ";";
+                op =
+                    temporal.obtener() +
+                        "=" +
+                        valor1.temporal.utilizar() +
+                        " " +
+                        signo +
+                        " " +
+                        valor2.temporal.utilizar() +
+                        ";";
             }
         }
         resultado += op;
@@ -528,7 +544,9 @@ class Aritmetica extends Operaciones_1.Operacion {
             nodo.codigo3D += v + ": \n";
             nodo.codigo3D += aux + " = heap[(int)" + temp2 + "]; //Posicion de inicio de la cadena\n";
             nodo.temporal.nombre = aux;
-            nodo.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) + "//Si se cumple es el final de cadena \n";
+            nodo.codigo3D +=
+                Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
+                    "//Si se cumple es el final de cadena \n";
             nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
             nodo.codigo3D += "H = H + 1; // invrementar heap \n";
             nodo.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de cadena \n";
@@ -538,16 +556,26 @@ class Aritmetica extends Operaciones_1.Operacion {
         }
         else {
             //nodo.codigo3D += nodito.codigo3D;
-            nodo.codigo3D += "// %%%%%%%%%%%%%%%%%%%%5 Concatenando cadena " + nodito.temporal.nombre + "%%%%%%%%%%%%% \n";
+            nodo.codigo3D +=
+                "// %%%%%%%%%%%%%%%%%%%%5 Concatenando cadena " +
+                    nodito.temporal.nombre +
+                    "%%%%%%%%%%%%% \n";
             let aux = Temp.temporal();
             let v = Temp.etiqueta();
             let f = Temp.etiqueta();
             nodo.codigo3D += v + ": \n";
-            nodo.codigo3D += aux + " = heap[(int)" + nodito.temporal.nombre + "]; // Se almacena primer valor \n";
-            nodo.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) + "//Si se cumple es el final de cadena \n";
+            nodo.codigo3D +=
+                aux + " = heap[(int)" + nodito.temporal.nombre + "]; // Se almacena primer valor \n";
+            nodo.codigo3D +=
+                Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
+                    "//Si se cumple es el final de cadena \n";
             nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
             nodo.codigo3D += "H = H + 1; // invrementar heap \n";
-            nodo.codigo3D += nodito.temporal.nombre + " = " + nodito.temporal.nombre + " + 1 ; //incrementar pos de cadena \n";
+            nodo.codigo3D +=
+                nodito.temporal.nombre +
+                    " = " +
+                    nodito.temporal.nombre +
+                    " + 1 ; //incrementar pos de cadena \n";
             nodo.codigo3D += Temp.saltoIncondicional(v);
             nodo.codigo3D += f + ": \n";
         }
@@ -603,7 +631,12 @@ class Aritmetica extends Operaciones_1.Operacion {
                 op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
                 let nuevo = Temp.temporal();
                 op += valor2.codigo3D;
-                op += nuevo + '=' + val + " " + signo + " " + valor2.temporal.nombre + "; \n";
+                if (signo == "%") {
+                    op += nuevo + "= fmod(" + val + "," + valor2.temporal.nombre + "); \n";
+                }
+                else {
+                    op += nuevo + "=" + val + " " + signo + " " + valor2.temporal.nombre + "; \n";
+                }
                 temporal.nombre = nuevo;
                 //  op += "stack[(int)" + temporal.obtener() + "]  = " + nuevo + "; \n"
                 // result.tipo = tipo.ID;
@@ -614,7 +647,12 @@ class Aritmetica extends Operaciones_1.Operacion {
                 let val = Temp.temporal();
                 op += val + " = stack[(int)" + ts.entorno + "] ;\n";
                 let nuevo = Temp.temporal();
-                op += nuevo + '=' + val + " " + signo + " " + valor2.temporal.nombre + "; \n";
+                if (signo == "%") {
+                    op += nuevo + "= fmod(" + val + "," + valor2.temporal.nombre + "); \n";
+                }
+                else {
+                    op += nuevo + "=" + val + " " + signo + " " + valor2.temporal.nombre + "; \n";
+                }
                 temporal.nombre = nuevo;
                 //  op += "stack[(int)" + ts.entorno + "]  = " + nuevo + "; \n"
                 // result.tipo = tipo.ID;
@@ -635,14 +673,24 @@ class Aritmetica extends Operaciones_1.Operacion {
                 op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
                 let nuevo = Temp.temporal();
                 op += valor1.codigo3D;
-                op += nuevo + '=' + valor1.temporal.nombre + " " + signo + " " + val + "; \n";
+                if (signo == "%") {
+                    op += nuevo + "= fmod(" + valor1.temporal.nombre + "," + val + "); \n";
+                }
+                else {
+                    op += nuevo + "=" + valor1.temporal.nombre + " " + signo + " " + val + "; \n";
+                }
                 temporal.nombre = nuevo;
             }
             else if (ts.nombre == "Global" && valor2 != null) {
                 let val = Temp.temporal();
                 op += val + " = stack[(int)" + ts.entorno + "] ;\n";
                 let nuevo = Temp.temporal();
-                op += nuevo + '=' + valor1.temporal.nombre + " " + signo + " " + val + "; \n";
+                if (signo == "%") {
+                    op += nuevo + "= fmod(" + valor1.temporal.nombre + "," + val + "); \n";
+                }
+                else {
+                    op += nuevo + "=" + valor1.temporal.nombre + " " + signo + " " + val + "; \n";
+                }
                 temporal.nombre = nuevo;
             }
         }
@@ -663,7 +711,12 @@ class Aritmetica extends Operaciones_1.Operacion {
                 op += val2 + " = stack[(int)" + temp2 + "] ;\n";
                 //---------
                 let nuevo = Temp.temporal();
-                op += nuevo + '=' + val + " " + signo + " " + val2 + "; \n";
+                if (signo == "%") {
+                    op += nuevo + "= fmod(" + val + "," + val2 + "); \n";
+                }
+                else {
+                    op += nuevo + "=" + val + " " + signo + " " + val2 + "; \n";
+                }
                 temporal.nombre = nuevo;
             }
             else if (ts.nombre == "Global" && valor2 != null) {
@@ -673,7 +726,12 @@ class Aritmetica extends Operaciones_1.Operacion {
                 op += val2 + " = stack[(int)" + valor2.posicion + "] ;\n";
                 //---------
                 let nuevo = Temp.temporal();
-                op += nuevo + '=' + val + " " + signo + " " + val2 + "; \n";
+                if (signo == "%") {
+                    op += nuevo + "= fmod(" + val + "," + val2 + "); \n";
+                }
+                else {
+                    op += nuevo + "=" + val + " " + signo + " " + val2 + "; \n";
+                }
                 temporal.nombre = nuevo;
             }
         }

@@ -21,18 +21,17 @@ class Struct extends Simbolos_1.Simbolos {
     }
     ejecutar(controlador, ts, ts_u) {
         //this.entorno = new TablaSim(ts, this.identificador);
-        // ts.setSiguiente(this.entorno);  
+        // ts.setSiguiente(this.entorno);
         /*
-        this.declaraciones.forEach((ins) => {
-            ins.ejecutar(controlador, this.entorno, ts_u);
-        });*/
-        return null;
+            this.declaraciones.forEach((ins) => {
+                ins.ejecutar(controlador, this.entorno, ts_u);
+            });*/
+        // return null
     }
     recorrer() {
         let padre = new Nodo_1.Nodo(this.identificador, "");
         return padre;
     }
-    traducir(Temp, controlador, ts, ts_u) {
-    }
+    traducir(Temp, controlador, ts, ts_u) { }
 }
 exports.Struct = Struct;

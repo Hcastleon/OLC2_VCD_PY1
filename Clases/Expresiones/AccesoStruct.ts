@@ -19,12 +19,7 @@ export class AccesoStruct implements Expresion {
   public linea: number;
   public column: number;
 
-  constructor(
-    acceso1: Identificador,
-    acceso2: Identificador,
-    linea: any,
-    columna: any
-  ) {
+  constructor(acceso1: Identificador, acceso2: Identificador, linea: any, columna: any) {
     this.acceso1 = acceso1;
     this.acceso2 = acceso2;
     this.linea = linea;
@@ -43,23 +38,38 @@ export class AccesoStruct implements Expresion {
     //busco en global
     let entornos = ts.sig;
     let res;
-    if(entornos instanceof Array){
-        entornos.forEach(entorno => {
-        if(entorno.nombre == this.acceso1.identificador){
-            
-            let valor = entorno.getSimbolo(this.acceso2.identificador);
-            
-            if(valor != null){
-                console.log("es: "+valor.valor);
-                res = valor.valor
-            }
-            return valor
-        }
-        return null
-    });
+    /*
+    while (entornos.ant != null) {
+      // let existe = ts.tabla.get(id.toLowerCase());
+      let existe = entornos.tabla.get(this.acceso1.identificador);
+      if (existe != null) {
+        break;
+      }
+      entornos = entornos.ant;
     }
-    return res
+*/
+    if (entornos instanceof Array) {
+      entornos.forEach((entorno) => {
+        if (entorno.nombre == this.acceso1.identificador) {
+          let valor = entorno.getSimbolo(this.acceso2.identificador);
 
+          if (valor != null) {
+            res = valor.valor;
+          }
+          return valor;
+        }
+        let error = new Errores(
+          "Semantico acces",
+          ` El struct ${this.acceso1.identificador} no existe`,
+          this.linea,
+          this.column
+        );
+        controlador.errores.push(error);
+        return null;
+      });
+    }
+
+    return res;
   }
 
   getValorRecursivo(
@@ -113,7 +123,5 @@ export class AccesoStruct implements Expresion {
     return padre;
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
-      
-  }
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {}
 }

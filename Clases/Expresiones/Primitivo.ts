@@ -12,7 +12,7 @@ export class Primitivo implements Expresion {
   public columna: number;
   public tipo: any;
 
-  constructor(primitivo: any,tipo:any, linea: number, columna: number) {
+  constructor(primitivo: any, tipo: any, linea: number, columna: number) {
     this.columna = columna;
     this.linea = linea;
     this.primitivo = primitivo;
@@ -38,10 +38,11 @@ export class Primitivo implements Expresion {
     } else if (valor === null) {
       return tipo.NULO;
     }*/
-    return this.tipo
+    return this.tipo;
   }
 
-  getTipoTraduc() {/*
+  getTipoTraduc() {
+    /*
     if (typeof this.primitivo == "number") {
       if (this.isInt(Number(this.primitivo))) {
         return tipo.ENTERO;
@@ -58,7 +59,7 @@ export class Primitivo implements Expresion {
     } else if (this.primitivo === null) {
       return tipo.NULO;
     }*/
-    return this.tipo
+    return this.tipo;
   }
   getValor(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     return this.primitivo;
@@ -94,10 +95,9 @@ export class Primitivo implements Expresion {
     } else if (typeof this.primitivo == "string") {
       if (this.isChar(String(this.primitivo))) {
         resultado3D.tipo = tipo.CARACTER;
-      }else{
-      resultado3D.tipo = tipo.CADENA;
+      } else {
+        resultado3D.tipo = tipo.CADENA;
       }
-      
     } else if (typeof this.primitivo == "boolean") {
       resultado3D.tipo = tipo.BOOLEAN;
     } else if (this.primitivo === null) {
@@ -106,8 +106,42 @@ export class Primitivo implements Expresion {
     //-------------------
 
     if (this.primitivo == true && typeof this.primitivo == "boolean") {
+      /*goto L0/L1
+    L0:
+    t0 = 1;
+    goto L4;
+    L1:
+    t0 = 0;
+    L4:*/
+      let temp: string = Temp.temporal();
+      let etiquetat: string = Temp.etiqueta();
+      let etiquetaf: string = Temp.etiqueta();
+      let salto: string = Temp.etiqueta();
+
+      resultado3D.codigo3D += Temp.saltoIncondicional(etiquetat);
+      resultado3D.codigo3D += etiquetat + ": \n";
+      resultado3D.codigo3D += temp + " = 1; \n";
+      resultado3D.codigo3D += Temp.saltoIncondicional(salto);
+      resultado3D.codigo3D += etiquetaf + ": \n";
+      resultado3D.codigo3D += temp + " = 0; \n";
+      resultado3D.codigo3D += salto + ": \n";
+      resultado3D.temporal = new Temporal(temp);
+
       resultado3D.temporal = new Temporal("1");
     } else if (this.primitivo == false && typeof this.primitivo == "boolean") {
+      let temp: string = Temp.temporal();
+      let etiquetat: string = Temp.etiqueta();
+      let etiquetaf: string = Temp.etiqueta();
+      let salto: string = Temp.etiqueta();
+
+      resultado3D.codigo3D += Temp.saltoIncondicional(etiquetaf);
+      resultado3D.codigo3D += etiquetat + ": \n";
+      resultado3D.codigo3D += temp + " = 1; \n";
+      resultado3D.codigo3D += Temp.saltoIncondicional(salto);
+      resultado3D.codigo3D += etiquetaf + ": \n";
+      resultado3D.codigo3D += temp + " = 0; \n";
+      resultado3D.codigo3D += salto + ": \n";
+      resultado3D.temporal = new Temporal(temp);
       resultado3D.temporal = new Temporal("0");
     } else if (typeof this.primitivo == "string") {
       if (this.tipo == tipo.CARACTER) {
@@ -137,15 +171,20 @@ export class Primitivo implements Expresion {
 
     nodo.codigo3D +=
       "//%%%%%%%%%%%%%%%%%%% GUARDAR CADENA " + cadenatemp + "%%%%%%%%%%%%%%%%%%%% \n";
-      let temporal: string = Temp.temporal();
-      nodo.codigo3D += temporal + " = H; \n ";
+    let temporal: string = Temp.temporal();
+    nodo.codigo3D += temporal + " = H; \n ";
     for (let i = 0; i < cadena.length; i++) {
-      
-      nodo.codigo3D += "heap[(int) H] = " + cadena.charCodeAt(i) + ";  //Guardamos en el Heap el caracter: " + cadena.charAt(i)+"\n"
-      ;
+      nodo.codigo3D +=
+        "heap[(int) H] = " +
+        cadena.charCodeAt(i) +
+        ";  //Guardamos en el Heap el caracter: " +
+        cadena.charAt(i) +
+        "\n";
       nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
 
-      if (i === 0) {nodo.temporal = new Temporal(temporal);}
+      if (i === 0) {
+        nodo.temporal = new Temporal(temporal);
+      }
     }
 
     nodo.codigo3D += "heap[(int) H] = 0; //Fin de la cadena \n";

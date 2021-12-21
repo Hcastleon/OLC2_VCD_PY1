@@ -70,7 +70,7 @@ class Conversion {
         let nodo = this.expre2.traducir(Temp, controlador, ts, ts_u);
         if (nodo.codigo3D != undefined)
             salida.codigo3D += nodo.codigo3D;
-        console.log(nodo);
+        // console.log(nodo);
         switch (this.operador) {
             case "parse":
                 break;
@@ -84,20 +84,35 @@ class Conversion {
                 if (nodo.tipo == Tipo_1.tipo.CADENA) {
                 }
                 else if (nodo.tipo == Tipo_1.tipo.BOOLEAN) {
+                    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+                    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%% TOSTRING %%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+                    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
                     let salto = Temp.etiqueta();
                     salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasV);
-                    salida.codigo3D += this.setCadena("true", Temp).codigo3D;
+                    let trues = this.setCadena("true", Temp);
+                    salida.codigo3D += trues.codigo3D;
                     salida.codigo3D += Temp.saltoIncondicional(salto);
                     salida.codigo3D += Temp.escribirEtiquetas(nodo.etiquetasF);
-                    salida.codigo3D += this.setCadena("false", Temp).codigo3D;
+                    let falses = this.setCadena("false", Temp);
+                    salida.codigo3D += falses.codigo3D;
                     salida.codigo3D += salto + ": \n";
+                    let temporal;
+                    if (nodo.temporal != null && nodo.temporal.nombre == "true") {
+                        temporal = trues.temporal.nombre;
+                    }
+                    else if (nodo.temporal != null && nodo.temporal.nombre == "false") {
+                        temporal = falses.temporal.nombre;
+                    }
+                    else {
+                        temporal = Temp.temporal();
+                    }
                     salida.tipo == Tipo_1.tipo.CADENA;
-                    let temporal = Temp.temporal();
+                    //let temporal: string = Temp.temporal();
                     salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%5 TOSTRING %%%%%%%%%%%%%%%%%%%%% \n";
-                    salida.codigo3D += temporal + " = H + 0; // Inicio de la cadena nueva \n";
-                    salida.codigo3D += this.concatenar(nodo, Temp).codigo3D;
-                    salida.codigo3D += "heap[(int)H] = 0 ; //Finde la cadena \n";
-                    salida.codigo3D += "H = H + 1; // Aumento del heap \n";
+                    // salida.codigo3D += temporal + " = H + 0; // Inicio de la cadena nueva \n";
+                    //salida.codigo3D += this.concatenar(nodo, Temp).codigo3D;
+                    // salida.codigo3D += "heap[(int)H] = 0 ; //Finde la cadena \n";
+                    //salida.codigo3D += "H = H + 1; // Aumento del heap \n";
                     salida.temporal.nombre = temporal;
                     // console.log(nodo);
                 }

@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.AsignacionStruct = void 0;
+const Errores_1 = require("../AST/Errores");
 const Nodo_1 = require("../AST/Nodo");
 class AsignacionStruct {
     constructor(identificador1, identificador2, valor, linea, column) {
@@ -19,8 +20,12 @@ class AsignacionStruct {
                     // let valor = entorno.getSimbolo(this.identificador2);
                     let valor = this.valor.getValor(controlador, ts, ts_u);
                     // let valor = vara.getValor();
-                    (_a = entorno
-                        .getSimbolo(this.identificador2.identificador)) === null || _a === void 0 ? void 0 : _a.setValor(valor);
+                    (_a = entorno.getSimbolo(this.identificador2.identificador)) === null || _a === void 0 ? void 0 : _a.setValor(valor);
+                }
+                else {
+                    let error = new Errores_1.Errores("Semantico", ` El struct ${this.identificador1.identificador} no existe`, this.linea, this.column);
+                    controlador.errores.push(error);
+                    return;
                 }
             });
         }

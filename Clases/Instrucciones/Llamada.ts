@@ -55,7 +55,6 @@ export class Llamada implements Instruccion, Expresion {
         if (r != null) {
           return r;
         }
-        
       }
     } else {
       let error = new Errores(
@@ -65,9 +64,9 @@ export class Llamada implements Instruccion, Expresion {
         this.column
       );
       controlador.errores.push(error);
-      controlador.append(
+      /* controlador.append(
         `La funcion ${this.identificador}, no existe En la linea ${this.linea}, y columna ${this.column}`
-      );
+      );*/
     }
   }
   recorrer(): Nodo {
@@ -77,20 +76,18 @@ export class Llamada implements Instruccion, Expresion {
     //let hijo_para = new Nodo("Parametros", "");
     if (this.parametros != null) {
       for (let para of this.parametros) {
-       // let hijo_para2 = new Nodo("Parametro", "");
+        // let hijo_para2 = new Nodo("Parametro", "");
         padre.addHijo(para.recorrer());
-       // hijo_para.addHijo(hijo_para2);
+        // hijo_para.addHijo(hijo_para2);
       }
     }
-  //  padre.addHijo(hijo_para);
-  //  padre.addHijo(new Nodo(")", ""));
+    //  padre.addHijo(hijo_para);
+    //  padre.addHijo(new Nodo(")", ""));
 
     return padre;
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
-      
-  }
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {}
 
   verificarParams(
     para_llama: Array<Expresion>,
@@ -117,9 +114,11 @@ export class Llamada implements Instruccion, Expresion {
         exp_aux = para_llama[i] as Expresion;
         tipo_valor = exp_aux.getTipo(controlador, ts, ts_u); // de la llamada
         valor_aux = exp_aux.getValor(controlador, ts, ts_u);
-        if (tipo_axu == tipo_valor||((tipo_axu == tipo.DOUBLE || tipo_axu == tipo.ENTERO) &&
-              (tipo_valor == tipo.ENTERO || tipo_valor== tipo.DOUBLE)) ||
-            (tipo_axu == tipo.CADENA && tipo_valor== tipo.CARACTER)
+        if (
+          tipo_axu == tipo_valor ||
+          ((tipo_axu == tipo.DOUBLE || tipo_axu == tipo.ENTERO) &&
+            (tipo_valor == tipo.ENTERO || tipo_valor == tipo.DOUBLE)) ||
+          (tipo_axu == tipo.CADENA && tipo_valor == tipo.CARACTER)
         ) {
           let simbolo = new Simbolos(aux.simbolo, aux.tipo, id_aux, valor_aux);
           ts_local.agregar(id_aux, simbolo);
@@ -135,9 +134,9 @@ export class Llamada implements Instruccion, Expresion {
         this.column
       );
       controlador.errores.push(error);
-      controlador.append(
+      /*  controlador.append(
         `Las variablesno son del mismo tipo, En la linea ${this.linea}, y columna ${this.column}`
-      );
+      );*/
     }
     return false;
   }

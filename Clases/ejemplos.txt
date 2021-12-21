@@ -319,3 +319,21 @@ void main()
     println("===============HANOI=================================");
     hanoi(3, 1, 2, 3);
 }
+
+
+void sumar(){
+	T6 = SP + 1;//Setting position for parameter numero1
+	T6 = SP + 2;//Setting position for parameter numero2
+	T7 = SP + 1;
+	T8 = STACK[(int)T7];//Getting value of variable numero1
+	T9 = SP + 2;
+	T10 = STACK[(int)T9];//Getting value of variable numero2
+	T11 = T8 + T10;
+	T12 = SP + 3;
+	STACK[(int)T12] = T11;//Save variable resultado
+	T13 = SP + 3;
+	T14 = STACK[(int)T13];//Getting value of variable resultado
+	printf("%d", (int)T14);//Print integer
+	printf("%c", 10);//Print new line
+    
+}

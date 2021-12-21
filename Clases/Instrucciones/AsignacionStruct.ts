@@ -38,9 +38,16 @@ export class AsignacionStruct implements Instruccion {
 
           // let valor = vara.getValor();
 
-          entorno
-            .getSimbolo(this.identificador2.identificador)
-            ?.setValor(valor);
+          entorno.getSimbolo(this.identificador2.identificador)?.setValor(valor);
+        } else {
+          let error = new Errores(
+            "Semantico",
+            ` El struct ${this.identificador1.identificador} no existe`,
+            this.linea,
+            this.column
+          );
+          controlador.errores.push(error);
+          return;
         }
       });
     }
@@ -53,5 +60,5 @@ export class AsignacionStruct implements Instruccion {
     return padre;
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {}
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {}
 }

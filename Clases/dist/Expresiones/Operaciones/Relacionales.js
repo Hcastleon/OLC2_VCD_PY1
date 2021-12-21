@@ -877,6 +877,10 @@ class Relacionales extends Operaciones_1.Operacion {
         }
         else {
             console.log(nodoIzq);
+            if (nodoIzq.codigo3D != "")
+                nodo.codigo3D += nodoIzq.codigo3D;
+            if (nodoDer.codigo3D != "")
+                nodo.codigo3D += nodoDer.codigo3D;
             nodo.codigo3D +=
                 "if (" +
                     nodoIzq.temporal.nombre +
@@ -889,6 +893,17 @@ class Relacionales extends Operaciones_1.Operacion {
                     "; // Si es verdadero salta a " +
                     v +
                     "\n";
+            let temp = Temp.temporal();
+            let etiquetat = Temp.etiqueta();
+            let etiquetaf = Temp.etiqueta();
+            let salto = Temp.etiqueta();
+            nodo.codigo3D += etiquetat + ": \n";
+            nodo.codigo3D += temp + " = 1; \n";
+            nodo.codigo3D += Temp.saltoIncondicional(salto);
+            nodo.codigo3D += etiquetaf + ": \n";
+            nodo.codigo3D += temp + " = 0; \n";
+            nodo.codigo3D += salto + ": \n";
+            nodo.temporal = new Temporales_1.Temporal(temp);
         }
         nodo.codigo3D += "goto " + f + "; //si no se cumple salta a: " + f + "\n";
         nodo.etiquetasV = [];

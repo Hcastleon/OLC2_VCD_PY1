@@ -19,14 +19,7 @@ export class DeclaracionStruct implements Instruccion {
   public linea: number;
   public columna: number;
 
-  constructor(
-    id1: any,
-    id2: any,
-    id3: any,
-    lista_valores: any,
-    linea: any,
-    columna: any
-  ) {
+  constructor(id1: any, id2: any, id3: any, lista_valores: any, linea: any, columna: any) {
     this.id1 = id1;
     this.id2 = id2;
     this.id3 = id3;
@@ -61,6 +54,14 @@ export class DeclaracionStruct implements Instruccion {
           return r;
         }
       }
+    } else {
+      let error = new Errores(
+        "Semantico",
+        `El struct ${this.id3}, no existe`,
+        this.linea,
+        this.columna
+      );
+      controlador.errores.push(error);
     }
   }
 
@@ -124,7 +125,5 @@ export class DeclaracionStruct implements Instruccion {
     return padre;
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
-      
-  }
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {}
 }

@@ -9,14 +9,7 @@ import { Temporales, Temporal, Resultado3D } from "../../AST/Temporales";
 import { Simbolos } from "../../TablaSimbolos/Simbolos";
 
 export class Aritmetica extends Operacion implements Expresion {
-  constructor(
-    expre1: any,
-    expre2: any,
-    expreU: any,
-    operador: any,
-    linea: any,
-    column: any
-  ) {
+  constructor(expre1: any, expre2: any, expreU: any, operador: any, linea: any, column: any) {
     super(expre1, expre2, expreU, operador, linea, column);
   }
 
@@ -61,11 +54,21 @@ export class Aritmetica extends Operacion implements Expresion {
             if (this.isChar(String(valor_expre2))) {
               return valor_expre1 + valor_expre2.charCodeAt(0);
             } else {
-              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              let error = new Errores(
+                "Semantico",
+                `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                this.linea,
+                this.column
+              );
               controlador.errores.push(error);
             }
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre2}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "string") {
@@ -76,19 +79,39 @@ export class Aritmetica extends Operacion implements Expresion {
               if (this.isChar(String(valor_expre2))) {
                 return valor_expre1.charCodeAt(0) + valor_expre2.charCodeAt(0);
               } else {
-                let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                let error = new Errores(
+                  "Semantico",
+                  `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                  this.linea,
+                  this.column
+                );
                 controlador.errores.push(error);
               }
             } else {
-              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              let error = new Errores(
+                "Semantico",
+                `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                this.linea,
+                this.column
+              );
               controlador.errores.push(error);
             }
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre2}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else {
-          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          let error = new Errores(
+            "Semantico",
+            `El valor ${valor_expre1}, tipo de dato incorrecto`,
+            this.linea,
+            this.column
+          );
           controlador.errores.push(error);
         }
         break;
@@ -100,11 +123,21 @@ export class Aritmetica extends Operacion implements Expresion {
             if (this.isChar(String(valor_expre2))) {
               return valor_expre1 - valor_expre2.charCodeAt(0);
             } else {
-              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              let error = new Errores(
+                "Semantico",
+                `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                this.linea,
+                this.column
+              );
               controlador.errores.push(error);
             }
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre2}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "string") {
@@ -115,19 +148,39 @@ export class Aritmetica extends Operacion implements Expresion {
               if (this.isChar(String(valor_expre2))) {
                 return valor_expre1.charCodeAt(0) - valor_expre2.charCodeAt(0);
               } else {
-                let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                let error = new Errores(
+                  "Semantico",
+                  `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                  this.linea,
+                  this.column
+                );
                 controlador.errores.push(error);
               }
             } else {
-              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              let error = new Errores(
+                "Semantico",
+                `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                this.linea,
+                this.column
+              );
               controlador.errores.push(error);
             }
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre1}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else {
-          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          let error = new Errores(
+            "Semantico",
+            `El valor ${valor_expre1}, tipo de dato incorrecto`,
+            this.linea,
+            this.column
+          );
           controlador.errores.push(error);
         }
         break;
@@ -139,11 +192,21 @@ export class Aritmetica extends Operacion implements Expresion {
             if (this.isChar(String(valor_expre2))) {
               return valor_expre1 * valor_expre2.charCodeAt(0);
             } else {
-              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              let error = new Errores(
+                "Semantico",
+                `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                this.linea,
+                this.column
+              );
               controlador.errores.push(error);
             }
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre2}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "string") {
@@ -154,19 +217,39 @@ export class Aritmetica extends Operacion implements Expresion {
               if (this.isChar(String(valor_expre2))) {
                 return valor_expre1.charCodeAt(0) * valor_expre2.charCodeAt(0);
               } else {
-                let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                let error = new Errores(
+                  "Semantico",
+                  `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                  this.linea,
+                  this.column
+                );
                 controlador.errores.push(error);
               }
             } else {
-              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              let error = new Errores(
+                "Semantico",
+                `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                this.linea,
+                this.column
+              );
               controlador.errores.push(error);
             }
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre1}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else {
-          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          let error = new Errores(
+            "Semantico",
+            `El valor ${valor_expre1}, tipo de dato incorrecto`,
+            this.linea,
+            this.column
+          );
           controlador.errores.push(error);
         }
         break;
@@ -178,11 +261,21 @@ export class Aritmetica extends Operacion implements Expresion {
             if (this.isChar(String(valor_expre2))) {
               return valor_expre1 / valor_expre2.charCodeAt(0);
             } else {
-              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              let error = new Errores(
+                "Semantico",
+                `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                this.linea,
+                this.column
+              );
               controlador.errores.push(error);
             }
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre2}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "string") {
@@ -193,19 +286,39 @@ export class Aritmetica extends Operacion implements Expresion {
               if (this.isChar(String(valor_expre2))) {
                 return valor_expre1.charCodeAt(0) / valor_expre2.charCodeAt(0);
               } else {
-                let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                let error = new Errores(
+                  "Semantico",
+                  `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                  this.linea,
+                  this.column
+                );
                 controlador.errores.push(error);
               }
             } else {
-              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              let error = new Errores(
+                "Semantico",
+                `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                this.linea,
+                this.column
+              );
               controlador.errores.push(error);
             }
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre1}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else {
-          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          let error = new Errores(
+            "Semantico",
+            `El valor ${valor_expre1}, tipo de dato incorrecto`,
+            this.linea,
+            this.column
+          );
           controlador.errores.push(error);
         }
         break;
@@ -217,11 +330,21 @@ export class Aritmetica extends Operacion implements Expresion {
             if (this.isChar(String(valor_expre2))) {
               return valor_expre1 % valor_expre2.charCodeAt(0);
             } else {
-              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              let error = new Errores(
+                "Semantico",
+                `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                this.linea,
+                this.column
+              );
               controlador.errores.push(error);
             }
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre2}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "string") {
@@ -232,19 +355,39 @@ export class Aritmetica extends Operacion implements Expresion {
               if (this.isChar(String(valor_expre2))) {
                 return valor_expre1.charCodeAt(0) % valor_expre2.charCodeAt(0);
               } else {
-                let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+                let error = new Errores(
+                  "Semantico",
+                  `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                  this.linea,
+                  this.column
+                );
                 controlador.errores.push(error);
               }
             } else {
-              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              let error = new Errores(
+                "Semantico",
+                `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                this.linea,
+                this.column
+              );
               controlador.errores.push(error);
             }
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre1}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else {
-          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          let error = new Errores(
+            "Semantico",
+            `El valor ${valor_expre1}, tipo de dato incorrecto`,
+            this.linea,
+            this.column
+          );
           controlador.errores.push(error);
         }
         break;
@@ -252,7 +395,12 @@ export class Aritmetica extends Operacion implements Expresion {
         if (typeof valor_U === "number") {
           return -valor_U;
         } else {
-          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          let error = new Errores(
+            "Semantico",
+            `El valor ${valor_expre1}, tipo de dato incorrecto`,
+            this.linea,
+            this.column
+          );
           controlador.errores.push(error);
         }
         break;
@@ -265,25 +413,45 @@ export class Aritmetica extends Operacion implements Expresion {
           } else if (typeof valor_expre2 === "boolean") {
             return valor_expre1 + valor_expre2.toString();
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre2}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "number") {
           if (typeof valor_expre2 === "string") {
             return valor_expre1.toString() + valor_expre2;
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre2}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else if (typeof valor_expre1 === "boolean") {
           if (typeof valor_expre2 === "string") {
             return valor_expre1.toString() + valor_expre2;
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre2}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else {
-          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          let error = new Errores(
+            "Semantico",
+            `El valor ${valor_expre1}, tipo de dato incorrecto`,
+            this.linea,
+            this.column
+          );
           controlador.errores.push(error);
         }
         break;
@@ -297,15 +465,30 @@ export class Aritmetica extends Operacion implements Expresion {
               }
               return sum_concat;
             } else {
-              let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+              let error = new Errores(
+                "Semantico",
+                `El valor ${valor_expre2}, tipo de dato incorrecto`,
+                this.linea,
+                this.column
+              );
               controlador.errores.push(error);
             }
           } else {
-            let error = new Errores('Semantico', `El valor ${valor_expre2}, tipo de dato incorrecto`, this.linea, this.column);
+            let error = new Errores(
+              "Semantico",
+              `El valor ${valor_expre2}, tipo de dato incorrecto`,
+              this.linea,
+              this.column
+            );
             controlador.errores.push(error);
           }
         } else {
-          let error = new Errores('Semantico', `El valor ${valor_expre1}, tipo de dato incorrecto`, this.linea, this.column);
+          let error = new Errores(
+            "Semantico",
+            `El valor ${valor_expre1}, tipo de dato incorrecto`,
+            this.linea,
+            this.column
+          );
           controlador.errores.push(error);
         }
         break;
@@ -316,12 +499,19 @@ export class Aritmetica extends Operacion implements Expresion {
 
   validarLados(recursivo: number, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     if (recursivo == 0 && this.expre1.getTipo(controlador, ts, ts_u) == tipo.ENTERO) {
-      return true
+      return true;
     }
-    return false
+    return false;
   }
 
-  generarOperacionBinario(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim, signo: any, recursivo: any) {
+  generarOperacionBinario(
+    Temp: Temporales,
+    controlador: Controller,
+    ts: TablaSim,
+    ts_u: TablaSim,
+    signo: any,
+    recursivo: any
+  ) {
     let valor1;
     let valor2;
     let valor_U;
@@ -336,19 +526,16 @@ export class Aritmetica extends Operacion implements Expresion {
       valor2 = this.expre1.traducir(Temp, controlador, ts, ts_u);
     }
 
-    if (valor1 == (null || undefined) || valor2 == (null || undefined)) return null
+    if (valor1 == (null || undefined) || valor2 == (null || undefined)) return null;
 
     let resultado = valor1.codigo3D;
-
-    
 
     if (resultado != "" && valor2.codigo3D) {
       resultado = resultado + "\n" + valor2.codigo3D;
     } else {
       resultado += valor2.codigo3D;
     }
-    if(valor1 instanceof Simbolos || valor2 instanceof Simbolos){
-      
+    if (valor1 instanceof Simbolos || valor2 instanceof Simbolos) {
       resultado = "";
     }
     if (resultado != "") {
@@ -356,7 +543,7 @@ export class Aritmetica extends Operacion implements Expresion {
     }
 
     let result = new Resultado3D();
-    result.tipo = tipo.DOUBLE
+    result.tipo = tipo.DOUBLE;
     /*if(recursivo==0){
       let temporal = new Temporal(valor1.temporal.utilizar() + " "+ signo+ " "+valor2.temporal.utilizar());
       result.codigo3D = resultado;
@@ -365,35 +552,48 @@ export class Aritmetica extends Operacion implements Expresion {
     }*/
     let temporal = Temp.nuevoTemporal();
     let op: string = "";
-    if (signo == "%") {
-      op = temporal.obtener() + '= fmod(' + valor1.temporal.utilizar() + "," + valor2.temporal.utilizar() + ");";
+    if (valor1 instanceof Simbolos && valor2 instanceof Simbolos == false) {
+      //todo menos %
+      let res = this.operacionSimbolosIzq(valor1, valor2, op, temporal, result, signo, Temp, ts);
+      op += res.op;
+      temporal = res.temporal;
+      result.tipo = tipo.DOUBLE;
+    } else if (valor2 instanceof Simbolos && valor1 instanceof Simbolos == false) {
+      let res = this.operacionSimbolosDer(valor1, valor2, op, temporal, result, signo, Temp, ts);
+      op += res.op;
+      temporal = res.temporal;
+      result.tipo = tipo.DOUBLE;
+    } else if (valor2 instanceof Simbolos && valor1 instanceof Simbolos) {
+      let res = this.operacionSimbolos(valor1, valor2, op, temporal, result, signo, Temp, ts);
+      op += res.op;
+      temporal = res.temporal;
+      result.tipo = tipo.DOUBLE;
     } else {
-
-      if (valor1 instanceof Simbolos && valor2  instanceof Simbolos == false) {
-        let res = this.operacionSimbolosIzq(valor1, valor2,op,temporal,result,signo ,Temp,ts);
-        op += res.op;
-        temporal = res.temporal;
-        result.tipo = tipo.ID;
-      }else if (valor2 instanceof Simbolos && valor1  instanceof Simbolos == false) {
-        let res = this.operacionSimbolosDer(valor1, valor2,op,temporal,result,signo ,Temp,ts);
-        op += res.op;
-        temporal = res.temporal;
-        result.tipo = tipo.ID;
-      } else if (valor2 instanceof Simbolos && valor1  instanceof Simbolos ) {
-        let res = this.operacionSimbolos(valor1, valor2,op,temporal,result,signo ,Temp,ts);
-        op += res.op;
-        temporal = res.temporal;
-      }else {
-        op = temporal.obtener() + '=' + valor1.temporal.utilizar() + " " + signo + " " + valor2.temporal.utilizar() + ";";
+      if (signo == "%") {
+        op =
+          temporal.obtener() +
+          "= fmod(" +
+          valor1.temporal.utilizar() +
+          "," +
+          valor2.temporal.utilizar() +
+          ");";
+      } else {
+        op =
+          temporal.obtener() +
+          "=" +
+          valor1.temporal.utilizar() +
+          " " +
+          signo +
+          " " +
+          valor2.temporal.utilizar() +
+          ";";
       }
-
     }
 
-    resultado += op
+    resultado += op;
     result.codigo3D = resultado;
     result.temporal = temporal;
     return result;
-
   }
 
   traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
@@ -409,15 +609,15 @@ export class Aritmetica extends Operacion implements Expresion {
       return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "%", 0);
     } else if (this.operador == Operador.UNARIO) {
       return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "-", 0);
-    }else if (this.operador == Operador.CONCATENAR) {
+    } else if (this.operador == Operador.CONCATENAR) {
       console.log("SI ?");
       return this.generarConcat(Temp, controlador, ts, ts_u);
     }
     //modulo unario concatenar0  repetir
-    return "Holiwis"
+    return "Holiwis";
   }
 
-  generarConcat(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim){
+  generarConcat(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     let valor1;
     let valor2;
     let valor_U;
@@ -432,7 +632,7 @@ export class Aritmetica extends Operacion implements Expresion {
       valor2 = this.expre1.traducir(Temp, controlador, ts, ts_u);
     }
 
-    if (valor1 == (null || undefined) || valor2 == (null || undefined)) return null
+    if (valor1 == (null || undefined) || valor2 == (null || undefined)) return null;
 
     let resultado = valor1.codigo3D;
 
@@ -441,8 +641,7 @@ export class Aritmetica extends Operacion implements Expresion {
     } else {
       resultado += valor2.codigo3D;
     }
-    if(valor1 instanceof Simbolos || valor2 instanceof Simbolos){
-      
+    if (valor1 instanceof Simbolos || valor2 instanceof Simbolos) {
       resultado = "";
     }
     if (resultado != "") {
@@ -450,16 +649,16 @@ export class Aritmetica extends Operacion implements Expresion {
     }
     let salida = new Resultado3D();
     salida.temporal = new Temporal("");
-    salida.tipo = tipo.CADENA
-    if(valor1 instanceof Simbolos == false){
+    salida.tipo = tipo.CADENA;
+    if (valor1 instanceof Simbolos == false) {
       salida.codigo3D += valor1.codigo3D;
     }
-    if(valor2 instanceof Simbolos == false){
+    if (valor2 instanceof Simbolos == false) {
       salida.codigo3D += valor2.codigo3D;
     }
     let temporal: string = Temp.temporal();
     salida.codigo3D += temporal + " = H + 0; // Inicion de nueva cadena \n";
-    
+
     salida.codigo3D += this.concatenar(valor1, Temp).codigo3D;
     salida.codigo3D += this.concatenar(valor2, Temp).codigo3D;
     salida.codigo3D += "heap[(int)H] = 0 ; // Fin cadena \n";
@@ -468,10 +667,10 @@ export class Aritmetica extends Operacion implements Expresion {
     return salida;
   }
 
-  concatenar(nodito:any, Temp: Temporales){
+  concatenar(nodito: any, Temp: Temporales) {
     let nodo: Resultado3D = new Resultado3D();
-    nodo.temporal = new Temporal("")
-    if(nodito instanceof Simbolos){
+    nodo.temporal = new Temporal("");
+    if (nodito instanceof Simbolos) {
       let temp = Temp.temporal();
       let temp2 = Temp.temporal();
       //salida.tipo = tipo.ID;
@@ -483,38 +682,47 @@ export class Aritmetica extends Operacion implements Expresion {
       let v: string = Temp.etiqueta();
       let f: string = Temp.etiqueta();
       nodo.codigo3D += v + ": \n";
-      nodo.codigo3D += aux +" = heap[(int)" + temp2 + "]; //Posicion de inicio de la cadena\n";
-      nodo.temporal.nombre= aux;
-      
-      nodo.codigo3D += Temp.saltoCondicional("("+ aux + " == " + 0 +")",f) + "//Si se cumple es el final de cadena \n";   
-      nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
-      nodo.codigo3D += "H = H + 1; // invrementar heap \n"
+      nodo.codigo3D += aux + " = heap[(int)" + temp2 + "]; //Posicion de inicio de la cadena\n";
+      nodo.temporal.nombre = aux;
 
-      nodo.codigo3D += temp2 + " = "+ temp2 + " + 1 ; //incrementar pos de cadena \n" ;
+      nodo.codigo3D +=
+        Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
+        "//Si se cumple es el final de cadena \n";
+      nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
+      nodo.codigo3D += "H = H + 1; // invrementar heap \n";
+
+      nodo.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de cadena \n";
       nodo.codigo3D += Temp.saltoIncondicional(v);
       nodo.codigo3D += f + ": \n";
       nodo.temporal.nombre = temp;
-
-    }else{
+    } else {
       //nodo.codigo3D += nodito.codigo3D;
-      nodo.codigo3D += "// %%%%%%%%%%%%%%%%%%%%5 Concatenando cadena "+ nodito.temporal.nombre + "%%%%%%%%%%%%% \n";
-      let aux:string = Temp.temporal();
-      let v:string = Temp.etiqueta();
-      let f:string = Temp.etiqueta();
+      nodo.codigo3D +=
+        "// %%%%%%%%%%%%%%%%%%%%5 Concatenando cadena " +
+        nodito.temporal.nombre +
+        "%%%%%%%%%%%%% \n";
+      let aux: string = Temp.temporal();
+      let v: string = Temp.etiqueta();
+      let f: string = Temp.etiqueta();
       nodo.codigo3D += v + ": \n";
-      nodo.codigo3D += aux + " = heap[(int)" + nodito.temporal.nombre + "]; // Se almacena primer valor \n"; 
-      nodo.codigo3D += Temp.saltoCondicional("("+aux + " == " + 0+")",f) + "//Si se cumple es el final de cadena \n";   
+      nodo.codigo3D +=
+        aux + " = heap[(int)" + nodito.temporal.nombre + "]; // Se almacena primer valor \n";
+      nodo.codigo3D +=
+        Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
+        "//Si se cumple es el final de cadena \n";
       nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
-      nodo.codigo3D += "H = H + 1; // invrementar heap \n"
+      nodo.codigo3D += "H = H + 1; // invrementar heap \n";
 
-      nodo.codigo3D += nodito.temporal.nombre + " = "+ nodito.temporal.nombre + " + 1 ; //incrementar pos de cadena \n" ;
+      nodo.codigo3D +=
+        nodito.temporal.nombre +
+        " = " +
+        nodito.temporal.nombre +
+        " + 1 ; //incrementar pos de cadena \n";
       nodo.codigo3D += Temp.saltoIncondicional(v);
       nodo.codigo3D += f + ": \n";
     }
     return nodo;
-  
   }
-
 
   recorrer(): Nodo {
     let padre = new Nodo(this.op_string, "");
@@ -539,145 +747,178 @@ export class Aritmetica extends Operacion implements Expresion {
     return n.length === 1 && n.match(/./i);
   }
 
-  operacionSimbolosIzq(valor1: any, valor2: any,op: string,temporal:any,result:any,signo:any, Temp: Temporales,ts:TablaSim){
-    
+  operacionSimbolosIzq(
+    valor1: any,
+    valor2: any,
+    op: string,
+    temporal: any,
+    result: any,
+    signo: any,
+    Temp: Temporales,
+    ts: TablaSim
+  ) {
     if (valor1 != null) {
+      let ultimoT;
+      if (valor2.codigo3D == "") {
+        ultimoT = valor2.temporal.nombre;
+      } else {
+        ultimoT = Temp.ultimoTemporal();
+      }
 
-
-          let ultimoT;
-          if (valor2.codigo3D == "") {
-            ultimoT = valor2.temporal.nombre
-          } else {
-            ultimoT = Temp.ultimoTemporal();
-          }
-
-          if (!(valor2.tipo == tipo.BOOLEAN)) {
-            op += valor2.codigo3D + "\n";
-          } else {
-            if (valor1.valor == true) {
-              ultimoT = "1"
-            } else {
-              ultimoT = "0"
-            }
-          }
-
-          if (ts.nombre != "Global" && valor1 != null) {
-            if (ts.entorno == 0) {
-              ts.entorno = ts.entorno + ts.ant.entorno ;
-            }
-            //
-            //console.log(valor1);
-            op += temporal.obtener() + " = P + " + valor1.posicion + "; \n";
-            let val = Temp.temporal();
-
-            op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
-            let nuevo = Temp.temporal()
-
-            op += valor2.codigo3D;
-
-            op += nuevo + '=' + val + " " +signo+" "+valor2.temporal.nombre+"; \n";
-            temporal.nombre = nuevo;
-
-          //  op += "stack[(int)" + temporal.obtener() + "]  = " + nuevo + "; \n"
-           // result.tipo = tipo.ID;
-           // valor1.posicion = ts.entorno;
-           // ts.entorno++;
-          } else if (ts.nombre == "Global" && valor1 != null) {
-            let val = Temp.temporal();
-
-            op += val + " = stack[(int)" + ts.entorno + "] ;\n";
-            let nuevo = Temp.temporal()
-            op += nuevo + '=' + val + " " +signo+" "+valor2.temporal.nombre+"; \n";
-            temporal.nombre = nuevo;
-
-          //  op += "stack[(int)" + ts.entorno + "]  = " + nuevo + "; \n"
-
-           // result.tipo = tipo.ID;
-           // valor1.posicion = ts.entorno;
-            //ts.entorno++;
-
-          }
-
+      if (!(valor2.tipo == tipo.BOOLEAN)) {
+        op += valor2.codigo3D + "\n";
+      } else {
+        if (valor1.valor == true) {
+          ultimoT = "1";
+        } else {
+          ultimoT = "0";
         }
-        return {op, temporal};
+      }
+
+      if (ts.nombre != "Global" && valor1 != null) {
+        if (ts.entorno == 0) {
+          ts.entorno = ts.entorno + ts.ant.entorno;
+        }
+        //
+        //console.log(valor1);
+        op += temporal.obtener() + " = P + " + valor1.posicion + "; \n";
+        let val = Temp.temporal();
+
+        op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
+        let nuevo = Temp.temporal();
+
+        op += valor2.codigo3D;
+        if (signo == "%") {
+          op += nuevo + "= fmod(" + val + "," + valor2.temporal.nombre + "); \n";
+        } else {
+          op += nuevo + "=" + val + " " + signo + " " + valor2.temporal.nombre + "; \n";
+        }
+        temporal.nombre = nuevo;
+
+        //  op += "stack[(int)" + temporal.obtener() + "]  = " + nuevo + "; \n"
+        // result.tipo = tipo.ID;
+        // valor1.posicion = ts.entorno;
+        // ts.entorno++;
+      } else if (ts.nombre == "Global" && valor1 != null) {
+        let val = Temp.temporal();
+
+        op += val + " = stack[(int)" + ts.entorno + "] ;\n";
+        let nuevo = Temp.temporal();
+        if (signo == "%") {
+          op += nuevo + "= fmod(" + val + "," + valor2.temporal.nombre + "); \n";
+        } else {
+          op += nuevo + "=" + val + " " + signo + " " + valor2.temporal.nombre + "; \n";
+        }
+
+        temporal.nombre = nuevo;
+
+        //  op += "stack[(int)" + ts.entorno + "]  = " + nuevo + "; \n"
+
+        // result.tipo = tipo.ID;
+        // valor1.posicion = ts.entorno;
+        //ts.entorno++;
+      }
+    }
+    return { op, temporal };
   }
 
-
-    operacionSimbolosDer(valor1: any, valor2: any,op: string,temporal:any,result:any,signo:any, Temp: Temporales,ts:TablaSim){
-    
+  operacionSimbolosDer(
+    valor1: any,
+    valor2: any,
+    op: string,
+    temporal: any,
+    result: any,
+    signo: any,
+    Temp: Temporales,
+    ts: TablaSim
+  ) {
     if (valor2 != null) {
-
-
-
-          if (ts.nombre != "Global" && valor1 != null) {
-            if (ts.entorno == 0) {
-              ts.entorno = ts.entorno + ts.ant.entorno ;
-            }
-            op += temporal.obtener() + " = P + " + valor2.posicion + "; \n";
-            let val = Temp.temporal();
-
-            op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
-            let nuevo = Temp.temporal()
-
-            op += valor1.codigo3D;
-
-            op += nuevo + '=' + valor1.temporal.nombre + " " +signo+" "+ val+"; \n";
-            temporal.nombre = nuevo;
-
-          } else if (ts.nombre == "Global" && valor2 != null) {
-            let val = Temp.temporal();
-
-            op += val + " = stack[(int)" + ts.entorno + "] ;\n";
-            let nuevo = Temp.temporal()
-            op += nuevo + '=' + valor1.temporal.nombre + " " +signo+" "+val+"; \n";
-            temporal.nombre = nuevo;
-
-          }
-
+      if (ts.nombre != "Global" && valor1 != null) {
+        if (ts.entorno == 0) {
+          ts.entorno = ts.entorno + ts.ant.entorno;
         }
-        return {op, temporal};
+        op += temporal.obtener() + " = P + " + valor2.posicion + "; \n";
+        let val = Temp.temporal();
+
+        op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
+        let nuevo = Temp.temporal();
+
+        op += valor1.codigo3D;
+
+        if (signo == "%") {
+          op += nuevo + "= fmod(" + valor1.temporal.nombre + "," + val + "); \n";
+        } else {
+          op += nuevo + "=" + valor1.temporal.nombre + " " + signo + " " + val + "; \n";
+        }
+        temporal.nombre = nuevo;
+      } else if (ts.nombre == "Global" && valor2 != null) {
+        let val = Temp.temporal();
+
+        op += val + " = stack[(int)" + ts.entorno + "] ;\n";
+        let nuevo = Temp.temporal();
+        if (signo == "%") {
+          op += nuevo + "= fmod(" + valor1.temporal.nombre + "," + val + "); \n";
+        } else {
+          op += nuevo + "=" + valor1.temporal.nombre + " " + signo + " " + val + "; \n";
+        }
+        temporal.nombre = nuevo;
+      }
+    }
+    return { op, temporal };
   }
 
-     operacionSimbolos(valor1: any, valor2: any,op: string,temporal:any,result:any,signo:any, Temp: Temporales,ts:TablaSim){
-    
+  operacionSimbolos(
+    valor1: any,
+    valor2: any,
+    op: string,
+    temporal: any,
+    result: any,
+    signo: any,
+    Temp: Temporales,
+    ts: TablaSim
+  ) {
     if (valor2 != null && valor1 != null) {
-
-          if (ts.nombre != "Global" && valor1 != null) {
-            if (ts.entorno == 0) {
-              ts.entorno = ts.entorno + ts.ant.entorno ;
-            }
-            op += temporal.obtener() + " = P + " + valor1.posicion + "; \n";
-            let val = Temp.temporal();
-
-            op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
-
-            let temp2 = Temp.temporal();
-            op += temp2 + " = P + " + valor2.posicion + "; \n";
-            let val2 = Temp.temporal();
-
-            op += val2 + " = stack[(int)" + temp2 + "] ;\n";
-            //---------
-
-            let nuevo = Temp.temporal()
-
-            op += nuevo + '=' + val + " " +signo+" "+ val2+"; \n";
-            temporal.nombre = nuevo;
-
-          } else if (ts.nombre == "Global" && valor2 != null) {
-            let val = Temp.temporal();
-
-            op += val + " = stack[(int)" + valor1.posicion + "] ;\n";
-            let val2 = Temp.temporal();
-
-            op += val2 + " = stack[(int)" + valor2.posicion + "] ;\n";
-            //---------
-            let nuevo = Temp.temporal()
-            op += nuevo + '=' + val + " " +signo+" "+val2+"; \n";
-            temporal.nombre = nuevo;
-
-          }
-
+      if (ts.nombre != "Global" && valor1 != null) {
+        if (ts.entorno == 0) {
+          ts.entorno = ts.entorno + ts.ant.entorno;
         }
-        return {op, temporal};
+        op += temporal.obtener() + " = P + " + valor1.posicion + "; \n";
+        let val = Temp.temporal();
+
+        op += val + " = stack[(int)" + temporal.obtener() + "] ;\n";
+
+        let temp2 = Temp.temporal();
+        op += temp2 + " = P + " + valor2.posicion + "; \n";
+        let val2 = Temp.temporal();
+
+        op += val2 + " = stack[(int)" + temp2 + "] ;\n";
+        //---------
+
+        let nuevo = Temp.temporal();
+
+        if (signo == "%") {
+          op += nuevo + "= fmod(" + val + "," + val2 + "); \n";
+        } else {
+          op += nuevo + "=" + val + " " + signo + " " + val2 + "; \n";
+        }
+        temporal.nombre = nuevo;
+      } else if (ts.nombre == "Global" && valor2 != null) {
+        let val = Temp.temporal();
+
+        op += val + " = stack[(int)" + valor1.posicion + "] ;\n";
+        let val2 = Temp.temporal();
+
+        op += val2 + " = stack[(int)" + valor2.posicion + "] ;\n";
+        //---------
+        let nuevo = Temp.temporal();
+        if (signo == "%") {
+          op += nuevo + "= fmod(" + val + "," + val2 + "); \n";
+        } else {
+          op += nuevo + "=" + val + " " + signo + " " + val2 + "; \n";
+        }
+        temporal.nombre = nuevo;
+      }
+    }
+    return { op, temporal };
   }
 }

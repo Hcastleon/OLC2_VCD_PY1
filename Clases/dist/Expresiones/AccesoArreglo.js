@@ -26,7 +26,7 @@ class AccesoArreglo {
         let id_exists = ts.getSimbolo(this.identificador.identificador);
         if (id_exists != null) {
             if ((id_exists === null || id_exists === void 0 ? void 0 : id_exists.tipo.tipo) != Tipo_1.tipo.ARRAY) {
-                let error = new Errores_1.Errores('Semantico', `La variable ${this.identificador.identificador}, no es un Array`, this.linea, this.column);
+                let error = new Errores_1.Errores("Semantico", `La variable ${this.identificador.identificador}, no es un Array`, this.linea, this.column);
                 controlador.errores.push(error);
             }
             else {
@@ -39,12 +39,12 @@ class AccesoArreglo {
                             return id_exists.getValor()[posi];
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
                     else {
-                        let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                        let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                         controlador.errores.push(error);
                     }
                 }
@@ -66,17 +66,17 @@ class AccesoArreglo {
                                     return lista_valores;
                                 }
                                 else {
-                                    let error = new Errores_1.Errores('Semantico', `El valor ${posi}, sobre pasa el limite del arreglo`, this.linea, this.column);
+                                    let error = new Errores_1.Errores("Semantico", `El valor ${posi}, sobre pasa el limite del arreglo`, this.linea, this.column);
                                     controlador.errores.push(error);
                                 }
                             }
                             else {
-                                let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                                let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                                 controlador.errores.push(error);
                             }
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
@@ -92,12 +92,12 @@ class AccesoArreglo {
                                 return lista_valores;
                             }
                             else {
-                                let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                                let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                                 controlador.errores.push(error);
                             }
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
@@ -117,27 +117,27 @@ class AccesoArreglo {
                                             return lista_valores;
                                         }
                                         else {
-                                            let error = new Errores_1.Errores('Semantico', `El valor ${posi2}, sobre pasa el limite del arreglo`, this.linea, this.column);
+                                            let error = new Errores_1.Errores("Semantico", `El valor ${posi2}, sobre pasa el limite del arreglo`, this.linea, this.column);
                                             controlador.errores.push(error);
                                         }
                                     }
                                     else {
-                                        let error = new Errores_1.Errores('Semantico', `El valor ${posi2}, tipo de dato incorrecto`, this.linea, this.column);
+                                        let error = new Errores_1.Errores("Semantico", `El valor ${posi2}, tipo de dato incorrecto`, this.linea, this.column);
                                         controlador.errores.push(error);
                                     }
                                 }
                                 else {
-                                    let error = new Errores_1.Errores('Semantico', `El valor ${posi2}, tipo de dato incorrecto`, this.linea, this.column);
+                                    let error = new Errores_1.Errores("Semantico", `El valor ${posi2}, tipo de dato incorrecto`, this.linea, this.column);
                                     controlador.errores.push(error);
                                 }
                             }
                             else {
-                                let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                                let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                                 controlador.errores.push(error);
                             }
                         }
                         else {
-                            let error = new Errores_1.Errores('Semantico', `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
+                            let error = new Errores_1.Errores("Semantico", `El valor ${posi}, tipo de dato incorrecto`, this.linea, this.column);
                             controlador.errores.push(error);
                         }
                     }
@@ -145,7 +145,7 @@ class AccesoArreglo {
             }
         }
         else {
-            let error = new Errores_1.Errores('Semantico', `La variable ${this.identificador.identificador}, no se encuentra definida`, this.linea, this.column);
+            let error = new Errores_1.Errores("Semantico", `La variable ${this.identificador.identificador}, no se encuentra definida`, this.linea, this.column);
             controlador.errores.push(error);
         }
     }
@@ -156,8 +156,7 @@ class AccesoArreglo {
         let padre = new Nodo_1.Nodo("ID", "");
         return padre;
     }
-    traducir(Temp, controlador, ts, ts_u) {
-    }
+    traducir(Temp, controlador, ts, ts_u) { }
     isInt(n) {
         return Number(n) === n && n % 1 === 0;
     }
@@ -171,7 +170,7 @@ class AccesoArreglo {
             }
             return Tipo_1.tipo.DOUBLE;
         }
-        else if (typeof lista[0] == "string") {
+        else if (typeof lista == "string") {
             if (this.isChar(String(lista))) {
                 return Tipo_1.tipo.CARACTER;
             }

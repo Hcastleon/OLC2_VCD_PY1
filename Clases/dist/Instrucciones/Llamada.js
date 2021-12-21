@@ -40,7 +40,9 @@ class Llamada {
         else {
             let error = new Errores_1.Errores("Semantico", `La funcion ${this.identificador}, no existe`, this.linea, this.column);
             controlador.errores.push(error);
-            controlador.append(`La funcion ${this.identificador}, no existe En la linea ${this.linea}, y columna ${this.column}`);
+            /* controlador.append(
+              `La funcion ${this.identificador}, no existe En la linea ${this.linea}, y columna ${this.column}`
+            );*/
         }
     }
     recorrer() {
@@ -59,8 +61,7 @@ class Llamada {
         //  padre.addHijo(new Nodo(")", ""));
         return padre;
     }
-    traducir(Temp, controlador, ts, ts_u) {
-    }
+    traducir(Temp, controlador, ts, ts_u) { }
     verificarParams(para_llama, para_func, controlador, ts, ts_local, ts_u) {
         if (para_llama.length == (para_func === null || para_func === void 0 ? void 0 : para_func.length)) {
             let aux;
@@ -76,8 +77,9 @@ class Llamada {
                 exp_aux = para_llama[i];
                 tipo_valor = exp_aux.getTipo(controlador, ts, ts_u); // de la llamada
                 valor_aux = exp_aux.getValor(controlador, ts, ts_u);
-                if (tipo_axu == tipo_valor || ((tipo_axu == Tipo_1.tipo.DOUBLE || tipo_axu == Tipo_1.tipo.ENTERO) &&
-                    (tipo_valor == Tipo_1.tipo.ENTERO || tipo_valor == Tipo_1.tipo.DOUBLE)) ||
+                if (tipo_axu == tipo_valor ||
+                    ((tipo_axu == Tipo_1.tipo.DOUBLE || tipo_axu == Tipo_1.tipo.ENTERO) &&
+                        (tipo_valor == Tipo_1.tipo.ENTERO || tipo_valor == Tipo_1.tipo.DOUBLE)) ||
                     (tipo_axu == Tipo_1.tipo.CADENA && tipo_valor == Tipo_1.tipo.CARACTER)) {
                     let simbolo = new Simbolos_1.Simbolos(aux.simbolo, aux.tipo, id_aux, valor_aux);
                     ts_local.agregar(id_aux, simbolo);
@@ -89,7 +91,9 @@ class Llamada {
         else {
             let error = new Errores_1.Errores("Semantico", `Las variables  no son del mismo tipo`, this.linea, this.column);
             controlador.errores.push(error);
-            controlador.append(`Las variablesno son del mismo tipo, En la linea ${this.linea}, y columna ${this.column}`);
+            /*  controlador.append(
+              `Las variablesno son del mismo tipo, En la linea ${this.linea}, y columna ${this.column}`
+            );*/
         }
         return false;
     }

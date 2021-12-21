@@ -52,7 +52,7 @@ export class Declaracion implements Instruccion {
               variable.identificador,
               valor
             );
-            ts.agregar(variable.identificador, nuevo_sim);// array[0] //arreglo
+            ts.agregar(variable.identificador, nuevo_sim); // array[0] //arreglo
             ts_u.agregar(variable.identificador, nuevo_sim);
           } else {
             let error = new Errores(
@@ -83,9 +83,9 @@ export class Declaracion implements Instruccion {
             );
             controlador.errores.push(error);
           }
-        } else if(variable.valor instanceof Conversion){
+        } else if (variable.valor instanceof Conversion) {
           let valor = variable.valor.getValor(controlador, ts, ts_u);
-          let tipo_local= variable.valor.getTipo(controlador, ts, ts_u);
+          let tipo_local = variable.valor.getTipo(controlador, ts, ts_u);
           if (tipo_local == this.tipo.tipo) {
             let nuevo_sim = new Simbolos(
               variable.simbolo,
@@ -104,7 +104,7 @@ export class Declaracion implements Instruccion {
             );
             controlador.errores.push(error);
           }
-        }else if(variable.valor instanceof AccesoArreglo){
+        } else if (variable.valor instanceof AccesoArreglo) {
           let valor = variable.valor.getValor(controlador, ts, ts_u);
           let tipo_vemaos = variable.valor.getTipoArreglo(controlador, ts, ts_u);
           if (tipo_vemaos == this.tipo.tipo) {
@@ -128,7 +128,8 @@ export class Declaracion implements Instruccion {
         } else {
           let valor = variable.valor.getValor(controlador, ts, ts_u);
           let tipo_valor = variable.valor.getTipo(controlador, ts, ts_u);
-          if (tipo_valor == this.tipo.tipo ||
+          if (
+            tipo_valor == this.tipo.tipo ||
             ((tipo_valor == tipo.DOUBLE || tipo_valor == tipo.ENTERO) &&
               (this.tipo.tipo == tipo.ENTERO || this.tipo.tipo == tipo.DOUBLE)) ||
             (tipo_valor == tipo.CADENA && this.tipo.tipo == tipo.CARACTER)
@@ -152,17 +153,17 @@ export class Declaracion implements Instruccion {
           }
         }
       } else {
-          let value: any;
-          if(this.tipo.tipo == tipo.ENTERO){
-            value = 0;
-          }else if(this.tipo.tipo == tipo.DOUBLE){
-            value = 0.00;
-          }else {
-            value = null;
-          }
-          let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, value);
-          ts.agregar(variable.identificador, nuevo_sim);
-          ts_u.agregar(variable.identificador, nuevo_sim);
+        let value: any;
+        if (this.tipo.tipo == tipo.ENTERO) {
+          value = 0;
+        } else if (this.tipo.tipo == tipo.DOUBLE) {
+          value = 0.0;
+        } else {
+          value = null;
+        }
+        let nuevo_sim = new Simbolos(variable.simbolo, this.tipo, variable.identificador, value);
+        ts.agregar(variable.identificador, nuevo_sim);
+        ts_u.agregar(variable.identificador, nuevo_sim);
       }
     }
   }
@@ -212,25 +213,23 @@ export class Declaracion implements Instruccion {
   traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
     let salida: Resultado3D = new Resultado3D();
 
-
-
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%% DECLARA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
 
     for (let simbolo of this.lista_simbolos) {
       let variable = simbolo as Simbolos;
 
       let existe = ts.getSimbolo(variable.identificador);
 
-      if (variable.valor != null) { 
-
+      if (variable.valor != null) {
         let nodo: Resultado3D = variable.valor.traducir(Temp, controlador, ts, ts_u);
-
-
 
         let ultimoT;
         if (nodo.codigo3D == "") {
-          ultimoT = nodo.temporal.nombre
+          ultimoT = nodo.temporal.nombre;
         } else {
-
+          console.log(nodo);
           if (nodo.tipo == tipo.BOOLEAN) {
             if (nodo instanceof Simbolos == false) {
               salida.codigo3D += nodo.codigo3D + "\n";
@@ -269,24 +268,28 @@ export class Declaracion implements Instruccion {
             }
 
             //ultimoT = nodo.temporal.nombre
-          } else if (nodo.tipo == tipo.ID) { // EL tipo es ID pero lo usacom como referencia del incremneto o decremento
+          } else if (nodo.tipo == tipo.ID) {
+            // EL tipo es ID pero lo usacom como referencia del incremneto o decremento
             if (ts.nombre != "Global" && existe != null) {
               if (ts.entorno == 0) {
                 ts.entorno = ts.entorno + ts.ant.entorno;
               }
 
-              salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n"
+              salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n";
 
               existe.posicion = ts.entorno;
               ts.entorno++;
             } else if (ts.nombre == "Global" && existe != null) {
               // ts.entorno++;
-              salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n"
+              salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n";
 
               existe.posicion = ts.entorno;
               ts.entorno++;
-
             }
+          } else if (nodo.tipo == tipo.CADENA) {
+            ultimoT = nodo.temporal.nombre;
+          } else if (nodo.tipo == tipo.DOUBLE) {
+            ultimoT = nodo.temporal.nombre;
           } else {
             ultimoT = Temp.ultimoTemporal();
           }
@@ -304,19 +307,17 @@ export class Declaracion implements Instruccion {
           let temp = Temp.temporal();
           salida.codigo3D += temp + " = P + " + ts.entorno + "; \n";
 
-          salida.codigo3D += "stack[(int)" + temp + "]  = " + ultimoT + "; \n"
+          salida.codigo3D += "stack[(int)" + temp + "]  = " + ultimoT + "; \n";
 
           existe.posicion = ts.entorno;
           ts.entorno++;
         } else if (ts.nombre == "Global" && existe != null) {
           // ts.entorno++;
-          salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n"
+          salida.codigo3D += "stack[(int)" + ts.entorno + "]  = " + ultimoT + "; \n";
 
           existe.posicion = ts.entorno;
           ts.entorno++;
-
         }
-
       } else {
         if (ts.nombre != "Global" && existe != null) {
           if (ts.entorno == 0) {
@@ -325,22 +326,20 @@ export class Declaracion implements Instruccion {
 
           let temp = Temp.temporal();
           salida.codigo3D += temp + " = P + " + ts.entorno + "; \n";
-          salida.codigo3D += "stack[(int)" + temp + "]  = 0; \n"
+          salida.codigo3D += "stack[(int)" + temp + "]  = 0; \n";
 
           existe.posicion = ts.entorno;
           ts.entorno++;
         } else if (ts.nombre == "Global" && existe != null) {
           // ts.entorno++;
-          salida.codigo3D += "stack[(int)" + ts.entorno + "]  = 0; \n"
+          salida.codigo3D += "stack[(int)" + ts.entorno + "]  = 0; \n";
 
           existe.posicion = ts.entorno;
           ts.entorno++;
-
         }
       }
     }
 
     return salida;
-
   }
 }

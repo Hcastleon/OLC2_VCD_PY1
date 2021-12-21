@@ -101,7 +101,7 @@ class Declaracion {
                     value = 0;
                 }
                 else if (this.tipo.tipo == Tipo_1.tipo.DOUBLE) {
-                    value = 0.00;
+                    value = 0.0;
                 }
                 else {
                     value = null;
@@ -155,6 +155,9 @@ class Declaracion {
     }
     traducir(Temp, controlador, ts, ts_u) {
         let salida = new Temporales_1.Resultado3D();
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%% DECLARA %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
         for (let simbolo of this.lista_simbolos) {
             let variable = simbolo;
             let existe = ts.getSimbolo(variable.identificador);
@@ -165,6 +168,7 @@ class Declaracion {
                     ultimoT = nodo.temporal.nombre;
                 }
                 else {
+                    console.log(nodo);
                     if (nodo.tipo == Tipo_1.tipo.BOOLEAN) {
                         if (nodo instanceof Simbolos_1.Simbolos == false) {
                             salida.codigo3D += nodo.codigo3D + "\n";
@@ -202,7 +206,8 @@ class Declaracion {
                         }
                         //ultimoT = nodo.temporal.nombre
                     }
-                    else if (nodo.tipo == Tipo_1.tipo.ID) { // EL tipo es ID pero lo usacom como referencia del incremneto o decremento
+                    else if (nodo.tipo == Tipo_1.tipo.ID) {
+                        // EL tipo es ID pero lo usacom como referencia del incremneto o decremento
                         if (ts.nombre != "Global" && existe != null) {
                             if (ts.entorno == 0) {
                                 ts.entorno = ts.entorno + ts.ant.entorno;
@@ -217,6 +222,12 @@ class Declaracion {
                             existe.posicion = ts.entorno;
                             ts.entorno++;
                         }
+                    }
+                    else if (nodo.tipo == Tipo_1.tipo.CADENA) {
+                        ultimoT = nodo.temporal.nombre;
+                    }
+                    else if (nodo.tipo == Tipo_1.tipo.DOUBLE) {
+                        ultimoT = nodo.temporal.nombre;
                     }
                     else {
                         ultimoT = Temp.ultimoTemporal();

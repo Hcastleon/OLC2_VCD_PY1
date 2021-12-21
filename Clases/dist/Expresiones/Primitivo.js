@@ -33,6 +33,23 @@ class Primitivo {
         return this.tipo;
     }
     getTipoTraduc() {
+        /*
+        if (typeof this.primitivo == "number") {
+          if (this.isInt(Number(this.primitivo))) {
+            return tipo.ENTERO;
+          }
+          return tipo.DOUBLE;
+        } else if (typeof this.primitivo == "string") {
+           if (this.isChar(String(this.primitivo))) {
+            return tipo.CARACTER;
+          }else{
+          return tipo.CADENA;
+          }
+        } else if (typeof this.primitivo == "boolean") {
+          return tipo.BOOLEAN;
+        } else if (this.primitivo === null) {
+          return tipo.NULO;
+        }*/
         return this.tipo;
     }
     getValor(controlador, ts, ts_u) {
@@ -80,9 +97,40 @@ class Primitivo {
         }
         //-------------------
         if (this.primitivo == true && typeof this.primitivo == "boolean") {
+            /*goto L0/L1
+          L0:
+          t0 = 1;
+          goto L4;
+          L1:
+          t0 = 0;
+          L4:*/
+            let temp = Temp.temporal();
+            let etiquetat = Temp.etiqueta();
+            let etiquetaf = Temp.etiqueta();
+            let salto = Temp.etiqueta();
+            resultado3D.codigo3D += Temp.saltoIncondicional(etiquetat);
+            resultado3D.codigo3D += etiquetat + ": \n";
+            resultado3D.codigo3D += temp + " = 1; \n";
+            resultado3D.codigo3D += Temp.saltoIncondicional(salto);
+            resultado3D.codigo3D += etiquetaf + ": \n";
+            resultado3D.codigo3D += temp + " = 0; \n";
+            resultado3D.codigo3D += salto + ": \n";
+            resultado3D.temporal = new Temporales_1.Temporal(temp);
             resultado3D.temporal = new Temporales_1.Temporal("1");
         }
         else if (this.primitivo == false && typeof this.primitivo == "boolean") {
+            let temp = Temp.temporal();
+            let etiquetat = Temp.etiqueta();
+            let etiquetaf = Temp.etiqueta();
+            let salto = Temp.etiqueta();
+            resultado3D.codigo3D += Temp.saltoIncondicional(etiquetaf);
+            resultado3D.codigo3D += etiquetat + ": \n";
+            resultado3D.codigo3D += temp + " = 1; \n";
+            resultado3D.codigo3D += Temp.saltoIncondicional(salto);
+            resultado3D.codigo3D += etiquetaf + ": \n";
+            resultado3D.codigo3D += temp + " = 0; \n";
+            resultado3D.codigo3D += salto + ": \n";
+            resultado3D.temporal = new Temporales_1.Temporal(temp);
             resultado3D.temporal = new Temporales_1.Temporal("0");
         }
         else if (typeof this.primitivo == "string") {
@@ -115,7 +163,12 @@ class Primitivo {
         let temporal = Temp.temporal();
         nodo.codigo3D += temporal + " = H; \n ";
         for (let i = 0; i < cadena.length; i++) {
-            nodo.codigo3D += "heap[(int) H] = " + cadena.charCodeAt(i) + ";  //Guardamos en el Heap el caracter: " + cadena.charAt(i) + "\n";
+            nodo.codigo3D +=
+                "heap[(int) H] = " +
+                    cadena.charCodeAt(i) +
+                    ";  //Guardamos en el Heap el caracter: " +
+                    cadena.charAt(i) +
+                    "\n";
             nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
             if (i === 0) {
                 nodo.temporal = new Temporales_1.Temporal(temporal);
