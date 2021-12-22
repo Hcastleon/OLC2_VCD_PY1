@@ -6,7 +6,6 @@ export class TablaSim {
     public sig: Array<any>;
     public tabla: Map<string, Simbolos>;
     public nombre: string;
-
     public entorno: number = 0;
 
 
