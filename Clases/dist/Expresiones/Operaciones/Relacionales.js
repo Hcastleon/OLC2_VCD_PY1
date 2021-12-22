@@ -825,46 +825,80 @@ class Relacionales extends Operaciones_1.Operacion {
             if (nodoIzq.codigo3D != "" && nodoIzq.codigo3D != undefined)
                 nodo.codigo3D += nodoIzq.codigo3D;
             // if (nodoDer.codigo3D != "") nodo.codigo3D += nodoDer.codigo3D;
-            let temporal = Temp.nuevoTemporal();
-            let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp, ts);
-            nodo.codigo3D = res.op;
-            if (nodoDer.temporal == null) {
-                if (nodoDer.codigo3D != "")
-                    nodo.codigo3D += nodoDer.codigo3D;
+            //---------------------------------
+            if (nodoIzq.tipo == Tipo_1.tipo.CADENA && nodoDer.tipo == Tipo_1.tipo.CADENA) {
+                let temporal = Temp.nuevoTemporal();
+                let ress = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp, ts);
+                nodo.codigo3D = ress.op;
+                let inicioIzq = ress.val;
+                let inicioDer = nodoDer.temporal.nombre;
+                let salto = Temp.etiqueta();
+                nodo.codigo3D += salto + ": \n";
+                let temp1 = Temp.temporal();
                 let temp2 = Temp.temporal();
+                let verdadera = Temp.etiqueta();
+                let falsa = Temp.etiqueta();
+                nodo.codigo3D += temp1 + " = heap[(int)" + inicioIzq + "]; //Posicion de inicio de la cadena\n";
+                nodo.codigo3D += temp2 + " = heap[(int)" + inicioDer + "]; //Posicion de inicio de la cadena\n";
+                nodo.codigo3D += Temp.saltoCondicional("(" + temp1 + "!=" + temp2 + ")", falsa);
+                nodo.codigo3D += Temp.saltoCondicional("(" + temp1 + "== 0)", verdadera);
+                nodo.codigo3D += inicioIzq + "= " + inicioIzq + " +1; \n ";
+                nodo.codigo3D += inicioDer + "= " + inicioDer + " +1; \n ";
+                nodo.codigo3D += Temp.saltoIncondicional(salto);
+                nodo.codigo3D += verdadera + ": \n";
+                let res = Temp.temporal();
+                nodo.codigo3D += res + "= 1; \n";
                 let salto2 = Temp.etiqueta();
-                nodo.codigo3D += nodoDer.etiquetasV + ": \n";
-                nodo.codigo3D += temp2 + " = 1; \n";
                 nodo.codigo3D += Temp.saltoIncondicional(salto2);
-                nodo.codigo3D += nodoDer.etiquetasF + ": \n";
-                nodo.codigo3D += temp2 + " = 0; \n";
+                nodo.codigo3D += falsa + ": \n";
+                nodo.codigo3D += res + "= 0; \n";
                 nodo.codigo3D += salto2 + ": \n";
                 nodo.codigo3D +=
-                    "if (" +
-                        res.val +
-                        " " +
-                        signo +
-                        " " +
-                        temp2 +
-                        ") goto " +
-                        v +
-                        "; // Si es verdadero salta a " +
-                        v +
-                        "\n";
+                    "if (" + res + " " + signo + " 1 ) goto " + v + "; // Si es verdadero salta a " + v + "\n";
             }
             else {
-                nodo.codigo3D +=
-                    "if (" +
-                        res.val +
-                        " " +
-                        signo +
-                        " " +
-                        nodoDer.temporal.nombre +
-                        ") goto " +
-                        v +
-                        "; // Si es verdadero salta a " +
-                        v +
-                        "\n";
+                //-------------------------------
+                let temporal = Temp.nuevoTemporal();
+                let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp, ts);
+                nodo.codigo3D = res.op;
+                if (nodoDer.temporal == null) {
+                    if (nodoDer.codigo3D != "")
+                        nodo.codigo3D += nodoDer.codigo3D;
+                    let temp2 = Temp.temporal();
+                    let salto2 = Temp.etiqueta();
+                    nodo.codigo3D += nodoDer.etiquetasV + ": \n";
+                    nodo.codigo3D += temp2 + " = 1; \n";
+                    nodo.codigo3D += Temp.saltoIncondicional(salto2);
+                    nodo.codigo3D += nodoDer.etiquetasF + ": \n";
+                    nodo.codigo3D += temp2 + " = 0; \n";
+                    nodo.codigo3D += salto2 + ": \n";
+                    nodo.codigo3D +=
+                        "if (" +
+                            res.val +
+                            " " +
+                            signo +
+                            " " +
+                            temp2 +
+                            ") goto " +
+                            v +
+                            "; // Si es verdadero salta a " +
+                            v +
+                            "\n";
+                }
+                else {
+                    nodo.codigo3D +=
+                        "if (" +
+                            res.val +
+                            " " +
+                            signo +
+                            " " +
+                            nodoDer.temporal.nombre +
+                            ") goto " +
+                            v +
+                            "; // Si es verdadero salta a " +
+                            v +
+                            "\n";
+                }
             }
         }
         else if (nodoDer instanceof Simbolos_1.Simbolos && nodoIzq instanceof Simbolos_1.Simbolos == false) {
@@ -943,18 +977,47 @@ class Relacionales extends Operaciones_1.Operacion {
                 nodo.codigo3D += nodoIzq.codigo3D;
             if (nodoDer.codigo3D != "")
                 nodo.codigo3D += nodoDer.codigo3D;
-            nodo.codigo3D +=
-                "if (" +
-                    nodoIzq.temporal.nombre +
-                    " " +
-                    signo +
-                    " " +
-                    nodoDer.temporal.nombre +
-                    ") goto " +
-                    v +
-                    "; // Si es verdadero salta a " +
-                    v +
-                    "\n";
+            if (nodoIzq.tipo == Tipo_1.tipo.CADENA && nodoDer.tipo == Tipo_1.tipo.CADENA) {
+                let inicioIzq = nodoIzq.temporal.nombre;
+                let inicioDer = nodoDer.temporal.nombre;
+                let salto = Temp.etiqueta();
+                nodo.codigo3D += salto + ": \n";
+                let temp1 = Temp.temporal();
+                let temp2 = Temp.temporal();
+                let verdadera = Temp.etiqueta();
+                let falsa = Temp.etiqueta();
+                nodo.codigo3D += temp1 + " = heap[(int)" + inicioIzq + "]; //Posicion de inicio de la cadena\n";
+                nodo.codigo3D += temp2 + " = heap[(int)" + inicioDer + "]; //Posicion de inicio de la cadena\n";
+                nodo.codigo3D += Temp.saltoCondicional("(" + temp1 + "!=" + temp2 + ")", falsa);
+                nodo.codigo3D += Temp.saltoCondicional("(" + temp1 + "== 0)", verdadera);
+                nodo.codigo3D += inicioIzq + "= " + inicioIzq + " +1; \n ";
+                nodo.codigo3D += inicioDer + "= " + inicioDer + " +1; \n ";
+                nodo.codigo3D += Temp.saltoIncondicional(salto);
+                nodo.codigo3D += verdadera + ": \n";
+                let res = Temp.temporal();
+                nodo.codigo3D += res + "= 1; \n";
+                let salto2 = Temp.etiqueta();
+                nodo.codigo3D += Temp.saltoIncondicional(salto2);
+                nodo.codigo3D += falsa + ": \n";
+                nodo.codigo3D += res + "= 0; \n";
+                nodo.codigo3D += salto2 + ": \n";
+                nodo.codigo3D +=
+                    "if (" + res + " " + signo + " 1 ) goto " + v + "; // Si es verdadero salta a " + v + "\n";
+            }
+            else {
+                nodo.codigo3D +=
+                    "if (" +
+                        nodoIzq.temporal.nombre +
+                        " " +
+                        signo +
+                        " " +
+                        nodoDer.temporal.nombre +
+                        ") goto " +
+                        v +
+                        "; // Si es verdadero salta a " +
+                        v +
+                        "\n";
+            }
             //nodo.codigo3D += Temp.saltoIncondicional(f);
         }
         else {

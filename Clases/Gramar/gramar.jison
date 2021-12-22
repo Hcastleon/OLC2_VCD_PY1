@@ -120,6 +120,8 @@
 "toUppercase"                                   return 'touppercase'
 "toLowercase"                                   return 'tolowercase'
 
+"graficar_ts"                                   return 'graficarTS'
+
 [A-Za-z_\ñ\Ñ][A-Za-z_0-9\ñ\Ñ]*                  return 'id'
 <<EOF>>                                         return 'EOF'
 .                                               { listaErrores.push( new Errores('Lexico', `El caracter no portenece al lenguaje ${yytext}`,  yylloc.first_line, yylloc.first_column)); }//ERRORES LEXICOS
@@ -166,6 +168,7 @@
     const {AccesoStruct} = require("../Expresiones/AccesoStruct");
     const {AccesoArreglo} = require("../Expresiones/AccesoArreglo");
     const { tipo } = require("../TablaSimbolos/Tipo");
+    const { GraficarTS } = require("../Instrucciones/GraficarTS");
 %}
 
 
@@ -460,6 +463,8 @@ SENTENCIA_DOWHILE : do llaveizq INSTRUCCIONES llavedec while parizq EXPRESION pa
 
 LLAMADA : id parizq pardec                              { $$ = new Llamada($1, [], @1.first_line, @1.last_column); listaRGramar.push({'p':'LLAMADA -> id parizq pardec','g':'LLAMADA.val = array(id.lexval)'});}
         | id parizq LISTAEXPRESIONES pardec             { $$ = new Llamada($1, $3, @1.first_line, @1.last_column); listaRGramar.push({'p':'LLAMADA -> id parizq LISTAEXPRESIONES pardec','g':'LLAMADA.val = array(id.lexval, LISTAEXPRESIONES.val)'});}
+        | graficarTS parizq pardec        { $$ =  new GraficarTS(); listaRGramar.push({'p':'LLAMADA -> graficar_ts()'});}
+            
         ;
 
 LISTAEXPRESIONES: LISTAEXPRESIONES coma EXPRESION       { $$ = $1; $$.push($3); listaRGramar.push({'p':'LISTAEXPRESIONES -> LISTAEXPRESIONES coma EXPRESION','g':'LISTAEXPRESIONES.val = LISTAEXPRESIONES.add(EXPRESION.val)'});}

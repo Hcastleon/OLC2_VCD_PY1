@@ -23,6 +23,7 @@ export class Llamada implements Instruccion, Expresion {
   }
 
   getTipo(controlador: Controller, ts: TablaSim) {
+    
     if (ts.existe(this.identificador)) {
       let sim_func = ts.getSimbolo(this.identificador) as Funcion;
       return sim_func.tipo.tipo;

@@ -9,7 +9,7 @@ import { Simbolos } from "../../TablaSimbolos/Simbolos";
 import { Continue } from "../Transferencia/Continue";
 import { Return } from "../Transferencia/Return";
 import { Tipo } from '../../TablaSimbolos/Tipo';
-import { Temporales } from "../../AST/Temporales";
+import { Resultado3D, Temporales } from "../../AST/Temporales";
 
 export class ForEsp implements Instruccion {
   public asig_decla: Simbolos;
@@ -37,12 +37,12 @@ export class ForEsp implements Instruccion {
     let valor_condi = this.actualizacion.getValor(controlador, ts, ts_u);
 
     if (typeof valor_condi == "string") {
-      variable.tipo = this.actualizacion.getTipo(controlador, ts, ts_u);
+      variable.tipo = new Tipo("STRING");
       // Se mete a la tabla de simbolos la variable
       let nuevo_sim = new Simbolos(variable.simbolo, variable.tipo, variable.identificador, null);
       ts.agregar(variable.identificador, nuevo_sim);
       ts_u.agregar(variable.identificador, nuevo_sim);
-      
+
       let tamno = valor_condi.length;
       let contador = 0;
       siguiente: while (contador < tamno) {
@@ -127,7 +127,7 @@ export class ForEsp implements Instruccion {
   }
 
   getTipoArray(lista: any) {
-    let tipito : Tipo;
+    let tipito: Tipo;
     if (typeof lista[0] == "number") {
       if (this.isInt(Number(lista[0]))) {
         tipito = new Tipo("ENTERO");
@@ -137,19 +137,19 @@ export class ForEsp implements Instruccion {
       return tipito;
     } else if (typeof lista[0] == "string") {
       if (this.isChar(String(lista[0]))) {
-        tipito =  new Tipo("CARACTER");
+        tipito = new Tipo("CARACTER");
         return tipito;
       }
-      tipito =new Tipo("CADENA");
+      tipito = new Tipo("CADENA");
       return tipito;
     } else if (typeof lista[0] == "boolean") {
-      tipito =new Tipo("BOOLEAN");
+      tipito = new Tipo("BOOLEAN");
       return tipito;
     } else if (lista[0] === null) {
-      tipito =new Tipo("NULO");
+      tipito = new Tipo("NULO");
       return tipito;
-    }else{
-      tipito =new Tipo("NULO");
+    } else {
+      tipito = new Tipo("NULO");
       return tipito;
     }
   }
@@ -163,8 +163,10 @@ export class ForEsp implements Instruccion {
     return n.length === 1 && n.match(/./i);
   }
 
-  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u:TablaSim) {
-    
+  traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
+    let salida: Resultado3D = new Resultado3D();
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%  FORIN %%%%%%%%%%%%%%%%%%%%%%";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
   }
-
 }

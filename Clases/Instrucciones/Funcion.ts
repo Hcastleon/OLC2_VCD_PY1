@@ -58,11 +58,10 @@ export class Funcion extends Simbolos implements Instruccion {
       tipo_aux = "string";
     } else if (valor_type == "BOOLEAN") {
       tipo_aux = "boolean";
-    } else {
-      tipo_aux = "VOID";
     }
 
     for (let ins of this.lista_ints) {
+   
       let result = ins.ejecutar(controlador, ts_local, ts_u);
       if (result != null) {
         if (result instanceof Errores) {
@@ -83,8 +82,11 @@ export class Funcion extends Simbolos implements Instruccion {
           if (tipo_aux == "VOID") {
             return;
           } else {
-            if (typeof result == tipo_aux) {
+
+            if (typeof result == tipo_aux  ) {
               return result;
+            }else if(tipo_aux == ""){
+              console.log("llego al main");
             } else {
               let error = new Errores(
                 "Semantico",

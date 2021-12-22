@@ -41,9 +41,6 @@ class Funcion extends Simbolos_1.Simbolos {
         else if (valor_type == "BOOLEAN") {
             tipo_aux = "boolean";
         }
-        else {
-            tipo_aux = "VOID";
-        }
         for (let ins of this.lista_ints) {
             let result = ins.ejecutar(controlador, ts_local, ts_u);
             if (result != null) {
@@ -64,6 +61,9 @@ class Funcion extends Simbolos_1.Simbolos {
                     else {
                         if (typeof result == tipo_aux) {
                             return result;
+                        }
+                        else if (tipo_aux == "") {
+                            console.log("llego al main");
                         }
                         else {
                             let error = new Errores_1.Errores("Semantico", ` La funcion ${this.identificador} no concuerda con el tipo`, this.linea, this.column);

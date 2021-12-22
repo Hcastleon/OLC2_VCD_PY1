@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Arreglo = void 0;
 const Nodo_1 = require("../AST/Nodo");
+const Temporales_1 = require("../AST/Temporales");
 class Arreglo {
     // public niveles: Array<Expresion>;
     // public linea: number;
@@ -72,6 +73,9 @@ class Arreglo {
         }
     }
     traducir(Temp, controlador, ts, ts_u) {
+        let salida = new Temporales_1.Resultado3D();
+        salida.codigo3D += "// Arreglo \n";
+        return salida;
     }
     recorrer() {
         let padre = new Nodo_1.Nodo("ID", "");

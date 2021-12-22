@@ -9,6 +9,7 @@ const Simbolos_1 = require("../../TablaSimbolos/Simbolos");
 const Continue_1 = require("../Transferencia/Continue");
 const Return_1 = require("../Transferencia/Return");
 const Tipo_1 = require("../../TablaSimbolos/Tipo");
+const Temporales_1 = require("../../AST/Temporales");
 class ForEsp {
     constructor(asi, acuta, list, linea, col) {
         this.asig_decla = asi;
@@ -22,7 +23,7 @@ class ForEsp {
         let variable = this.asig_decla;
         let valor_condi = this.actualizacion.getValor(controlador, ts, ts_u);
         if (typeof valor_condi == "string") {
-            variable.tipo = this.actualizacion.getTipo(controlador, ts, ts_u);
+            variable.tipo = new Tipo_1.Tipo("STRING");
             // Se mete a la tabla de simbolos la variable
             let nuevo_sim = new Simbolos_1.Simbolos(variable.simbolo, variable.tipo, variable.identificador, null);
             ts.agregar(variable.identificador, nuevo_sim);
@@ -148,6 +149,10 @@ class ForEsp {
         return n.length === 1 && n.match(/./i);
     }
     traducir(Temp, controlador, ts, ts_u) {
+        let salida = new Temporales_1.Resultado3D();
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%  FORIN %%%%%%%%%%%%%%%%%%%%%%";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%";
     }
 }
 exports.ForEsp = ForEsp;

@@ -1,4 +1,5 @@
 import { Errores } from "./AST/Errores";
+import { Temporales } from "./AST/Temporales";
 import { Simbolos } from "./TablaSimbolos/Simbolos";
 import { TablaSim } from "./TablaSimbolos/TablaSim";
 
@@ -6,11 +7,13 @@ export class Controller {
   public errores: Array<Errores>;
   public consola: string;
   public texto: string;
+  public graficarTS: Array<TablaSim>;
 
   constructor() {
     this.errores = new Array<Errores>();
     this.consola = "";
     this.texto = "";
+    this.graficarTS = new Array<TablaSim>();
   }
 
   public append(aux: string) {
@@ -46,6 +49,45 @@ export class Controller {
         return auxS;
   }
 
+      graficar_ts() {
+        let cuerpohtml = "";
+
+        this.graficarTS.forEach(element => {
+          
+             cuerpohtml += `
+          <tr>
+          <th>#</th>
+          <th>Rol</th>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Scope</th>
+          <th>Value</th>
+          <th>No. Parametros</th>
+          </tr>
+        `;
+
+        while (element != null) {
+            for (let sim of element.tabla.values()) {
+                cuerpohtml += `<tr>
+                                <th scope="row">${0}</th>
+                                <td>${this.getRol(sim)}</td>
+                                <td>${this.getNombre(sim)}</td>
+                                <td>${this.getTipo(sim)}</td>
+                                <td>${element.nombre}</td>
+                                <td>${this.getValor(sim)}</td>
+                                <td>${this.parametros(sim)}</td>
+                            </tr>`;
+            }
+            element = element.ant;
+        }
+          
+        });
+
+        
+        
+        return cuerpohtml;
+    }
+
   graficar_tErrores() {
     var cuerpotabla = "";
     var contador = 0;
@@ -60,6 +102,26 @@ export class Controller {
                            </tr>`;
     }
 
+    return cuerpotabla;
+  }
+
+  traductor_texto(temp: Temporales) {
+    var cuerpotabla = `/*------HEADER------*/\n#include <stdio.h>\n#include <math.h>\n\ndouble heap[30101999];\ndouble stack[30101999];\ndouble P;\ndouble H;\n`;
+    cuerpotabla += 'double ';
+    for (var _i = 0; _i < temp.contador_temporales+1; _i++) {
+      if(temp.contador_temporales == _i){
+        cuerpotabla += `t${_i};`;
+      }else{
+        cuerpotabla += `t${_i}, `;
+      }
+
+    }
+    cuerpotabla +='\n';
+    //cuerpotabla += para las funciones si es que llegan a existir :(
+    //MAIN
+    cuerpotabla+='/*------MAIN------*/\nvoid main() {\n\tP = 0; H = 0;\n';
+    cuerpotabla+='\t'+this.texto;
+    cuerpotabla+='\treturn;\n}\n';
     return cuerpotabla;
   }
 

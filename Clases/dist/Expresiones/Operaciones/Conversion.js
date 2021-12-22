@@ -78,8 +78,45 @@ class Conversion {
                 if (nodo.tipo == Tipo_1.tipo.DOUBLE) {
                     nodo.tipo = Tipo_1.tipo.ENTERO;
                 }
+                salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+                salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%% TOINT %%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+                salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+                let temp = Temp.temporal();
+                if (nodo instanceof Simbolos_1.Simbolos == false) {
+                    salida.codigo3D += temp + " = (int)" + nodo.temporal.nombre + ";\n";
+                    salida.temporal = new Temporales_1.Temporal(temp);
+                }
+                else if (nodo instanceof Simbolos_1.Simbolos) {
+                    let temp2 = Temp.temporal();
+                    salida.codigo3D += temp + " = P + " + nodo.posicion + "; \n";
+                    salida.codigo3D += temp + "= stack[(int)" + temp + "]; \n";
+                    salida.codigo3D += temp2 + " = (int)" + temp + ";\n";
+                    salida.temporal = new Temporales_1.Temporal(temp2);
+                }
+                salida.tipo = Tipo_1.tipo.ENTERO;
+                return salida;
                 break;
             case "todouble":
+                if (nodo.tipo == Tipo_1.tipo.DOUBLE) {
+                    nodo.tipo = Tipo_1.tipo.ENTERO;
+                }
+                salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+                salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%% TODOUBLE %%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+                salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+                let temp0 = Temp.temporal();
+                if (nodo instanceof Simbolos_1.Simbolos == false) {
+                    salida.codigo3D += temp0 + " = (double)" + nodo.temporal.nombre + ";\n";
+                    salida.temporal = new Temporales_1.Temporal(temp0);
+                }
+                else if (nodo instanceof Simbolos_1.Simbolos) {
+                    let temp2 = Temp.temporal();
+                    salida.codigo3D += temp0 + " = P + " + nodo.posicion + "; \n";
+                    salida.codigo3D += temp0 + "= stack[(int)" + temp0 + "]; \n";
+                    salida.codigo3D += temp2 + " = (double)" + temp0 + ";\n";
+                    salida.temporal = new Temporales_1.Temporal(temp2);
+                }
+                salida.tipo = Tipo_1.tipo.DOUBLE;
+                return salida;
                 break;
             case "typeof":
                 break;

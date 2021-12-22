@@ -229,6 +229,13 @@ class Declaracion {
                     else if (nodo.tipo == Tipo_1.tipo.DOUBLE) {
                         ultimoT = nodo.temporal.nombre;
                     }
+                    else if (variable.valor instanceof Arreglo_1.Arreglo) {
+                        let valor = variable.valor.getValor(controlador, ts, ts_u);
+                        let aux = this.setArreglo(valor, Temp);
+                        salida.codigo3D += aux === null || aux === void 0 ? void 0 : aux.codigo3D;
+                        ultimoT = aux.temporal.nombre;
+                        //salida.temporal = aux?.temporal;
+                    }
                     else {
                         ultimoT = Temp.ultimoTemporal();
                     }
@@ -273,6 +280,58 @@ class Declaracion {
             }
         }
         return salida;
+    }
+    setArreglo(array, Temp) {
+        let nodo = new Temporales_1.Resultado3D();
+        nodo.tipo = Tipo_1.tipo.CADENA;
+        let valor = array;
+        console.log(array);
+        nodo.codigo3D +=
+            "//%%%%%%%%%%%%%%%%%%% GUARDAR Arrelgo %%%%%%%%%%%%%%%%%%%% \n";
+        let temporal = Temp.temporal();
+        nodo.codigo3D += temporal + " = H; \n ";
+        array.forEach((element, index) => {
+            nodo.codigo3D +=
+                "heap[(int) H] = " +
+                    element +
+                    ";  //Guardamos en el Heap el caracter: " +
+                    element +
+                    "\n";
+            nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
+            if (index === 0) {
+                nodo.temporal = new Temporales_1.Temporal(temporal);
+            }
+        });
+        /*
+             for (let i = 0; i < valor.length -1; i++) {
+              nodo.codigo3D +=
+                "heap[(int) H] = " +
+                valor[i] +
+                ";  //Guardamos en el Heap el caracter: " +
+                valor[i] +
+                "\n";
+              nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
+        
+              if (i === 0) {
+                nodo.temporal = new Temporal(temporal);
+              }}*/
+        /*
+        for (let i = 0; i < cadena.length; i++) {
+          nodo.codigo3D +=
+            "heap[(int) H] = " +
+            cadena.charCodeAt(i) +
+            ";  //Guardamos en el Heap el caracter: " +
+            cadena.charAt(i) +
+            "\n";
+          nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
+    
+          if (i === 0) {
+            nodo.temporal = new Temporal(temporal);
+          }
+        }*/
+        nodo.codigo3D += "heap[(int) H] = 0; //Fin de la cadena \n";
+        nodo.codigo3D += "H = H + 1; // Aumentamos el Heap \n";
+        return nodo;
     }
 }
 exports.Declaracion = Declaracion;

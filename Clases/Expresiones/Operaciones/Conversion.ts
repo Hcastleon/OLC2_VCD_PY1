@@ -90,8 +90,43 @@ export class Conversion implements Expresion {
         if (nodo.tipo == tipo.DOUBLE) {
           nodo.tipo = tipo.ENTERO;
         }
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%% TOINT %%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        let temp = Temp.temporal();
+        if(nodo instanceof Simbolos == false){
+          salida.codigo3D += temp + " = (int)"+nodo.temporal.nombre+";\n";
+          salida.temporal = new Temporal(temp);
+        }else if(nodo instanceof Simbolos){
+          let temp2 = Temp.temporal();
+          salida.codigo3D += temp + " = P + " + nodo.posicion + "; \n";
+          salida.codigo3D += temp + "= stack[(int)" + temp + "]; \n";
+          salida.codigo3D += temp2 + " = (int)"+temp+";\n";
+          salida.temporal = new Temporal(temp2);
+        }
+        salida.tipo = tipo.ENTERO;
+        return salida;
         break;
       case "todouble":
+        if (nodo.tipo == tipo.DOUBLE) {
+          nodo.tipo = tipo.ENTERO;
+        }
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%% TODOUBLE %%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        let temp0 = Temp.temporal();
+        if(nodo instanceof Simbolos == false){
+          salida.codigo3D += temp0 + " = (double)"+nodo.temporal.nombre+";\n";
+          salida.temporal = new Temporal(temp0);
+        }else if(nodo instanceof Simbolos){
+          let temp2 = Temp.temporal();
+          salida.codigo3D += temp0 + " = P + " + nodo.posicion + "; \n";
+          salida.codigo3D += temp0 + "= stack[(int)" + temp0 + "]; \n";
+          salida.codigo3D += temp2 + " = (double)"+temp0+";\n";
+          salida.temporal = new Temporal(temp2);
+        }
+        salida.tipo = tipo.DOUBLE;
+        return salida;
         break;
       case "typeof":
         break;

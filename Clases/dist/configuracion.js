@@ -255,6 +255,7 @@ function ej() {
   document.getElementById(`textOutput-Blank`).value = ejecucion.salida;
   document.getElementById(`tabla_e-Blank`).innerHTML = ejecucion.tabla_e;
   document.getElementById(`tabla_s-Blank`).innerHTML = ejecucion.tabla_s;
+  document.getElementById(`tabla_ts-Blank`).innerHTML = ejecucion.tabla_ts;
   TablaGramar = ejecucion.gramar.slice().reverse();
   graficando_ast_d(ejecucion.ast);
 }
@@ -288,7 +289,7 @@ function ejecutarCodigo(entrada) {
   controlador.errores = listaErrores.slice();
   Temp = new Temporales_1.Temporales();
   const ast = new Ast_1.AST(instrucciones);
-  
+
 
   instrucciones.forEach((ins) => {
     if (ins instanceof Funcion_1.Funcion) {
@@ -319,13 +320,17 @@ function ejecutarCodigo(entrada) {
   });
   let grafo = new Arbol_1.Arbol();
   let res = grafo.tour(raiz);
+  console.log(controlador.graficarTS);
+  console.log(controlador.graficar_ts())
   return {
     salida: controlador.consola,
     tabla_e: controlador.graficar_tErrores(),
     tabla_s: controlador.recursivo_tablita(entornoGlobal, "", 0),
     ast: res,
     gramar: reportGramar,
+    tabla_ts: controlador.graficar_ts(),
   };
+  
 }
 
 function ejecutarCodigo3d() {
@@ -344,5 +349,7 @@ function ejecutarCodigo3d() {
     }
   });
 
-  return controlador.texto;
+  
+
+  return controlador.traductor_texto(Temp);
 }
