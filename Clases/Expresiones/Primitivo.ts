@@ -112,7 +112,7 @@ export class Primitivo implements Expresion {
     goto L4;
     L1:
     t0 = 0;
-    L4:*/
+    L4:*/ /*
       let temp: string = Temp.temporal();
       let etiquetat: string = Temp.etiqueta();
       let etiquetaf: string = Temp.etiqueta();
@@ -125,11 +125,11 @@ export class Primitivo implements Expresion {
       resultado3D.codigo3D += etiquetaf + ": \n";
       resultado3D.codigo3D += temp + " = 0; \n";
       resultado3D.codigo3D += salto + ": \n";
-      resultado3D.temporal = new Temporal(temp);
+      resultado3D.temporal = new Temporal(temp);*/
 
       resultado3D.temporal = new Temporal("1");
     } else if (this.primitivo == false && typeof this.primitivo == "boolean") {
-      let temp: string = Temp.temporal();
+      /* let temp: string = Temp.temporal();
       let etiquetat: string = Temp.etiqueta();
       let etiquetaf: string = Temp.etiqueta();
       let salto: string = Temp.etiqueta();
@@ -141,7 +141,7 @@ export class Primitivo implements Expresion {
       resultado3D.codigo3D += etiquetaf + ": \n";
       resultado3D.codigo3D += temp + " = 0; \n";
       resultado3D.codigo3D += salto + ": \n";
-      resultado3D.temporal = new Temporal(temp);
+      resultado3D.temporal = new Temporal(temp);*/
       resultado3D.temporal = new Temporal("0");
     } else if (typeof this.primitivo == "string") {
       if (this.tipo == tipo.CARACTER) {

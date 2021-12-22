@@ -87,6 +87,9 @@ export class Conversion implements Expresion {
       case "parse":
         break;
       case "toint":
+        if (nodo.tipo == tipo.DOUBLE) {
+          nodo.tipo = tipo.ENTERO;
+        }
         break;
       case "todouble":
         break;
@@ -108,7 +111,6 @@ export class Conversion implements Expresion {
           let falses: Resultado3D = this.setCadena("false", Temp);
           salida.codigo3D += falses.codigo3D;
           salida.codigo3D += salto + ": \n";
-
           let temporal: string;
           if (nodo.temporal != null && nodo.temporal.nombre == "true") {
             temporal = trues.temporal.nombre;

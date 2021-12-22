@@ -23,7 +23,7 @@ export class If implements Instruccion {
     this.lista_elses = lista_elses;
     this.linea = linea;
     this.columna = columna;
-    this.entornoTrad = new TablaSim(null,"");
+    this.entornoTrad = new TablaSim(null, "");
   }
 
   ejecutar(controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
@@ -92,8 +92,13 @@ export class If implements Instruccion {
     let v: Array<string> = [];
     let f: Array<string> = [];
 
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%% IF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+
     let nodo: Resultado3D = this.condicion.traducir(Temp, controlador, this.entornoTrad, ts_u);
     salida.codigo3D += nodo.codigo3D + "\n";
+
     nodo = this.arreglarBoolean(nodo, salida, Temp);
     v = nodo.etiquetasV;
     f = nodo.etiquetasF;
@@ -102,8 +107,8 @@ export class If implements Instruccion {
     salida.codigo3D += Temp.escribirEtiquetas(v);
     console.log(this.lista_ifs);
     this.lista_ifs.forEach((element) => {
-      let temp: Resultado3D = element.traducir(Temp, controlador,  this.entornoTrad, ts_u);
-      
+      let temp: Resultado3D = element.traducir(Temp, controlador, this.entornoTrad, ts_u);
+
       salida.codigo3D += temp.codigo3D;
       salida.saltos = salida.saltos.concat(temp.saltos);
       salida.breaks = salida.breaks.concat(temp.breaks);

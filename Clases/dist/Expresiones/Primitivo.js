@@ -103,26 +103,28 @@ class Primitivo {
           goto L4;
           L1:
           t0 = 0;
-          L4:*/
-            let temp = Temp.temporal();
-            let etiquetat = Temp.etiqueta();
-            let etiquetaf = Temp.etiqueta();
-            let salto = Temp.etiqueta();
-            resultado3D.codigo3D += Temp.saltoIncondicional(etiquetat);
-            resultado3D.codigo3D += etiquetat + ": \n";
-            resultado3D.codigo3D += temp + " = 1; \n";
-            resultado3D.codigo3D += Temp.saltoIncondicional(salto);
-            resultado3D.codigo3D += etiquetaf + ": \n";
-            resultado3D.codigo3D += temp + " = 0; \n";
-            resultado3D.codigo3D += salto + ": \n";
-            resultado3D.temporal = new Temporales_1.Temporal(temp);
+          L4:*/ /*
+              let temp: string = Temp.temporal();
+              let etiquetat: string = Temp.etiqueta();
+              let etiquetaf: string = Temp.etiqueta();
+              let salto: string = Temp.etiqueta();
+        
+              resultado3D.codigo3D += Temp.saltoIncondicional(etiquetat);
+              resultado3D.codigo3D += etiquetat + ": \n";
+              resultado3D.codigo3D += temp + " = 1; \n";
+              resultado3D.codigo3D += Temp.saltoIncondicional(salto);
+              resultado3D.codigo3D += etiquetaf + ": \n";
+              resultado3D.codigo3D += temp + " = 0; \n";
+              resultado3D.codigo3D += salto + ": \n";
+              resultado3D.temporal = new Temporal(temp);*/
             resultado3D.temporal = new Temporales_1.Temporal("1");
         }
         else if (this.primitivo == false && typeof this.primitivo == "boolean") {
-            let temp = Temp.temporal();
-            let etiquetat = Temp.etiqueta();
-            let etiquetaf = Temp.etiqueta();
-            let salto = Temp.etiqueta();
+            /* let temp: string = Temp.temporal();
+            let etiquetat: string = Temp.etiqueta();
+            let etiquetaf: string = Temp.etiqueta();
+            let salto: string = Temp.etiqueta();
+      
             resultado3D.codigo3D += Temp.saltoIncondicional(etiquetaf);
             resultado3D.codigo3D += etiquetat + ": \n";
             resultado3D.codigo3D += temp + " = 1; \n";
@@ -130,7 +132,7 @@ class Primitivo {
             resultado3D.codigo3D += etiquetaf + ": \n";
             resultado3D.codigo3D += temp + " = 0; \n";
             resultado3D.codigo3D += salto + ": \n";
-            resultado3D.temporal = new Temporales_1.Temporal(temp);
+            resultado3D.temporal = new Temporal(temp);*/
             resultado3D.temporal = new Temporales_1.Temporal("0");
         }
         else if (typeof this.primitivo == "string") {

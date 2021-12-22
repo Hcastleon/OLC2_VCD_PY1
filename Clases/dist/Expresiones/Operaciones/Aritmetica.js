@@ -473,7 +473,6 @@ class Aritmetica extends Operaciones_1.Operacion {
             return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "-", 0);
         }
         else if (this.operador == Operaciones_1.Operador.CONCATENAR) {
-            console.log("SI ?");
             return this.generarConcat(Temp, controlador, ts, ts_u);
         }
         //modulo unario concatenar0  repetir
@@ -548,7 +547,7 @@ class Aritmetica extends Operaciones_1.Operacion {
                 Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
                     "//Si se cumple es el final de cadena \n";
             nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
-            nodo.codigo3D += "H = H + 1; // invrementar heap \n";
+            nodo.codigo3D += "H = H + 1; // incrementar heap \n";
             nodo.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de cadena \n";
             nodo.codigo3D += Temp.saltoIncondicional(v);
             nodo.codigo3D += f + ": \n";
@@ -557,7 +556,7 @@ class Aritmetica extends Operaciones_1.Operacion {
         else {
             //nodo.codigo3D += nodito.codigo3D;
             nodo.codigo3D +=
-                "// %%%%%%%%%%%%%%%%%%%%5 Concatenando cadena " +
+                "// %%%%%%%%%%%%%%%%%%%% Concatenando cadena " +
                     nodito.temporal.nombre +
                     "%%%%%%%%%%%%% \n";
             let aux = Temp.temporal();

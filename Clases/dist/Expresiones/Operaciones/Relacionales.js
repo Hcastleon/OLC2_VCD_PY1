@@ -822,40 +822,102 @@ class Relacionales extends Operaciones_1.Operacion {
         let v = Temp.etiqueta();
         let f = Temp.etiqueta();
         if (nodoIzq instanceof Simbolos_1.Simbolos && nodoDer instanceof Simbolos_1.Simbolos == false) {
+            if (nodoIzq.codigo3D != "" && nodoIzq.codigo3D != undefined)
+                nodo.codigo3D += nodoIzq.codigo3D;
+            // if (nodoDer.codigo3D != "") nodo.codigo3D += nodoDer.codigo3D;
             let temporal = Temp.nuevoTemporal();
             let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp, ts);
             nodo.codigo3D = res.op;
-            nodo.codigo3D +=
-                "if (" +
-                    res.val +
-                    " " +
-                    signo +
-                    " " +
-                    nodoDer.temporal.nombre +
-                    ") goto " +
-                    v +
-                    "; // Si es verdadero salta a " +
-                    v +
-                    "\n";
+            if (nodoDer.temporal == null) {
+                if (nodoDer.codigo3D != "")
+                    nodo.codigo3D += nodoDer.codigo3D;
+                let temp2 = Temp.temporal();
+                let salto2 = Temp.etiqueta();
+                nodo.codigo3D += nodoDer.etiquetasV + ": \n";
+                nodo.codigo3D += temp2 + " = 1; \n";
+                nodo.codigo3D += Temp.saltoIncondicional(salto2);
+                nodo.codigo3D += nodoDer.etiquetasF + ": \n";
+                nodo.codigo3D += temp2 + " = 0; \n";
+                nodo.codigo3D += salto2 + ": \n";
+                nodo.codigo3D +=
+                    "if (" +
+                        res.val +
+                        " " +
+                        signo +
+                        " " +
+                        temp2 +
+                        ") goto " +
+                        v +
+                        "; // Si es verdadero salta a " +
+                        v +
+                        "\n";
+            }
+            else {
+                nodo.codigo3D +=
+                    "if (" +
+                        res.val +
+                        " " +
+                        signo +
+                        " " +
+                        nodoDer.temporal.nombre +
+                        ") goto " +
+                        v +
+                        "; // Si es verdadero salta a " +
+                        v +
+                        "\n";
+            }
         }
         else if (nodoDer instanceof Simbolos_1.Simbolos && nodoIzq instanceof Simbolos_1.Simbolos == false) {
+            //if (nodoIzq.codigo3D != "") nodo.codigo3D += nodoIzq.codigo3D;
+            if (nodoDer.codigo3D != "" && nodoDer.codigo3D != undefined)
+                nodo.codigo3D += nodoDer.codigo3D;
             let temporal = Temp.nuevoTemporal();
             let res = this.relacionalIdAccess(nodoDer, nodo.codigo3D, temporal, Temp, ts);
             nodo.codigo3D = res.op;
-            nodo.codigo3D +=
-                "if (" +
-                    nodoIzq.temporal.nombre +
-                    " " +
-                    signo +
-                    " " +
-                    res.val +
-                    ") goto " +
-                    v +
-                    "; // Si es verdadero salta a " +
-                    v +
-                    "\n";
+            if (nodoIzq.temporal == null) {
+                if (nodoIzq.codigo3D != "")
+                    nodo.codigo3D += nodoIzq.codigo3D;
+                let temp = Temp.temporal();
+                let salto = Temp.etiqueta();
+                nodo.codigo3D += nodoIzq.etiquetasV + ": \n";
+                nodo.codigo3D += temp + " = 1; \n";
+                nodo.codigo3D += Temp.saltoIncondicional(salto);
+                nodo.codigo3D += nodoIzq.etiquetasF + ": \n";
+                nodo.codigo3D += temp + " = 0; \n";
+                nodo.codigo3D += salto + ": \n";
+                nodo.codigo3D +=
+                    "if (" +
+                        temp +
+                        " " +
+                        signo +
+                        " " +
+                        res.val +
+                        ") goto " +
+                        v +
+                        "; // Si es verdadero salta a " +
+                        v +
+                        "\n";
+            }
+            else {
+                nodo.codigo3D +=
+                    "if (" +
+                        nodoIzq.temporal.nombre +
+                        " " +
+                        signo +
+                        " " +
+                        res.val +
+                        ") goto " +
+                        v +
+                        "; // Si es verdadero salta a " +
+                        v +
+                        "\n";
+            }
         }
         else if (nodoDer instanceof Simbolos_1.Simbolos && nodoIzq instanceof Simbolos_1.Simbolos) {
+            if (nodoIzq.codigo3D != "" && nodoIzq.codigo3D != undefined)
+                nodo.codigo3D += nodoIzq.codigo3D;
+            if (nodoDer.codigo3D != "" && nodoDer.codigo3D != undefined)
+                nodo.codigo3D += nodoDer.codigo3D;
             let temporal = Temp.nuevoTemporal();
             let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp, ts);
             nodo.codigo3D = res.op;
@@ -875,8 +937,8 @@ class Relacionales extends Operaciones_1.Operacion {
                     v +
                     "\n";
         }
-        else {
-            console.log(nodoIzq);
+        else if (nodoIzq.temporal != null && nodoDer.temporal != null) {
+            // console.log(nodoIzq);
             if (nodoIzq.codigo3D != "")
                 nodo.codigo3D += nodoIzq.codigo3D;
             if (nodoDer.codigo3D != "")
@@ -893,19 +955,66 @@ class Relacionales extends Operaciones_1.Operacion {
                     "; // Si es verdadero salta a " +
                     v +
                     "\n";
+            //nodo.codigo3D += Temp.saltoIncondicional(f);
+        }
+        else {
+            // console.log(nodoIzq);
+            if (nodoIzq.codigo3D != "")
+                nodo.codigo3D += nodoIzq.codigo3D;
+            //-------------------------------------------------------------
             let temp = Temp.temporal();
-            let etiquetat = Temp.etiqueta();
-            let etiquetaf = Temp.etiqueta();
             let salto = Temp.etiqueta();
-            nodo.codigo3D += etiquetat + ": \n";
+            nodo.codigo3D += nodoIzq.etiquetasV + ": \n";
             nodo.codigo3D += temp + " = 1; \n";
             nodo.codigo3D += Temp.saltoIncondicional(salto);
-            nodo.codigo3D += etiquetaf + ": \n";
+            nodo.codigo3D += nodoIzq.etiquetasF + ": \n";
             nodo.codigo3D += temp + " = 0; \n";
             nodo.codigo3D += salto + ": \n";
-            nodo.temporal = new Temporales_1.Temporal(temp);
+            //nodo.temporal = new Temporal(temp);
+            //----------------------------------------------------------
+            if (nodoDer.codigo3D != "")
+                nodo.codigo3D += nodoDer.codigo3D;
+            let temp2 = Temp.temporal();
+            let salto2 = Temp.etiqueta();
+            nodo.codigo3D += nodoDer.etiquetasV + ": \n";
+            nodo.codigo3D += temp2 + " = 1; \n";
+            nodo.codigo3D += Temp.saltoIncondicional(salto2);
+            nodo.codigo3D += nodoDer.etiquetasF + ": \n";
+            nodo.codigo3D += temp2 + " = 0; \n";
+            nodo.codigo3D += salto2 + ": \n";
+            //-------------------------------------------------------------
+            nodo.codigo3D +=
+                "if (" +
+                    temp +
+                    " " +
+                    signo +
+                    " " +
+                    temp2 +
+                    ") goto " +
+                    v +
+                    "; // Si es verdadero salta a " +
+                    v +
+                    "\n";
+            //nodo.temporal = new Temporal(v);
+            //nodo.codigo3D += Temp.saltoIncondicional(f);
         }
         nodo.codigo3D += "goto " + f + "; //si no se cumple salta a: " + f + "\n";
+        /*
+        //--
+        let temp: string = Temp.temporal();
+        //let etiquetat: string = Temp.etiqueta();
+        //let etiquetaf: string = Temp.etiqueta();
+        let salto: string = Temp.etiqueta();
+    
+        nodo.codigo3D += v + ": \n";
+        nodo.codigo3D += temp + " = 1; \n";
+        nodo.codigo3D += Temp.saltoIncondicional(salto);
+        nodo.codigo3D += f + ": \n";
+        nodo.codigo3D += temp + " = 0; \n";
+        nodo.codigo3D += salto + ": \n";
+        nodo.temporal = new Temporal(temp);
+        //--
+        */
         nodo.etiquetasV = [];
         nodo.etiquetasV.push(v);
         nodo.etiquetasF = [];

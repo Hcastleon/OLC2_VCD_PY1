@@ -42,13 +42,13 @@ class Print {
                 for (let index = 0; index < lista.length; index++) {
                     const element = lista[index];
                     if (element.length <= 2) {
-                        let salida = element.replace('$', '');
+                        let salida = element.replace("$", "");
                         let sim = ts.getSimbolo(salida);
                         let valor = sim === null || sim === void 0 ? void 0 : sim.getValor();
                         nueva_salida = nueva_salida.replace(element, valor);
                     }
                     else {
-                        let salida = element.replace('$(', '');
+                        let salida = element.replace("$(", "");
                         salida = salida.substring(0, salida.length - 1);
                         if (salida.includes("[")) {
                             let vari = salida.substring(0, salida.indexOf("["));
@@ -73,9 +73,13 @@ class Print {
     }
     traducir(Temp, controlador, ts, ts_u) {
         let salida = new Temporales_1.Resultado3D();
+        // cadena = cadena.temporal.utilizar();
+        //cadena = cadena[1:-1];
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%% PRINTLN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
         for (let expres of this.lista_exp) {
             let exp_3D = expres.traducir(Temp, controlador, ts, ts_u);
-            console.log(exp_3D);
             //IDENTIFICADOR------------------------------------------------------------------------------------------
             if (exp_3D instanceof Simbolos_1.Simbolos) {
                 if (exp_3D.tipo.stype == "ENTERO") {
@@ -145,14 +149,13 @@ class Print {
                         let valor = Temp.temporal();
                         let v = Temp.etiqueta();
                         let f = Temp.etiqueta();
-                        salida.codigo3D +=
-                            posicion + " = " + temp2 + "; //Posicion de inicio de la cadena\n";
+                        salida.codigo3D += posicion + " = " + temp2 + "; //Posicion de inicio de la cadena\n";
                         salida.codigo3D += f + ":";
+                        salida.codigo3D += valor + " = heap[(int)" + posicion + "];\n";
                         salida.codigo3D +=
-                            valor + " = heap[(int)" + posicion + "];\n";
-                        salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v) + "// Si esta vacio no imprimimos nada\n";
-                        salida.codigo3D +=
-                            posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
+                            Temp.saltoCondicional("(" + valor + " == 0 )", v) +
+                                "// Si esta vacio no imprimimos nada\n";
+                        salida.codigo3D += posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
                         salida.codigo3D += 'printf( "%c", (char)' + valor + "); //Se imprime el caracter\n";
                         salida.codigo3D += Temp.saltoIncondicional(f);
                         salida.codigo3D += v + ":";
@@ -215,7 +218,8 @@ class Print {
             }
             else if (exp_3D.tipo == Tipo_1.tipo.CARACTER) {
                 salida.codigo3D += "\n" + exp_3D.codigo3D;
-                salida.codigo3D += "\n" + 'printf("%c", (char)' + exp_3D.temporal.nombre + "); // Se imprime char";
+                salida.codigo3D +=
+                    "\n" + 'printf("%c", (char)' + exp_3D.temporal.nombre + "); // Se imprime char";
             }
             else if (exp_3D.tipo == Tipo_1.tipo.CADENA) {
                 salida.codigo3D += "\n" + exp_3D.codigo3D;
@@ -226,11 +230,11 @@ class Print {
                 salida.codigo3D +=
                     posicion + " = " + exp_3D.temporal.nombre + "; //Posicion de inicio de la cadena\n";
                 salida.codigo3D += f + ":";
+                salida.codigo3D += valor + " = heap[(int)" + posicion + "];\n";
                 salida.codigo3D +=
-                    valor + " = heap[(int)" + posicion + "];\n";
-                salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v) + "// Si esta vacio no imprimimos nada\n";
-                salida.codigo3D +=
-                    posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
+                    Temp.saltoCondicional("(" + valor + " == 0 )", v) +
+                        "// Si esta vacio no imprimimos nada\n";
+                salida.codigo3D += posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
                 salida.codigo3D += 'printf( "%c", (char)' + valor + "); //Se imprime el caracter\n";
                 salida.codigo3D += Temp.saltoIncondicional(f);
                 salida.codigo3D += v + ":";

@@ -2389,7 +2389,6 @@ class Aritmetica extends Operaciones_1.Operacion {
             return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "-", 0);
         }
         else if (this.operador == Operaciones_1.Operador.CONCATENAR) {
-            console.log("SI ?");
             return this.generarConcat(Temp, controlador, ts, ts_u);
         }
         //modulo unario concatenar0  repetir
@@ -2464,7 +2463,7 @@ class Aritmetica extends Operaciones_1.Operacion {
                 Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
                     "//Si se cumple es el final de cadena \n";
             nodo.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
-            nodo.codigo3D += "H = H + 1; // invrementar heap \n";
+            nodo.codigo3D += "H = H + 1; // incrementar heap \n";
             nodo.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de cadena \n";
             nodo.codigo3D += Temp.saltoIncondicional(v);
             nodo.codigo3D += f + ": \n";
@@ -2473,7 +2472,7 @@ class Aritmetica extends Operaciones_1.Operacion {
         else {
             //nodo.codigo3D += nodito.codigo3D;
             nodo.codigo3D +=
-                "// %%%%%%%%%%%%%%%%%%%%5 Concatenando cadena " +
+                "// %%%%%%%%%%%%%%%%%%%% Concatenando cadena " +
                     nodito.temporal.nombre +
                     "%%%%%%%%%%%%% \n";
             let aux = Temp.temporal();
@@ -2663,6 +2662,9 @@ exports.Cadenas = void 0;
 const Errores_1 = require("../../AST/Errores");
 const Nodo_1 = require("../../AST/Nodo");
 const Tipo_1 = require("../../TablaSimbolos/Tipo");
+const Simbolos_1 = require("../../TablaSimbolos/Simbolos");
+const Temporales_1 = require("../../AST/Temporales");
+const Temporales_2 = require("../../AST/Temporales");
 class Cadenas {
     constructor(expre1, expre2, expre3, operador, linea, column) {
         this.expre1 = expre1;
@@ -2843,11 +2845,1761 @@ class Cadenas {
         }
     }
     traducir(Temp, controlador, ts, ts_u) {
+        if (this.operador == "caracterposition") {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "caracterposition", 0);
+        }
+        else if (this.operador == "substring") {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "substring", 0);
+        }
+        else if (this.operador == "length") {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "length", 0);
+        }
+        else if (this.operador == "touppercase") {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "touppercase", 0);
+        }
+        else if (this.operador == "tolowercase") {
+            return this.generarOperacionBinario(Temp, controlador, ts, ts_u, "tolowercase", 0);
+        }
+        //modulo unario concatenar0  repetir
+        return "Holiwis";
+    }
+    generarOperacionBinario(Temp, controlador, ts, ts_u, signo, recursivo) {
+        let valor_expre1;
+        let valor_expre2;
+        let valor_expre3;
+        if (this.expre2 === null) {
+            valor_expre1 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+            valor_expre2 = new Temporales_1.Resultado3D();
+            valor_expre2.codigo3D = "";
+            valor_expre2.temporal = new Temporales_2.Temporal("0");
+            valor_expre2.tipo = Tipo_1.tipo.ENTERO;
+            valor_expre3 = new Temporales_1.Resultado3D();
+            valor_expre3.codigo3D = "";
+            valor_expre3.temporal = new Temporales_2.Temporal("0");
+            valor_expre3.tipo = Tipo_1.tipo.ENTERO;
+        }
+        else {
+            if (this.expre3 === null) {
+                valor_expre1 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+                valor_expre2 = this.expre2.traducir(Temp, controlador, ts, ts_u);
+                valor_expre3 = new Temporales_1.Resultado3D();
+                valor_expre3.codigo3D = "";
+                valor_expre3.temporal = new Temporales_2.Temporal("0");
+                valor_expre3.tipo = Tipo_1.tipo.ENTERO;
+            }
+            else {
+                valor_expre1 = this.expre1.traducir(Temp, controlador, ts, ts_u);
+                valor_expre2 = this.expre2.traducir(Temp, controlador, ts, ts_u);
+                valor_expre3 = this.expre3.traducir(Temp, controlador, ts, ts_u);
+            }
+        }
+        if (valor_expre1 == (null || undefined) ||
+            valor_expre2 == (null || undefined) ||
+            valor_expre3 == (null || undefined))
+            return null;
+        let resultado = valor_expre1.codigo3D;
+        if (resultado != "" && valor_expre2.codigo3D && (valor_expre3.codigo3D = "")) {
+            resultado = resultado + "\n" + valor_expre2.codigo3D;
+        }
+        else if (resultado != "" && valor_expre2.codigo3D && valor_expre3.codigo3D) {
+            resultado = resultado + "\n" + valor_expre2.codigo3D + "\n" + valor_expre3.codigo3D;
+        }
+        else {
+            /* tendria que ir pinshe error culero */
+            resultado += valor_expre2.codigo3D;
+        }
+        if (valor_expre1 instanceof Simbolos_1.Simbolos ||
+            valor_expre2 instanceof Simbolos_1.Simbolos ||
+            valor_expre3 instanceof Simbolos_1.Simbolos) {
+            resultado = "";
+        }
+        if (resultado != "") {
+            resultado = resultado + "\n";
+        }
+        let result = new Temporales_1.Resultado3D();
+        result.tipo = Tipo_1.tipo.CADENA;
+        if (this.expre2 === null) {
+            if (signo == "length") {
+                if (valor_expre1 instanceof Simbolos_1.Simbolos) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        result.codigo3D += temp + " = P + " + valor_expre1.posicion + "; \n";
+                        result.codigo3D += temp2 + "= stack[(int)" + temp + "]; \n";
+                        //----------------
+                        let temp3 = Temp.temporal();
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += temp3 + " = 0; //inicia el contador\n";
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp2 + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D +=
+                            Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
+                                "//Si se cumple es el final de cadena \n";
+                        result.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
+                        result.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de cadena \n";
+                        result.codigo3D += temp3 + " = " + temp3 + " + 1 ; //incrementar pos de contador \n";
+                        result.codigo3D += Temp.saltoIncondicional(v);
+                        result.codigo3D += f + ": \n";
+                        result.tipo = Tipo_1.tipo.ENTERO;
+                        result.temporal = new Temporales_2.Temporal(temp3);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        let temp = Temp.temporal();
+                        result.codigo3D += temp + "= stack[(int)" + valor_expre1.posicion + "]; \n";
+                        //----------------
+                        let temp2 = Temp.temporal();
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += temp2 + " = 0; //inicia el contador\n";
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D +=
+                            Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
+                                "//Si se cumple es el final de cadena \n";
+                        result.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
+                        result.codigo3D += temp + " = " + temp + " + 1 ; //incrementar pos de cadena \n";
+                        result.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de contador \n";
+                        result.codigo3D += Temp.saltoIncondicional(v);
+                        result.codigo3D += f + ": \n";
+                        result.tipo = Tipo_1.tipo.ENTERO;
+                        result.temporal = new Temporales_2.Temporal(temp2);
+                    }
+                }
+                else if (valor_expre1.tipo == Tipo_1.tipo.CADENA) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        //----------------
+                        let temp2 = Temp.temporal();
+                        result.codigo3D += temp2 + "= " + valor_expre1.temporal.nombre + "; \n";
+                        let temp3 = Temp.temporal();
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += temp3 + " = 0; //inicia el contador\n";
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp2 + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D +=
+                            Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
+                                "//Si se cumple es el final de cadena \n";
+                        result.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
+                        result.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de cadena \n";
+                        result.codigo3D += temp3 + " = " + temp3 + " + 1 ; //incrementar pos de contador \n";
+                        result.codigo3D += Temp.saltoIncondicional(v);
+                        result.codigo3D += f + ": \n";
+                        result.tipo = Tipo_1.tipo.ENTERO;
+                        result.temporal = new Temporales_2.Temporal(temp3);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp = Temp.temporal();
+                        result.codigo3D += temp + "= " + valor_expre1.temporal.nombre + "; \n";
+                        //----------------
+                        let temp2 = Temp.temporal();
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += temp2 + " = 0; //inicia el contador\n";
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D +=
+                            Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f) +
+                                "//Si se cumple es el final de cadena \n";
+                        result.codigo3D += "heap[(int)H] =" + aux + "; //Valor de nueva pos \n";
+                        result.codigo3D += temp + " = " + temp + " + 1 ; //incrementar pos de cadena \n";
+                        result.codigo3D += temp2 + " = " + temp2 + " + 1 ; //incrementar pos de contador \n";
+                        result.codigo3D += Temp.saltoIncondicional(v);
+                        result.codigo3D += f + ": \n";
+                        result.tipo = Tipo_1.tipo.ENTERO;
+                        result.temporal = new Temporales_2.Temporal(temp2);
+                    }
+                }
+            }
+            else if (signo == "touppercase") {
+                if (valor_expre1 instanceof Simbolos_1.Simbolos) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + " = P + " + valor_expre1.posicion + "; \n";
+                        result.codigo3D += temp + "= stack[(int)" + temp + "]; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " < " + 97 + ")", v2);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " > " + 122 + ")", v2);
+                        result.codigo3D += aux + " = " + aux + " - 32; \n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= stack[(int)" + valor_expre1.posicion + "]; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " < " + 97 + ")", v2);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " > " + 122 + ")", v2);
+                        result.codigo3D += aux + " = " + aux + " - 32; \n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if (valor_expre1.tipo == Tipo_1.tipo.CADENA) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= " + valor_expre1.temporal.nombre + "; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " < " + 97 + ")", v2);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " > " + 122 + ")", v2);
+                        result.codigo3D += aux + " = " + aux + " - 32; \n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= " + valor_expre1.temporal.nombre + "; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " < " + 97 + ")", v2);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " > " + 122 + ")", v2);
+                        result.codigo3D += aux + " = " + aux + " - 32; \n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+            }
+            else if (signo == "tolowercase") {
+                if (valor_expre1 instanceof Simbolos_1.Simbolos) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + " = P + " + valor_expre1.posicion + "; \n";
+                        result.codigo3D += temp + "= stack[(int)" + temp + "]; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " < " + 65 + ")", v2);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " > " + 90 + ")", v2);
+                        result.codigo3D += aux + " = " + aux + " + 32; \n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= stack[(int)" + valor_expre1.posicion + "]; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " < " + 65 + ")", v2);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " > " + 90 + ")", v2);
+                        result.codigo3D += aux + " = " + aux + " + 32; \n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if (valor_expre1.tipo == Tipo_1.tipo.CADENA) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= " + valor_expre1.temporal.nombre + "; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " < " + 65 + ")", v2);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " > " + 90 + ")", v2);
+                        result.codigo3D += aux + " = " + aux + " + 32; \n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= " + valor_expre1.temporal.nombre + "; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " < " + 65 + ")", v2);
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " > " + 90 + ")", v2);
+                        result.codigo3D += aux + " = " + aux + " + 32; \n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+            }
+            else {
+                console.log("chinga tu madre no se que pedo ");
+            }
+        }
+        else if (this.expre3 === null) {
+            if (signo == "caracterposition") {
+                if (valor_expre1 instanceof Simbolos_1.Simbolos && valor_expre2 instanceof Simbolos_1.Simbolos == false) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + " = P + " + valor_expre1.posicion + "; \n";
+                        result.codigo3D += temp + "= stack[(int)" + temp + "]; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp2 +
+                                " = " +
+                                valor_expre2.temporal.nombre +
+                                ";  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp3 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp3 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp3 + " = " + temp3 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f2 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp0 + " = heap[(int)" + temp0 + "]; //llevo el dato\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.tipo = Tipo_1.tipo.CARACTER;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= stack[(int)" + valor_expre1.posicion + "]; \n";
+                        result.codigo3D += temp2 + " = " + valor_expre2.temporal.nombre + "; \n";
+                        result.codigo3D += temp3 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp3 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp3 + " = " + temp3 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f2 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp0 + " = heap[(int)" + temp0 + "]; //llevo el dato\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.tipo = Tipo_1.tipo.CARACTER;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if (valor_expre1 instanceof Simbolos_1.Simbolos && valor_expre2 instanceof Simbolos_1.Simbolos) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + " = P + " + valor_expre1.posicion + "; \n";
+                        result.codigo3D += temp + "= stack[(int)" + temp + "]; // aqui viene mi valor\n";
+                        result.codigo3D += temp2 + " = P + " + valor_expre2.posicion + ";\n";
+                        result.codigo3D += temp2 + " = stack[(int)" + temp2 + "]; // aqui viene mi valor\n";
+                        result.codigo3D += temp3 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp3 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp3 + " = " + temp3 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f2 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp0 + " = heap[(int)" + temp0 + "]; //llevo el dato\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.tipo = Tipo_1.tipo.CARACTER;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= stack[(int)" + valor_expre1.posicion + "]; \n";
+                        result.codigo3D += temp2 + " = stack[(int)" + valor_expre2.posicion + "];\n";
+                        result.codigo3D += temp3 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp3 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp3 + " = " + temp3 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f2 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp0 + " = heap[(int)" + temp0 + "]; //llevo el dato\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.tipo = Tipo_1.tipo.CARACTER;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if ((valor_expre1.tipo = Tipo_1.tipo.CADENA && valor_expre2 instanceof Simbolos_1.Simbolos == false)) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D +=
+                            temp + "= " + valor_expre1.temporal.nombre + "; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp2 +
+                                " = " +
+                                valor_expre2.temporal.nombre +
+                                ";  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp3 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp3 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp3 + " = " + temp3 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f2 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp0 + " = heap[(int)" + temp0 + "]; //llevo el dato\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.tipo = Tipo_1.tipo.CARACTER;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= " + valor_expre1.temporal.nombre + "; \n";
+                        result.codigo3D += temp2 + " = " + valor_expre2.temporal.nombre + "; \n";
+                        result.codigo3D += temp3 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp3 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp3 + " = " + temp3 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f2 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp0 + " = heap[(int)" + temp0 + "]; //llevo el dato\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.tipo = Tipo_1.tipo.CARACTER;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if (valor_expre1.tipo == Tipo_1.tipo.CADENA && valor_expre2 instanceof Simbolos_1.Simbolos) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D +=
+                            temp + "= " + valor_expre1.temporal.nombre + "; // aqui viene mi valor\n";
+                        result.codigo3D += temp2 + " = P + " + valor_expre2.posicion + ";\n";
+                        result.codigo3D += temp2 + " = stack[(int)" + temp2 + "]; // aqui viene mi valor\n";
+                        result.codigo3D += temp3 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp3 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp3 + " = " + temp3 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f2 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp0 + " = heap[(int)" + temp0 + "]; //llevo el dato\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.tipo = Tipo_1.tipo.CARACTER;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + " = " + valor_expre1.temporal.nombre + "; \n";
+                        result.codigo3D += temp2 + " = stack[(int)" + valor_expre2.posicion + "];\n";
+                        result.codigo3D += temp3 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp3 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp3 + " = " + temp3 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f2 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp0 + " = heap[(int)" + temp0 + "]; //llevo el dato\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.tipo = Tipo_1.tipo.CARACTER;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+            }
+        }
+        else {
+            if (signo == "substring") {
+                if (valor_expre1 instanceof Simbolos_1.Simbolos &&
+                    valor_expre2 instanceof Simbolos_1.Simbolos == false &&
+                    valor_expre3 instanceof Simbolos_1.Simbolos == false) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + " = P + " + valor_expre1.posicion + "; \n";
+                        result.codigo3D += temp + "= stack[(int)" + temp + "]; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp2 +
+                                " = " +
+                                valor_expre2.temporal.nombre +
+                                ";  // la posicion que quiero obtener\n";
+                        result.codigo3D +=
+                            temp3 +
+                                " = " +
+                                valor_expre3.temporal.nombre +
+                                "- 1;  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp4 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= stack[(int)" + valor_expre1.posicion + "]; \n";
+                        result.codigo3D += temp2 + " = " + valor_expre2.temporal.nombre + "; \n";
+                        result.codigo3D += temp3 + " = " + valor_expre3.temporal.nombre + " - 1; \n";
+                        result.codigo3D += temp4 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if (valor_expre1 instanceof Simbolos_1.Simbolos &&
+                    valor_expre2 instanceof Simbolos_1.Simbolos &&
+                    valor_expre3 instanceof Simbolos_1.Simbolos == false) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + " = P + " + valor_expre1.posicion + "; \n";
+                        result.codigo3D += temp + "= stack[(int)" + temp + "]; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp2 + " = P + " + valor_expre2.posicion + ";  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp2 + "= stack[(int)" + temp2 + "]; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp3 +
+                                " = " +
+                                valor_expre3.temporal.nombre +
+                                "- 1;  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp4 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= stack[(int)" + valor_expre1.posicion + "]; \n";
+                        result.codigo3D += temp2 + " = " + valor_expre2.posicion + "; \n";
+                        result.codigo3D += temp3 + " = " + valor_expre3.temporal.nombre + " - 1; \n";
+                        result.codigo3D += temp4 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if (valor_expre1 instanceof Simbolos_1.Simbolos &&
+                    valor_expre2 instanceof Simbolos_1.Simbolos == false &&
+                    valor_expre3 instanceof Simbolos_1.Simbolos) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + " = P + " + valor_expre1.posicion + "; \n";
+                        result.codigo3D += temp + "= stack[(int)" + temp + "]; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp2 +
+                                " = " +
+                                valor_expre2.temporal.nombre +
+                                ";  // la posicion que quiero obtener\n";
+                        result.codigo3D +=
+                            temp3 + " = " + valor_expre3.posicion + "- 1;  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp3 + "= stack[(int)" + temp3 + "]; // aqui viene mi valor\n";
+                        result.codigo3D += temp4 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= stack[(int)" + valor_expre1.posicion + "]; \n";
+                        result.codigo3D += temp2 + " = " + valor_expre2.temporal.nombre + "; \n";
+                        result.codigo3D += temp3 + " = " + valor_expre3.posicion + " - 1; \n";
+                        result.codigo3D += temp4 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if (valor_expre1 instanceof Simbolos_1.Simbolos &&
+                    valor_expre2 instanceof Simbolos_1.Simbolos &&
+                    valor_expre3 instanceof Simbolos_1.Simbolos) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + " = P + " + valor_expre1.posicion + "; \n";
+                        result.codigo3D += temp + "= stack[(int)" + temp + "]; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp2 + " = P + " + valor_expre2.posicion + ";  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp2 + "= stack[(int)" + temp2 + "]; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp3 + " = " + valor_expre3.posicion + "- 1;  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp3 + "= stack[(int)" + temp3 + "]; // aqui viene mi valor\n";
+                        result.codigo3D += temp4 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= stack[(int)" + valor_expre1.posicion + "]; \n";
+                        result.codigo3D += temp2 + " = " + valor_expre2.posicion + "; \n";
+                        result.codigo3D += temp3 + " = " + valor_expre3.posicion + " - 1; \n";
+                        result.codigo3D += temp4 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if (valor_expre1.tipo == Tipo_1.tipo.CADENA &&
+                    valor_expre2 instanceof Simbolos_1.Simbolos == false &&
+                    valor_expre3 instanceof Simbolos_1.Simbolos == false) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D +=
+                            temp + "= " + valor_expre1.temporal.nombre + "; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp2 +
+                                " = " +
+                                valor_expre2.temporal.nombre +
+                                ";  // la posicion que quiero obtener\n";
+                        result.codigo3D +=
+                            temp3 +
+                                " = " +
+                                valor_expre3.temporal.nombre +
+                                "- 1;  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp4 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= " + valor_expre1.temporal.nombre + "; \n";
+                        result.codigo3D += temp2 + " = " + valor_expre2.temporal.nombre + "; \n";
+                        result.codigo3D += temp3 + " = " + valor_expre3.temporal.nombre + " - 1; \n";
+                        result.codigo3D += temp4 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if (valor_expre1.tipo == Tipo_1.tipo.CADENA &&
+                    valor_expre2 instanceof Simbolos_1.Simbolos &&
+                    valor_expre3 instanceof Simbolos_1.Simbolos == false) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D +=
+                            temp + "= " + valor_expre1.temporal.nombre + "; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp2 + " = P + " + valor_expre2.posicion + ";  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp2 + "= stack[(int)" + temp2 + "]; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp3 +
+                                " = " +
+                                valor_expre3.temporal.nombre +
+                                "- 1;  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp4 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= " + valor_expre1.temporal.nombre + "; \n";
+                        result.codigo3D += temp2 + " = " + valor_expre2.posicion + "; \n";
+                        result.codigo3D += temp3 + " = " + valor_expre3.temporal.nombre + " - 1; \n";
+                        result.codigo3D += temp4 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if (valor_expre1.tipo == Tipo_1.tipo.CADENA &&
+                    valor_expre2 instanceof Simbolos_1.Simbolos == false &&
+                    valor_expre3 instanceof Simbolos_1.Simbolos) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + " = " + valor_expre1.temporal.nombre + "; \n";
+                        result.codigo3D +=
+                            temp2 +
+                                " = " +
+                                valor_expre2.temporal.nombre +
+                                ";  // la posicion que quiero obtener\n";
+                        result.codigo3D +=
+                            temp3 + " = " + valor_expre3.posicion + "- 1;  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp3 + "= stack[(int)" + temp3 + "]; // aqui viene mi valor\n";
+                        result.codigo3D += temp4 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= " + valor_expre1.temporal.nombre + "; \n";
+                        result.codigo3D += temp2 + " = " + valor_expre2.temporal.nombre + "; \n";
+                        result.codigo3D += temp3 + " = " + valor_expre3.posicion + " - 1; \n";
+                        result.codigo3D += temp4 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+                else if (valor_expre1.tipo == Tipo_1.tipo.CADENA &&
+                    valor_expre2 instanceof Simbolos_1.Simbolos &&
+                    valor_expre3 instanceof Simbolos_1.Simbolos) {
+                    if (ts.nombre != "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + " = " + valor_expre1.temporal.nombre + "; \n";
+                        result.codigo3D +=
+                            temp2 + " = P + " + valor_expre2.posicion + ";  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp2 + "= stack[(int)" + temp2 + "]; // aqui viene mi valor\n";
+                        result.codigo3D +=
+                            temp3 + " = " + valor_expre3.posicion + "- 1;  // la posicion que quiero obtener\n";
+                        result.codigo3D += temp3 + "= stack[(int)" + temp3 + "]; // aqui viene mi valor\n";
+                        result.codigo3D += temp4 + " = 0; // contador de posicion \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                    else if (ts.nombre == "Global" && valor_expre1 != null) {
+                        result.codigo3D += valor_expre1.codigo3D;
+                        let temp0 = Temp.temporal();
+                        let temp = Temp.temporal();
+                        let temp2 = Temp.temporal();
+                        let temp3 = Temp.temporal();
+                        let temp4 = Temp.temporal();
+                        result.codigo3D += temp0 + " = H + 0; \n";
+                        result.codigo3D += temp + "= " + valor_expre1.temporal.nombre + "; \n";
+                        result.codigo3D += temp2 + " = " + valor_expre2.posicion + "; \n";
+                        result.codigo3D += temp3 + " = " + valor_expre3.posicion + " - 1; \n";
+                        result.codigo3D += temp4 + " = 0 ; \n";
+                        //----------------
+                        let aux = Temp.temporal();
+                        let valor = Temp.temporal();
+                        let v = Temp.etiqueta();
+                        let v2 = Temp.etiqueta();
+                        let v3 = Temp.etiqueta();
+                        let f = Temp.etiqueta();
+                        let f2 = Temp.etiqueta();
+                        let f3 = Temp.etiqueta();
+                        result.codigo3D += v + ": \n";
+                        result.codigo3D +=
+                            aux + " = heap[(int)" + temp + "]; //Posicion de inicio de la cadena\n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp2 + ")", v2);
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v + " ; //regresamos a comparar\n";
+                        result.codigo3D += f + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v2 + ": \n";
+                        result.codigo3D += Temp.saltoCondicional("(" + aux + " == " + 0 + ")", f2);
+                        result.codigo3D += Temp.saltoCondicional("(" + temp4 + " == " + temp3 + ")", v3);
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += temp + " = " + temp + " + 1; \n";
+                        result.codigo3D += temp4 + " = " + temp4 + " + 1; \n";
+                        result.codigo3D += "goto " + v2 + " ; //regresamos a comparar\n";
+                        result.codigo3D += f2 + ": \n";
+                        result.codigo3D += "heap[(int)H] = 0; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "goto " + f3 + " ; //salimos\n";
+                        result.codigo3D += v3 + ": \n";
+                        result.codigo3D += aux + " = heap[(int)" + temp + "]; //Posicion de la cadena\n";
+                        result.codigo3D += "heap[(int)H] = " + aux + "; //Posicion de cadena\n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += "heap[(int)H] = 0; //Termina cadena \n";
+                        result.codigo3D += "H = H + 1; //Posicion de cadena nueva\n";
+                        result.codigo3D += f3 + ": \n";
+                        result.tipo = Tipo_1.tipo.CADENA;
+                        result.temporal = new Temporales_2.Temporal(temp0);
+                    }
+                }
+            }
+            else {
+                console.log("ni pedo no te tocaba");
+            }
+        }
+        return result;
     }
 }
 exports.Cadenas = Cadenas;
 
-},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../TablaSimbolos/Tipo":49}],17:[function(require,module,exports){
+},{"../../AST/Errores":6,"../../AST/Nodo":7,"../../AST/Temporales":8,"../../TablaSimbolos/Simbolos":47,"../../TablaSimbolos/Tipo":49}],17:[function(require,module,exports){
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Conversion = void 0;
@@ -2925,6 +4677,9 @@ class Conversion {
             case "parse":
                 break;
             case "toint":
+                if (nodo.tipo == Tipo_1.tipo.DOUBLE) {
+                    nodo.tipo = Tipo_1.tipo.ENTERO;
+                }
                 break;
             case "todouble":
                 break;
@@ -3170,6 +4925,7 @@ class Logicas extends Operaciones_1.Operacion {
         //-------
         //let resultado = "";
         let result = new Temporales_1.Resultado3D();
+        //result.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%% OP Logica %%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
         result.tipo = Tipo_1.tipo.BOOLEAN;
         if (this.operador == Operaciones_1.Operador.OR) {
             if (valor1.codigo3D != undefined)
@@ -3223,6 +4979,11 @@ class Logicas extends Operaciones_1.Operacion {
             let f = valor2.etiquetasF;
             result.etiquetasF = v;
             result.etiquetasV = f;
+            /*if (this.getValor(controlador, ts, ts_u) === true) {
+              result.temporal = new Temporal("1");
+            } else {
+              result.temporal = new Temporal("0");
+            }*/
             return result;
         }
     }
@@ -3241,7 +5002,7 @@ class Logicas extends Operaciones_1.Operacion {
     }
     arreglarBoolean(nodo, salida, Temp) {
         if (nodo instanceof Simbolos_1.Simbolos) {
-            console.log(nodo);
+            //console.log(nodo);
             let temp = Temp.temporal();
             let temp2 = Temp.temporal();
             //salida.tipo = tipo.ID;
@@ -3252,6 +5013,18 @@ class Logicas extends Operaciones_1.Operacion {
             let f = Temp.etiqueta();
             salida.codigo3D += Temp.saltoCondicional("(" + temp2 + "== 1 )", v);
             salida.codigo3D += Temp.saltoIncondicional(f);
+            //--------------------------------
+            /* let temp3: string = Temp.temporal();
+            let salto: string = Temp.etiqueta();
+      
+            salida.codigo3D += v + ": \n";
+            salida.codigo3D += temp3 + " = 1; \n";
+            salida.codigo3D += Temp.saltoIncondicional(salto);
+            salida.codigo3D += f + ": \n";
+            salida.codigo3D += temp3 + " = 0; \n";
+            salida.codigo3D += salto + ": \n";
+            salida.temporal = new Temporal(temp3);*/
+            //---------------------------------------------
             nodo.etiquetasV = [v];
             nodo.etiquetasF = [f];
         }
@@ -4715,40 +6488,102 @@ class Relacionales extends Operaciones_1.Operacion {
         let v = Temp.etiqueta();
         let f = Temp.etiqueta();
         if (nodoIzq instanceof Simbolos_1.Simbolos && nodoDer instanceof Simbolos_1.Simbolos == false) {
+            if (nodoIzq.codigo3D != "" && nodoIzq.codigo3D != undefined)
+                nodo.codigo3D += nodoIzq.codigo3D;
+            // if (nodoDer.codigo3D != "") nodo.codigo3D += nodoDer.codigo3D;
             let temporal = Temp.nuevoTemporal();
             let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp, ts);
             nodo.codigo3D = res.op;
-            nodo.codigo3D +=
-                "if (" +
-                    res.val +
-                    " " +
-                    signo +
-                    " " +
-                    nodoDer.temporal.nombre +
-                    ") goto " +
-                    v +
-                    "; // Si es verdadero salta a " +
-                    v +
-                    "\n";
+            if (nodoDer.temporal == null) {
+                if (nodoDer.codigo3D != "")
+                    nodo.codigo3D += nodoDer.codigo3D;
+                let temp2 = Temp.temporal();
+                let salto2 = Temp.etiqueta();
+                nodo.codigo3D += nodoDer.etiquetasV + ": \n";
+                nodo.codigo3D += temp2 + " = 1; \n";
+                nodo.codigo3D += Temp.saltoIncondicional(salto2);
+                nodo.codigo3D += nodoDer.etiquetasF + ": \n";
+                nodo.codigo3D += temp2 + " = 0; \n";
+                nodo.codigo3D += salto2 + ": \n";
+                nodo.codigo3D +=
+                    "if (" +
+                        res.val +
+                        " " +
+                        signo +
+                        " " +
+                        temp2 +
+                        ") goto " +
+                        v +
+                        "; // Si es verdadero salta a " +
+                        v +
+                        "\n";
+            }
+            else {
+                nodo.codigo3D +=
+                    "if (" +
+                        res.val +
+                        " " +
+                        signo +
+                        " " +
+                        nodoDer.temporal.nombre +
+                        ") goto " +
+                        v +
+                        "; // Si es verdadero salta a " +
+                        v +
+                        "\n";
+            }
         }
         else if (nodoDer instanceof Simbolos_1.Simbolos && nodoIzq instanceof Simbolos_1.Simbolos == false) {
+            //if (nodoIzq.codigo3D != "") nodo.codigo3D += nodoIzq.codigo3D;
+            if (nodoDer.codigo3D != "" && nodoDer.codigo3D != undefined)
+                nodo.codigo3D += nodoDer.codigo3D;
             let temporal = Temp.nuevoTemporal();
             let res = this.relacionalIdAccess(nodoDer, nodo.codigo3D, temporal, Temp, ts);
             nodo.codigo3D = res.op;
-            nodo.codigo3D +=
-                "if (" +
-                    nodoIzq.temporal.nombre +
-                    " " +
-                    signo +
-                    " " +
-                    res.val +
-                    ") goto " +
-                    v +
-                    "; // Si es verdadero salta a " +
-                    v +
-                    "\n";
+            if (nodoIzq.temporal == null) {
+                if (nodoIzq.codigo3D != "")
+                    nodo.codigo3D += nodoIzq.codigo3D;
+                let temp = Temp.temporal();
+                let salto = Temp.etiqueta();
+                nodo.codigo3D += nodoIzq.etiquetasV + ": \n";
+                nodo.codigo3D += temp + " = 1; \n";
+                nodo.codigo3D += Temp.saltoIncondicional(salto);
+                nodo.codigo3D += nodoIzq.etiquetasF + ": \n";
+                nodo.codigo3D += temp + " = 0; \n";
+                nodo.codigo3D += salto + ": \n";
+                nodo.codigo3D +=
+                    "if (" +
+                        temp +
+                        " " +
+                        signo +
+                        " " +
+                        res.val +
+                        ") goto " +
+                        v +
+                        "; // Si es verdadero salta a " +
+                        v +
+                        "\n";
+            }
+            else {
+                nodo.codigo3D +=
+                    "if (" +
+                        nodoIzq.temporal.nombre +
+                        " " +
+                        signo +
+                        " " +
+                        res.val +
+                        ") goto " +
+                        v +
+                        "; // Si es verdadero salta a " +
+                        v +
+                        "\n";
+            }
         }
         else if (nodoDer instanceof Simbolos_1.Simbolos && nodoIzq instanceof Simbolos_1.Simbolos) {
+            if (nodoIzq.codigo3D != "" && nodoIzq.codigo3D != undefined)
+                nodo.codigo3D += nodoIzq.codigo3D;
+            if (nodoDer.codigo3D != "" && nodoDer.codigo3D != undefined)
+                nodo.codigo3D += nodoDer.codigo3D;
             let temporal = Temp.nuevoTemporal();
             let res = this.relacionalIdAccess(nodoIzq, nodo.codigo3D, temporal, Temp, ts);
             nodo.codigo3D = res.op;
@@ -4768,8 +6603,8 @@ class Relacionales extends Operaciones_1.Operacion {
                     v +
                     "\n";
         }
-        else {
-            console.log(nodoIzq);
+        else if (nodoIzq.temporal != null && nodoDer.temporal != null) {
+            // console.log(nodoIzq);
             if (nodoIzq.codigo3D != "")
                 nodo.codigo3D += nodoIzq.codigo3D;
             if (nodoDer.codigo3D != "")
@@ -4786,19 +6621,66 @@ class Relacionales extends Operaciones_1.Operacion {
                     "; // Si es verdadero salta a " +
                     v +
                     "\n";
+            //nodo.codigo3D += Temp.saltoIncondicional(f);
+        }
+        else {
+            // console.log(nodoIzq);
+            if (nodoIzq.codigo3D != "")
+                nodo.codigo3D += nodoIzq.codigo3D;
+            //-------------------------------------------------------------
             let temp = Temp.temporal();
-            let etiquetat = Temp.etiqueta();
-            let etiquetaf = Temp.etiqueta();
             let salto = Temp.etiqueta();
-            nodo.codigo3D += etiquetat + ": \n";
+            nodo.codigo3D += nodoIzq.etiquetasV + ": \n";
             nodo.codigo3D += temp + " = 1; \n";
             nodo.codigo3D += Temp.saltoIncondicional(salto);
-            nodo.codigo3D += etiquetaf + ": \n";
+            nodo.codigo3D += nodoIzq.etiquetasF + ": \n";
             nodo.codigo3D += temp + " = 0; \n";
             nodo.codigo3D += salto + ": \n";
-            nodo.temporal = new Temporales_1.Temporal(temp);
+            //nodo.temporal = new Temporal(temp);
+            //----------------------------------------------------------
+            if (nodoDer.codigo3D != "")
+                nodo.codigo3D += nodoDer.codigo3D;
+            let temp2 = Temp.temporal();
+            let salto2 = Temp.etiqueta();
+            nodo.codigo3D += nodoDer.etiquetasV + ": \n";
+            nodo.codigo3D += temp2 + " = 1; \n";
+            nodo.codigo3D += Temp.saltoIncondicional(salto2);
+            nodo.codigo3D += nodoDer.etiquetasF + ": \n";
+            nodo.codigo3D += temp2 + " = 0; \n";
+            nodo.codigo3D += salto2 + ": \n";
+            //-------------------------------------------------------------
+            nodo.codigo3D +=
+                "if (" +
+                    temp +
+                    " " +
+                    signo +
+                    " " +
+                    temp2 +
+                    ") goto " +
+                    v +
+                    "; // Si es verdadero salta a " +
+                    v +
+                    "\n";
+            //nodo.temporal = new Temporal(v);
+            //nodo.codigo3D += Temp.saltoIncondicional(f);
         }
         nodo.codigo3D += "goto " + f + "; //si no se cumple salta a: " + f + "\n";
+        /*
+        //--
+        let temp: string = Temp.temporal();
+        //let etiquetat: string = Temp.etiqueta();
+        //let etiquetaf: string = Temp.etiqueta();
+        let salto: string = Temp.etiqueta();
+    
+        nodo.codigo3D += v + ": \n";
+        nodo.codigo3D += temp + " = 1; \n";
+        nodo.codigo3D += Temp.saltoIncondicional(salto);
+        nodo.codigo3D += f + ": \n";
+        nodo.codigo3D += temp + " = 0; \n";
+        nodo.codigo3D += salto + ": \n";
+        nodo.temporal = new Temporal(temp);
+        //--
+        */
         nodo.etiquetasV = [];
         nodo.etiquetasV.push(v);
         nodo.etiquetasF = [];
@@ -4935,26 +6817,28 @@ class Primitivo {
           goto L4;
           L1:
           t0 = 0;
-          L4:*/
-            let temp = Temp.temporal();
-            let etiquetat = Temp.etiqueta();
-            let etiquetaf = Temp.etiqueta();
-            let salto = Temp.etiqueta();
-            resultado3D.codigo3D += Temp.saltoIncondicional(etiquetat);
-            resultado3D.codigo3D += etiquetat + ": \n";
-            resultado3D.codigo3D += temp + " = 1; \n";
-            resultado3D.codigo3D += Temp.saltoIncondicional(salto);
-            resultado3D.codigo3D += etiquetaf + ": \n";
-            resultado3D.codigo3D += temp + " = 0; \n";
-            resultado3D.codigo3D += salto + ": \n";
-            resultado3D.temporal = new Temporales_1.Temporal(temp);
+          L4:*/ /*
+              let temp: string = Temp.temporal();
+              let etiquetat: string = Temp.etiqueta();
+              let etiquetaf: string = Temp.etiqueta();
+              let salto: string = Temp.etiqueta();
+        
+              resultado3D.codigo3D += Temp.saltoIncondicional(etiquetat);
+              resultado3D.codigo3D += etiquetat + ": \n";
+              resultado3D.codigo3D += temp + " = 1; \n";
+              resultado3D.codigo3D += Temp.saltoIncondicional(salto);
+              resultado3D.codigo3D += etiquetaf + ": \n";
+              resultado3D.codigo3D += temp + " = 0; \n";
+              resultado3D.codigo3D += salto + ": \n";
+              resultado3D.temporal = new Temporal(temp);*/
             resultado3D.temporal = new Temporales_1.Temporal("1");
         }
         else if (this.primitivo == false && typeof this.primitivo == "boolean") {
-            let temp = Temp.temporal();
-            let etiquetat = Temp.etiqueta();
-            let etiquetaf = Temp.etiqueta();
-            let salto = Temp.etiqueta();
+            /* let temp: string = Temp.temporal();
+            let etiquetat: string = Temp.etiqueta();
+            let etiquetaf: string = Temp.etiqueta();
+            let salto: string = Temp.etiqueta();
+      
             resultado3D.codigo3D += Temp.saltoIncondicional(etiquetaf);
             resultado3D.codigo3D += etiquetat + ": \n";
             resultado3D.codigo3D += temp + " = 1; \n";
@@ -4962,7 +6846,7 @@ class Primitivo {
             resultado3D.codigo3D += etiquetaf + ": \n";
             resultado3D.codigo3D += temp + " = 0; \n";
             resultado3D.codigo3D += salto + ": \n";
-            resultado3D.temporal = new Temporales_1.Temporal(temp);
+            resultado3D.temporal = new Temporal(temp);*/
             resultado3D.temporal = new Temporales_1.Temporal("0");
         }
         else if (typeof this.primitivo == "string") {
@@ -7496,6 +9380,9 @@ class If {
         let salida = new Temporales_1.Resultado3D();
         let v = [];
         let f = [];
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%% IF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
         let nodo = this.condicion.traducir(Temp, controlador, this.entornoTrad, ts_u);
         salida.codigo3D += nodo.codigo3D + "\n";
         nodo = this.arreglarBoolean(nodo, salida, Temp);
@@ -8434,13 +10321,13 @@ class Print {
                 for (let index = 0; index < lista.length; index++) {
                     const element = lista[index];
                     if (element.length <= 2) {
-                        let salida = element.replace('$', '');
+                        let salida = element.replace("$", "");
                         let sim = ts.getSimbolo(salida);
                         let valor = sim === null || sim === void 0 ? void 0 : sim.getValor();
                         nueva_salida = nueva_salida.replace(element, valor);
                     }
                     else {
-                        let salida = element.replace('$(', '');
+                        let salida = element.replace("$(", "");
                         salida = salida.substring(0, salida.length - 1);
                         if (salida.includes("[")) {
                             let vari = salida.substring(0, salida.indexOf("["));
@@ -8465,9 +10352,13 @@ class Print {
     }
     traducir(Temp, controlador, ts, ts_u) {
         let salida = new Temporales_1.Resultado3D();
+        // cadena = cadena.temporal.utilizar();
+        //cadena = cadena[1:-1];
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%% PRINTLN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
         for (let expres of this.lista_exp) {
             let exp_3D = expres.traducir(Temp, controlador, ts, ts_u);
-            console.log(exp_3D);
             //IDENTIFICADOR------------------------------------------------------------------------------------------
             if (exp_3D instanceof Simbolos_1.Simbolos) {
                 if (exp_3D.tipo.stype == "ENTERO") {
@@ -8537,14 +10428,13 @@ class Print {
                         let valor = Temp.temporal();
                         let v = Temp.etiqueta();
                         let f = Temp.etiqueta();
-                        salida.codigo3D +=
-                            posicion + " = " + temp2 + "; //Posicion de inicio de la cadena\n";
+                        salida.codigo3D += posicion + " = " + temp2 + "; //Posicion de inicio de la cadena\n";
                         salida.codigo3D += f + ":";
+                        salida.codigo3D += valor + " = heap[(int)" + posicion + "];\n";
                         salida.codigo3D +=
-                            valor + " = heap[(int)" + posicion + "];\n";
-                        salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v) + "// Si esta vacio no imprimimos nada\n";
-                        salida.codigo3D +=
-                            posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
+                            Temp.saltoCondicional("(" + valor + " == 0 )", v) +
+                                "// Si esta vacio no imprimimos nada\n";
+                        salida.codigo3D += posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
                         salida.codigo3D += 'printf( "%c", (char)' + valor + "); //Se imprime el caracter\n";
                         salida.codigo3D += Temp.saltoIncondicional(f);
                         salida.codigo3D += v + ":";
@@ -8607,7 +10497,8 @@ class Print {
             }
             else if (exp_3D.tipo == Tipo_1.tipo.CARACTER) {
                 salida.codigo3D += "\n" + exp_3D.codigo3D;
-                salida.codigo3D += "\n" + 'printf("%c", (char)' + exp_3D.temporal.nombre + "); // Se imprime char";
+                salida.codigo3D +=
+                    "\n" + 'printf("%c", (char)' + exp_3D.temporal.nombre + "); // Se imprime char";
             }
             else if (exp_3D.tipo == Tipo_1.tipo.CADENA) {
                 salida.codigo3D += "\n" + exp_3D.codigo3D;
@@ -8618,11 +10509,11 @@ class Print {
                 salida.codigo3D +=
                     posicion + " = " + exp_3D.temporal.nombre + "; //Posicion de inicio de la cadena\n";
                 salida.codigo3D += f + ":";
+                salida.codigo3D += valor + " = heap[(int)" + posicion + "];\n";
                 salida.codigo3D +=
-                    valor + " = heap[(int)" + posicion + "];\n";
-                salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v) + "// Si esta vacio no imprimimos nada\n";
-                salida.codigo3D +=
-                    posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
+                    Temp.saltoCondicional("(" + valor + " == 0 )", v) +
+                        "// Si esta vacio no imprimimos nada\n";
+                salida.codigo3D += posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
                 salida.codigo3D += 'printf( "%c", (char)' + valor + "); //Se imprime el caracter\n";
                 salida.codigo3D += Temp.saltoIncondicional(f);
                 salida.codigo3D += v + ":";

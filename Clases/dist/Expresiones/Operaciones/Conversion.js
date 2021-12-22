@@ -75,6 +75,9 @@ class Conversion {
             case "parse":
                 break;
             case "toint":
+                if (nodo.tipo == Tipo_1.tipo.DOUBLE) {
+                    nodo.tipo = Tipo_1.tipo.ENTERO;
+                }
                 break;
             case "todouble":
                 break;

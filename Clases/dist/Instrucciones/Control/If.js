@@ -76,6 +76,9 @@ class If {
         let salida = new Temporales_1.Resultado3D();
         let v = [];
         let f = [];
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%% IF %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+        salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
         let nodo = this.condicion.traducir(Temp, controlador, this.entornoTrad, ts_u);
         salida.codigo3D += nodo.codigo3D + "\n";
         nodo = this.arreglarBoolean(nodo, salida, Temp);

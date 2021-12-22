@@ -46,21 +46,59 @@ void main(){
     /********************************
      * VALIDACION DE OPERACIONES
      * ******************************/
-   int int2_;
- int2_ = 45;
-    int2_ = int2_ - 1; 
-   // val1 = 7 - (5 + 10 * (20 / 5 - 2 + 4 * (5 + 2 * 3)) - 8 * 3 % 2) + 50 * (6 * 2); //142.0
-   // val2 = pow(2,4) - 9 * (8 - 6 * (pow(3,2) - 6 * 5 - 7 * (9 + pow(7,3)) + 10) - 5 ) + 8 * (36 / 6 - 5 * ( 2 * 3)); //-133853.0
-   // val3 = (pow(8,3) * pow(8,2) - sqrt(4) + tan(12) + sin(60) + 2) / 3; //10922.353109816746
-   // double val4 = val1 - val2 + val3; //El resultado es 144917.35310981676
-   // int resultado = toInt(144917.353);  //144917
-    if(144917 == 144917){
+   
+     val1 = 7 - (5 + 10 * (20 / 5 - 2 + 4 * (5 + 2 * 3)) - 8 * 3 % 2) + 50 * (6 * 2); //142.0
+    val2 = pow(2,4) - 9 * (8 - 6 * (pow(3,2) - 6 * 5 - 7 * (9 + pow(7,3)) + 10) - 5 ) + 8 * (36 / 6 - 5 * ( 2 * 3)); //-133853.0
+    val3 = (pow(8,3) * pow(8,2) - sqrt(4) + tan(12) + sin(60) + 2) / 3; //10922.353109816746
+    double val4 = val1 - val2 + val3; //El resultado es 144917.35310981676
+    println(val4);
+  	double resultado = val4;  //144917
+  	println(resultado);
+    if(resultado == val4){
         println("Aritmeticas 100");
         aritmeticas = 1;
     }
-  println(int2_ > 78 && 100 + 0 == 100);  //true, false
+   // String String_3;
+   // String String_4;
+    int int2_;
+    boolean TRUE = true;
+    boolean FALSE = false;
+    int2_ = 45;
+    int2_ = int2_ - 1; 
+    
+  print(int2_ >= 77 || -1 < 100 , ",");  //true, false
+  println(int2_ > 78 && 100 + 0 == 100);
+     //String_3 = string(int2_ > 77 || FALSE) & "," & string(int2_ < 78 && TRUE) & "," & string(int2_ + 10 <= int2_ || FALSE) & "," & string(!!!!!!!!!!!! (int2_ + 10 >= int2_));
+  print("Lógica 1" & " = ");
+  String aa = string(int2_ > 77 || FALSE) & ",";
+  print(aa );
+  String bb = string(int2_ < 78 && TRUE) & ",";
+  print(bb);
+  String cc = string(int2_ + 10 <= int2_ || FALSE) & ",";
+  print(cc );
+  String dd = string(!!!!!!!!!!!! (int2_ + 10 >= int2_)) & ",";
+  println(dd);
+  //println(int2_ > 77 || FALSE,",",int2_ < 78 && TRUE,",",int2_ + 10 <= int2_ || FALSE,",",!!!!!!!!!!!! (int2_ + 10 >= int2_));  ////false, true, false, true
+   // String_4 = string(int2_ >= 77 || -1 < 100) & "," & string(int2_ > 78 && 100 + 0 == 100);
+  print("Lógica 2" & " = " );
+  String ee =  string(int2_ >= 77 || -1 < 100)& ",";
+  print(ee);
+  String ff = string(int2_ > 78 && 100 + 0 == 100)& ",";
+  println(ff);
+  // println(int2_ >= 77 || -1 < 100,",",int2_ > 78 && 100 + 0 == 100);  //true, false
+
+
+    String String_3 = "false,true,false,true";
+  String String_4 = "true,false";
   
-  String String_5 = "Calificacion ";
-  println("Cadena 5" & " = " & String_5); //Calificacion Calificacion Calificacion 
+   boolean relacionaes = (a == 0) != (44.3 < 44.4) == (pow(2,5) == 31 + 2 % 1);
+    relacionaes = relacionaes == (b == a) != ((532 > 532)) == (String_3 == "false,true,false,true") == (String_4 == "true,false");
+    if(relacionaes == true){
+        println("Relacionels 100");
+    }
+    else{
+        println("Relacionales 0");
+    }
   
+	
 }

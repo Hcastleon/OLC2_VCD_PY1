@@ -99,6 +99,7 @@ export class Logicas extends Operacion implements Expresion {
     //-------
     //let resultado = "";
     let result = new Resultado3D();
+    //result.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%% OP Logica %%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
     result.tipo = tipo.BOOLEAN;
     if (this.operador == Operador.OR) {
       if (valor1.codigo3D != undefined) result.codigo3D += valor1.codigo3D;
@@ -150,6 +151,11 @@ export class Logicas extends Operacion implements Expresion {
 
       result.etiquetasF = v;
       result.etiquetasV = f;
+      /*if (this.getValor(controlador, ts, ts_u) === true) {
+        result.temporal = new Temporal("1");
+      } else {
+        result.temporal = new Temporal("0");
+      }*/
       return result;
     }
   }
@@ -168,7 +174,7 @@ export class Logicas extends Operacion implements Expresion {
 
   arreglarBoolean(nodo: Resultado3D, salida: Resultado3D, Temp: Temporales) {
     if (nodo instanceof Simbolos) {
-      console.log(nodo);
+      //console.log(nodo);
       let temp = Temp.temporal();
       let temp2 = Temp.temporal();
       //salida.tipo = tipo.ID;
@@ -179,7 +185,18 @@ export class Logicas extends Operacion implements Expresion {
       let f: string = Temp.etiqueta();
       salida.codigo3D += Temp.saltoCondicional("(" + temp2 + "== 1 )", v);
       salida.codigo3D += Temp.saltoIncondicional(f);
+      //--------------------------------
+      /* let temp3: string = Temp.temporal();
+      let salto: string = Temp.etiqueta();
 
+      salida.codigo3D += v + ": \n";
+      salida.codigo3D += temp3 + " = 1; \n";
+      salida.codigo3D += Temp.saltoIncondicional(salto);
+      salida.codigo3D += f + ": \n";
+      salida.codigo3D += temp3 + " = 0; \n";
+      salida.codigo3D += salto + ": \n";
+      salida.temporal = new Temporal(temp3);*/
+      //---------------------------------------------
       nodo.etiquetasV = [v];
       nodo.etiquetasF = [f];
     } else if (nodo.etiquetasV.length == 0) {

@@ -22,9 +22,9 @@ export class Print implements Instruccion {
     for (let expres of this.lista_exp) {
       let result = expres.getValor(controlador, ts, ts_u);
       if (result != null) {
-        if(typeof result === "string"){
-          let nuevo_string = this.trae_algo(result,ts) ;
-          if(nuevo_string != null){
+        if (typeof result === "string") {
+          let nuevo_string = this.trae_algo(result, ts);
+          if (nuevo_string != null) {
             result = nuevo_string;
           }
         }
@@ -41,49 +41,52 @@ export class Print implements Instruccion {
     return padre;
   }
 
-  trae_algo(contiene:string,ts: TablaSim){
-    let nueva_salida =contiene;
-    let condicion= /[.+]?\$(?:\(([^\n\r]+)\)|([^\)\n\r\s]+))/gm
-    if(condicion.test(contiene)){
-      let lista =  contiene.match(condicion);
-      if(lista){
+  trae_algo(contiene: string, ts: TablaSim) {
+    let nueva_salida = contiene;
+    let condicion = /[.+]?\$(?:\(([^\n\r]+)\)|([^\)\n\r\s]+))/gm;
+    if (condicion.test(contiene)) {
+      let lista = contiene.match(condicion);
+      if (lista) {
         for (let index = 0; index < lista.length; index++) {
           const element = lista[index];
-          if(element.length <= 2){
-            let salida = element.replace('$','');
+          if (element.length <= 2) {
+            let salida = element.replace("$", "");
             let sim = ts.getSimbolo(salida);
             let valor = sim?.getValor();
-            nueva_salida = nueva_salida.replace(element ,valor);
-          }else{
-            let salida = element.replace('$(','');
-            salida =salida.substring(0,salida.length-1);
-            if(salida.includes("[")){
-              let vari = salida.substring(0,salida.indexOf("["));
-              let posi = salida.substring(salida.indexOf("[")+1,salida.indexOf("]"));
+            nueva_salida = nueva_salida.replace(element, valor);
+          } else {
+            let salida = element.replace("$(", "");
+            salida = salida.substring(0, salida.length - 1);
+            if (salida.includes("[")) {
+              let vari = salida.substring(0, salida.indexOf("["));
+              let posi = salida.substring(salida.indexOf("[") + 1, salida.indexOf("]"));
               let sim = ts.getSimbolo(vari);
               let valor = sim?.getValor()[Number(posi)];
-              nueva_salida = nueva_salida.replace(element ,valor);
-            }else{
+              nueva_salida = nueva_salida.replace(element, valor);
+            } else {
               let sim = ts.getSimbolo(salida);
               let valor = sim?.getValor();
-              nueva_salida = nueva_salida.replace(element ,valor);
+              nueva_salida = nueva_salida.replace(element, valor);
             }
           }
         }
       }
       return nueva_salida;
-    }else{
+    } else {
       return null;
     }
   }
+
   traducir(Temp: Temporales, controlador: Controller, ts: TablaSim, ts_u: TablaSim) {
-
     let salida = new Resultado3D();
-
+    // cadena = cadena.temporal.utilizar();
+    //cadena = cadena[1:-1];
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%% PRINTLN %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
+    salida.codigo3D += "//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% \n";
     for (let expres of this.lista_exp) {
       let exp_3D: Resultado3D = expres.traducir(Temp, controlador, ts, ts_u);
 
-      console.log(exp_3D);
       //IDENTIFICADOR------------------------------------------------------------------------------------------
       if (exp_3D instanceof Simbolos) {
         if (exp_3D.tipo.stype == "ENTERO") {
@@ -148,14 +151,13 @@ export class Print implements Instruccion {
             let v: string = Temp.etiqueta();
             let f: string = Temp.etiqueta();
 
-            salida.codigo3D +=
-              posicion + " = " + temp2 + "; //Posicion de inicio de la cadena\n";
+            salida.codigo3D += posicion + " = " + temp2 + "; //Posicion de inicio de la cadena\n";
             salida.codigo3D += f + ":";
+            salida.codigo3D += valor + " = heap[(int)" + posicion + "];\n";
             salida.codigo3D +=
-              valor + " = heap[(int)" + posicion + "];\n";
-            salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v) + "// Si esta vacio no imprimimos nada\n";
-            salida.codigo3D +=
-              posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
+              Temp.saltoCondicional("(" + valor + " == 0 )", v) +
+              "// Si esta vacio no imprimimos nada\n";
+            salida.codigo3D += posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
             salida.codigo3D += 'printf( "%c", (char)' + valor + "); //Se imprime el caracter\n";
             salida.codigo3D += Temp.saltoIncondicional(f);
             salida.codigo3D += v + ":";
@@ -200,6 +202,7 @@ export class Print implements Instruccion {
             salida.codigo3D += "\n" + 'printf("%d", (int)' + temp + ");";
           }
         }
+
         return salida;
       }
 
@@ -208,15 +211,13 @@ export class Print implements Instruccion {
       if (exp_3D.tipo == tipo.ENTERO) {
         salida.codigo3D += "\n" + exp_3D.codigo3D;
         salida.codigo3D += "\n" + 'printf("%d", (int)' + exp_3D.temporal.nombre + ");";
-
       } else if (exp_3D.tipo == tipo.DOUBLE) {
         salida.codigo3D += "\n" + exp_3D.codigo3D;
         salida.codigo3D += "\n" + 'printf("%f", (double)' + exp_3D.temporal.nombre + ");";
-
       } else if (exp_3D.tipo == tipo.CARACTER) {
         salida.codigo3D += "\n" + exp_3D.codigo3D;
-        salida.codigo3D += "\n" + 'printf("%c", (char)' + exp_3D.temporal.nombre + "); // Se imprime char";
-
+        salida.codigo3D +=
+          "\n" + 'printf("%c", (char)' + exp_3D.temporal.nombre + "); // Se imprime char";
       } else if (exp_3D.tipo == tipo.CADENA) {
         salida.codigo3D += "\n" + exp_3D.codigo3D;
         let posicion: string = Temp.temporal();
@@ -227,21 +228,23 @@ export class Print implements Instruccion {
         salida.codigo3D +=
           posicion + " = " + exp_3D.temporal.nombre + "; //Posicion de inicio de la cadena\n";
         salida.codigo3D += f + ":";
+        salida.codigo3D += valor + " = heap[(int)" + posicion + "];\n";
         salida.codigo3D +=
-          valor + " = heap[(int)" + posicion + "];\n";
-        salida.codigo3D += Temp.saltoCondicional("(" + valor + " == 0 )", v) + "// Si esta vacio no imprimimos nada\n";
-        salida.codigo3D +=
-          posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
+          Temp.saltoCondicional("(" + valor + " == 0 )", v) +
+          "// Si esta vacio no imprimimos nada\n";
+        salida.codigo3D += posicion + " = " + posicion + " + 1; //Aumento de la posicion\n";
         salida.codigo3D += 'printf( "%c", (char)' + valor + "); //Se imprime el caracter\n";
         salida.codigo3D += Temp.saltoIncondicional(f);
         salida.codigo3D += v + ":";
-
       } else if (exp_3D.tipo == tipo.BOOLEAN) {
         controlador.appendT("\n" + exp_3D.codigo3D);
         if (exp_3D.etiquetasV.length == 0) {
           let verdadera: string = Temp.etiqueta();
           let salto: string = Temp.etiqueta();
-          salida.codigo3D += Temp.saltoCondicional("(" + exp_3D.temporal.nombre + " == 0)", verdadera);
+          salida.codigo3D += Temp.saltoCondicional(
+            "(" + exp_3D.temporal.nombre + " == 0)",
+            verdadera
+          );
           salida.codigo3D +=
             'printf("%c", (char)116); \n printf("%c", (char)114); \n printf("%c", (char)117); \n printf("%c", (char)101); \n'; // true
           salida.codigo3D += Temp.saltoIncondicional(salto);
@@ -249,7 +252,6 @@ export class Print implements Instruccion {
           salida.codigo3D +=
             'printf("%c", (char)102); \n printf("%c", (char)97); \n printf("%c", (char)108); \n printf("%c", (char)115); \n printf("%c", (char)101); \n'; //false
           salida.codigo3D += salto + ":";
-
         } else {
           let salto: string = Temp.etiqueta();
           salida.codigo3D += Temp.escribirEtiquetas(exp_3D.etiquetasV);
@@ -260,7 +262,6 @@ export class Print implements Instruccion {
           salida.codigo3D +=
             'printf("%c", (char)102); \n printf("%c", (char)97); \n printf("%c", (char)108); \n printf("%c", (char)115); \n printf("%c", (char)101); \n'; //false
           salida.codigo3D += salto + ":";
-
         }
       }
     }
