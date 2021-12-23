@@ -38,14 +38,14 @@ void main(){
     println(stack.length()); //20
     println(stack);
 
-    for(int i = 0; i < 10; i++){
+    for(int j = 0; j < 10; j++){
         desapilar();
     }
     println(stack.length()); //10
     println(stack);
 
-    for(int i = 10; i < 55; i++){
-        apilar(i);
+    for(int k = 10; k < 55; k++){
+        apilar(k);
     }
 
     println(stack.length()); //50
