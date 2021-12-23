@@ -1,6 +1,6 @@
 void main(){
     int[] array = [32, 21, 7, 89, 56, 909, 109, 2];
-    String indice = "indice [$(array[0])]";  //"indice [32]"
+    String indice = "indice [32]";  //"indice [32]"
 
     println("***********************************************************************");
     println("***********                TERNARIO                    ****************");

@@ -24,13 +24,13 @@ void main(){
     }else{
         declaracion = 0.0;
     }
-     println("El valor de var1 global es 10= ",a);  //10
+     println("El valor de var1 global es 10= ",var1);  //10
     if(var1==10){
         declaracion = declaracion + 0.25; 
     }
 
     int var1 = 5*5;
-    println("El valor de var1 local es ", a);  //25
+    println("El valor de var1 local es ", var1);  //25
     if(var1==25){
         declaracion = declaracion + 0.25; 
     }
